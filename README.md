@@ -431,6 +431,29 @@ agno postgres --host localhost --database mydb --username user --password pass -
 agno postgres --host localhost --database mydb --username user --password pass --restore backup.dump
 ```
 
+### Shell System Operations
+```bash
+# Basic shell operations
+agno shell --command "ls -la"
+agno shell --command "pwd"
+agno shell --command "whoami"
+
+# System information
+agno shell --info
+agno shell --process 1234
+agno shell --kill 1234 --signal SIGTERM
+
+# Script execution
+agno shell --script script.sh
+agno shell --live --command "tail -f log.txt"
+agno shell --timeout 60 --command "long-running-process"
+
+# Command history
+agno shell --history
+agno shell --history-limit 10
+agno shell --clear-history
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -493,6 +516,7 @@ agno_cli/
 │   ├── duckdb_tools.py      # DuckDB database operations
 │   ├── sql_tools.py         # SQL query execution
 │   ├── postgres_tools.py    # PostgreSQL database integration
+│   ├── shell_tools.py       # System command execution
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -530,6 +554,7 @@ agno_cli/
 - **DuckDB Database**: Lightweight database operations, SQL queries, data import/export
 - **SQL Database**: General SQL query execution, multi-database support
 - **PostgreSQL Database**: Specialized PostgreSQL integration, advanced features
+- **Shell Operations**: Safe system command execution, process management
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -676,6 +701,12 @@ agno postgres --host localhost --database testdb --username user --password pass
 agno postgres --host localhost --database testdb --username user --password pass --schemas # List schemas
 agno postgres --host localhost --database testdb --username user --password pass --show-table users # Show table info
 agno postgres --host localhost --database testdb --username user --password pass --indexes users # Show indexes
+
+# Test shell operations
+agno shell --info # System information
+agno shell --command "ls -la" # List directory
+agno shell --process $$ # Current process info
+agno shell --history # Command history
 
 # Test agent operations
 agno agents --list                                  # List all agents

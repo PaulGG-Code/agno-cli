@@ -68,6 +68,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Performance Optimization**: VACUUM and REINDEX operations
 - **Rich PostgreSQL Metadata**: Comprehensive database statistics and information
 
+#### ✅ Shell System Operations Tool
+- **Safe command execution** with comprehensive security features
+- **Command validation and filtering** to prevent dangerous operations
+- **Live output display** with real-time command monitoring
+- **Process management** with detailed process information and control
+- **System monitoring** with comprehensive system statistics
+- **Command history tracking** with execution details and timing
+- **Script execution** with support for shell script files
+- **Timeout management** with configurable command timeouts
+- **Rich output formatting** with beautiful tables and syntax highlighting
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -75,6 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `duckdb` command** with lightweight database operations
 - **New `sql` command** with general SQL query execution
 - **New `postgres` command** with specialized PostgreSQL integration
+- **New `shell` command** with safe system command execution
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -274,6 +286,12 @@ agno postgres --host localhost --database testdb --username user --password pass
 agno postgres --host localhost --database testdb --username user --password pass --schemas
 agno postgres --host localhost --database testdb --username user --password pass --show-table users
 agno postgres --host localhost --database testdb --username user --password pass --indexes users
+
+# Shell operations testing
+agno shell --info
+agno shell --command "ls -la"
+agno shell --process $$
+agno shell --history
 
 # Agent system testing
 agno agents --list

@@ -23,7 +23,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 - [✅] `postgres` - PostgreSQL database integration
 
 ### System & Shell Operations
-- [ ] `shell` - Execute shell commands
+- [✅] `shell` - Execute shell commands
 - [ ] `docker` - Docker container management
 - [ ] `sleep` - Delay/sleep operations
 

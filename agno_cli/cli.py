@@ -32,6 +32,7 @@ from tools.pandas_tools import PandasToolsManager
 from tools.duckdb_tools import DuckDBToolsManager
 from tools.sql_tools import SQLToolsManager, DatabaseConnection
 from tools.postgres_tools import PostgresToolsManager, PostgresConnection
+from tools.shell_tools import ShellToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -62,7 +63,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -85,6 +86,7 @@ def initialize_system():
         sql_tools = SQLToolsManager(DatabaseConnection(type='sqlite'))
         # Don't initialize PostgreSQL tools immediately - they require a connection
         postgres_tools = None
+        shell_tools = ShellToolsManager()
 
 
 # Chat Commands
@@ -1431,6 +1433,70 @@ def postgres(
     
     except Exception as e:
         console.print(f"[red]PostgreSQL operation error: {e}[/red]")
+
+
+# Shell Commands
+@app.command()
+def shell(
+    command: Optional[str] = typer.Option(None, "--command", "-c", help="Execute shell command"),
+    script: Optional[str] = typer.Option(None, "--script", "-s", help="Execute shell script file"),
+    live: bool = typer.Option(False, "--live", "-l", help="Show live output"),
+    timeout: int = typer.Option(30, "--timeout", "-t", help="Command timeout in seconds"),
+    cwd: Optional[str] = typer.Option(None, "--cwd", help="Working directory"),
+    system_info: bool = typer.Option(False, "--info", "-i", help="Show system information"),
+    process_info: Optional[int] = typer.Option(None, "--process", help="Show process information by PID"),
+    kill_process: Optional[int] = typer.Option(None, "--kill", help="Kill process by PID"),
+    signal: str = typer.Option("SIGTERM", "--signal", help="Signal to send (SIGTERM, SIGKILL)"),
+    history: bool = typer.Option(False, "--history", help="Show command history"),
+    history_limit: Optional[int] = typer.Option(None, "--history-limit", help="Limit history entries"),
+    clear_history: bool = typer.Option(False, "--clear-history", help="Clear command history"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """Execute shell commands with safety features and rich output"""
+    initialize_system()
+    
+    try:
+        if command:
+            shell_tools.execute_command(command, timeout, cwd, live, format)
+        
+        elif script:
+            # Read script file
+            try:
+                with open(script, 'r') as f:
+                    script_content = f.read()
+                
+                # Execute each line
+                lines = script_content.strip().split('\n')
+                for line in lines:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        shell_tools.execute_command(line, timeout, cwd, live, format)
+            except FileNotFoundError:
+                console.print(f"[red]Script file not found: {script}[/red]")
+            except Exception as e:
+                console.print(f"[red]Error reading script file: {e}[/red]")
+        
+        elif system_info:
+            shell_tools.show_system_info(format)
+        
+        elif process_info is not None:
+            shell_tools.show_process_info(process_info, format)
+        
+        elif kill_process is not None:
+            shell_tools.kill_process(kill_process, signal)
+        
+        elif history:
+            shell_tools.show_history(history_limit, format)
+        
+        elif clear_history:
+            shell_tools.shell_tools.clear_history()
+            console.print("[green]Command history cleared[/green]")
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]Shell operation error: {e}[/red]")
 
 
 # Version Command
