@@ -30,7 +30,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 ### Research & Information
 - [✅] `wikipedia` - Wikipedia search and content retrieval
 - [✅] `arxiv` - Academic paper search
-- [ ] `pubmed` - Medical research papers
+- [✅] `pubmed` - Medical research papers
 - [ ] `hackernews` - Hacker News integration
 
 ### Enhanced Search Capabilities

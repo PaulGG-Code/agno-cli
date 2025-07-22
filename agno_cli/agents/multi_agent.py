@@ -222,6 +222,14 @@ class MultiAgentSystem:
                     tools.append(ArxivTools())
                 except ImportError:
                     pass
+            
+            # Add PubMed tools if available
+            if agent_state.has_tool("pubmed_tools"):
+                try:
+                    from agno.tools.pubmed_tools import PubMedTools
+                    tools.append(PubMedTools())
+                except ImportError:
+                    pass
         
         return tools
     

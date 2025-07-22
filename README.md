@@ -541,6 +541,29 @@ agno arxiv --keywords "This paper presents a novel approach to machine learning"
 agno arxiv --clear-cache
 ```
 
+### PubMed Medical Research
+```bash
+# Search operations
+agno pubmed --search "cancer treatment"
+agno pubmed --search "diabetes" --max-results 5
+agno pubmed --search "COVID-19" --database "pmc"
+
+# Paper operations
+agno pubmed --paper "37828275"
+agno pubmed --recent --max-results 10
+agno pubmed --related "37828275"
+
+# Author and journal operations
+agno pubmed --author "John Smith"
+agno pubmed --journal "Nature" --max-results 20
+agno pubmed --author-info "Jane Doe"
+agno pubmed --databases
+
+# Text analysis
+agno pubmed --keywords "This study examines the effects of treatment on patient outcomes"
+agno pubmed --clear-cache
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -607,6 +630,7 @@ agno_cli/
 │   ├── docker_tools.py      # Docker container management
 │   ├── wikipedia_tools.py   # Wikipedia research and content retrieval
 │   ├── arxiv_tools.py       # arXiv academic paper search
+│   ├── pubmed_tools.py      # PubMed medical research papers
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -648,6 +672,7 @@ agno_cli/
 - **Docker Management**: Container lifecycle, image management, system monitoring
 - **Wikipedia Research**: Search, content retrieval, language support, text analysis
 - **arXiv Papers**: Academic paper search, author analysis, category filtering
+- **PubMed Research**: Medical paper search, author analysis, journal filtering
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -816,6 +841,11 @@ agno wikipedia --random
 agno arxiv --search "machine learning"
 agno arxiv --paper "2401.00123"
 agno arxiv --categories
+
+# Test PubMed operations
+agno pubmed --search "cancer treatment"
+agno pubmed --paper "37828275"
+agno pubmed --databases
 
 # Test agent operations
 agno agents --list                                  # List all agents

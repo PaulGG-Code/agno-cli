@@ -121,6 +121,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Multiple sorting options** for relevance and date-based ordering
 - **Date range filtering** for temporal research queries
 
+#### ✅ PubMed Medical Research Tool
+- **Advanced medical paper search functionality** with comprehensive query capabilities
+- **Content retrieval and metadata extraction** with full paper information
+- **Author and journal filtering** for targeted medical research
+- **Medical abstracts and summaries** with detailed content analysis
+- **MeSH terms and medical classification** for research categorization
+- **Recent papers discovery** with latest medical publications
+- **Related papers search** for medical research exploration
+- **Author information analysis** with publication statistics
+- **Journal exploration** with medical field classification
+- **Keyword extraction** with intelligent medical text analysis
+- **Caching system** for improved performance
+- **Rich output formatting** with beautiful tables and panels
+- **Multiple database support** for PubMed, PMC, Gene, and Protein databases
+- **Medical terminology support** with MeSH term integration
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -132,6 +148,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `docker` command** with comprehensive container management
 - **New `wikipedia` command** with research and knowledge retrieval
 - **New `arxiv` command** with academic paper search and analysis
+- **New `pubmed` command** with medical research paper search and analysis
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -353,6 +370,11 @@ agno wikipedia --random
 agno arxiv --search "machine learning"
 agno arxiv --paper "2401.00123"
 agno arxiv --categories
+
+# PubMed operations testing
+agno pubmed --search "cancer treatment"
+agno pubmed --paper "37828275"
+agno pubmed --databases
 
 # Agent system testing
 agno agents --list

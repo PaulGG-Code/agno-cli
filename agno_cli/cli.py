@@ -36,6 +36,7 @@ from tools.shell_tools import ShellToolsManager
 from tools.docker_tools import DockerToolsManager
 from tools.wikipedia_tools import WikipediaToolsManager
 from tools.arxiv_tools import ArxivToolsManager
+from tools.pubmed_tools import PubMedToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -66,7 +67,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -93,6 +94,7 @@ def initialize_system():
         docker_tools = DockerToolsManager()
         wikipedia_tools = WikipediaToolsManager()
         arxiv_tools = ArxivToolsManager()
+        pubmed_tools = PubMedToolsManager()
 
 
 # Chat Commands
@@ -1817,6 +1819,89 @@ def arxiv(
     
     except Exception as e:
         console.print(f"[red]arXiv operation error: {e}[/red]")
+
+
+# PubMed Commands
+@app.command()
+def pubmed(
+    search: Optional[str] = typer.Option(None, "--search", "-s", help="Search PubMed papers"),
+    paper: Optional[str] = typer.Option(None, "--paper", "-p", help="Get paper by PMID"),
+    author: Optional[str] = typer.Option(None, "--author", "-a", help="Search papers by author"),
+    journal: Optional[str] = typer.Option(None, "--journal", "-j", help="Search papers by journal"),
+    recent: bool = typer.Option(False, "--recent", "-r", help="Get recent papers"),
+    related: Optional[str] = typer.Option(None, "--related", help="Get papers related to PMID"),
+    author_info: Optional[str] = typer.Option(None, "--author-info", help="Get information about author"),
+    databases: bool = typer.Option(False, "--databases", help="List available databases"),
+    keywords: Optional[str] = typer.Option(None, "--keywords", help="Extract keywords from text"),
+    date_range: Optional[str] = typer.Option(None, "--date-range", help="Search by date range (format: start:end)"),
+    mesh_term: Optional[str] = typer.Option(None, "--mesh-term", help="Search by MeSH term"),
+    max_results: int = typer.Option(10, "--max-results", "-m", help="Maximum number of results"),
+    database: str = typer.Option("pubmed", "--database", "-d", help="Database to search (pubmed, pmc, gene, protein)"),
+    sort_by: str = typer.Option("relevance", "--sort-by", help="Sort by (relevance, date)"),
+    max_keywords: int = typer.Option(10, "--max-keywords", help="Maximum number of keywords to extract"),
+    email: str = typer.Option("agno-cli@example.com", "--email", help="Email for NCBI API"),
+    clear_cache: bool = typer.Option(False, "--clear-cache", help="Clear PubMed cache"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """PubMed medical research paper search and retrieval with rich features"""
+    initialize_system()
+    
+    try:
+        if clear_cache:
+            pubmed_tools.clear_cache()
+        
+        elif search:
+            pubmed_tools.search(search, max_results, database, sort_by, format)
+        
+        elif paper:
+            pubmed_tools.get_paper(paper, format)
+        
+        elif author:
+            pubmed_tools.search_by_author(author, max_results, format)
+        
+        elif journal:
+            pubmed_tools.search_by_journal(journal, max_results, format)
+        
+        elif recent:
+            pubmed_tools.get_recent_papers(max_results, format)
+        
+        elif related:
+            pubmed_tools.get_related_papers(related, max_results, format)
+        
+        elif author_info:
+            pubmed_tools.get_author_info(author_info, format)
+        
+        elif databases:
+            pubmed_tools.get_databases(format)
+        
+        elif keywords:
+            pubmed_tools.extract_keywords(keywords, max_keywords, format)
+        
+        elif date_range:
+            try:
+                if ':' in date_range:
+                    start_date, end_date = date_range.split(':', 1)
+                else:
+                    console.print("[red]Invalid date range format. Use: start:end[/red]")
+                    return
+                
+                # This would require implementing date range search in the tools
+                console.print("[yellow]Date range search not yet implemented[/yellow]")
+            except ValueError:
+                console.print("[red]Invalid date range format. Use: start:end[/red]")
+        
+        elif mesh_term:
+            try:
+                # This would require implementing MeSH term search in the tools
+                console.print("[yellow]MeSH term search not yet implemented[/yellow]")
+            except Exception as e:
+                console.print(f"[red]MeSH term search error: {e}[/red]")
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]PubMed operation error: {e}[/red]")
 
 
 # Version Command

@@ -18,3 +18,4 @@ psutil>=7.0.0
 docker>=7.0.0
 wikipedia>=1.4.0
 arxiv>=2.2.0
+biopython>=1.85
