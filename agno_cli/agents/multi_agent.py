@@ -311,7 +311,12 @@ class MultiAgentSystem:
                             print(chunk, end="", flush=True)
                 print()  # New line after streaming
             else:
-                response = agent.run(message=message)
+                run_response = agent.run(message=message)
+                # Extract content from RunResponse object
+                if hasattr(run_response, 'content'):
+                    response = run_response.content
+                else:
+                    response = str(run_response)
             
             # Update agent state
             agent_state.update_status(AgentStatus.IDLE)
