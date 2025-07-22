@@ -640,6 +640,37 @@ agno visualization --chart-type bar --title "Sales Data" --width 1000 --height 8
 agno visualization --format json --chart-type line --sample
 ```
 
+### Computer Vision Operations
+```bash
+# Image processing
+agno opencv --image image.jpg --operation resize --width 800 --height 600
+agno opencv --image image.jpg --operation filter --filter-type blur
+agno opencv --image image.jpg --operation brightness_contrast --brightness 50 --contrast 1.5
+agno opencv --image image.jpg --operation rotate --angle 45
+agno opencv --image image.jpg --operation flip --direction horizontal
+agno opencv --image image.jpg --operation crop --crop-x 100 --crop-y 100 --crop-width 200 --crop-height 200
+
+# Object detection
+agno opencv --image image.jpg --detect faces
+agno opencv --image image.jpg --detect eyes
+agno opencv --image image.jpg --detect bodies
+agno opencv --image image.jpg --detect cars
+
+# Feature extraction
+agno opencv --image image.jpg --extract basic
+agno opencv --image image.jpg --extract edges
+agno opencv --image image.jpg --extract corners
+
+# Information and lists
+agno opencv --image image.jpg --info
+agno opencv --list-operations
+agno opencv --list-objects
+agno opencv --list-features
+
+# Options
+agno opencv --format json --image image.jpg --info
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -710,6 +741,7 @@ agno_cli/
 │   ├── sleep_tools.py       # Sleep and timing operations
 │   ├── hackernews_tools.py  # Hacker News integration
 │   ├── visualization_tools.py # Data visualization and charting
+│   ├── opencv_tools.py # Computer vision operations
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -755,6 +787,7 @@ agno_cli/
 - **Sleep & Timing**: Delay operations, performance monitoring, scheduling
 - **Hacker News**: Story retrieval, comments, user profiles, trending
 - **Data Visualization**: Chart generation, interactive plots, dashboards
+- **Computer Vision**: Image processing, object detection, feature extraction
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -943,6 +976,12 @@ agno hackernews --user "pg"
 agno visualization --list-types
 agno visualization --chart-type line --sample --sample-size 50
 agno visualization --dashboard --chart-types "line,bar" --sample-size 30
+
+# Test computer vision operations
+agno opencv --list-operations
+agno opencv --image test_image.jpg --info
+agno opencv --image test_image.jpg --operation resize --width 200 --height 150
+agno opencv --image test_image.jpg --extract basic
 
 # Test agent operations
 agno agents --list                                  # List all agents

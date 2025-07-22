@@ -55,7 +55,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 ### Image & Media Generation
 - [ ] `dalle` - DALL-E image generation
 - [✅] `visualization` - Data visualization tools
-- [ ] `opencv` - Computer vision operations
+- [✅] `opencv` - Computer vision operations
 - [ ] `moviepy_video` - Video processing
 
 ### Audio & Voice

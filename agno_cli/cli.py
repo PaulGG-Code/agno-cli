@@ -40,6 +40,7 @@ from tools.pubmed_tools import PubMedToolsManager
 from tools.sleep_tools import SleepToolsManager
 from tools.hackernews_tools import HackerNewsToolsManager
 from tools.visualization_tools import VisualizationToolsManager
+from tools.opencv_tools import OpenCVToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -70,7 +71,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -101,6 +102,7 @@ def initialize_system():
         sleep_tools = SleepToolsManager()
         hackernews_tools = HackerNewsToolsManager()
         visualization_tools = VisualizationToolsManager()
+        opencv_tools = OpenCVToolsManager()
 
 
 # Chat Commands
@@ -2143,6 +2145,105 @@ def visualization(
     
     except Exception as e:
         console.print(f"[red]Visualization operation error: {e}[/red]")
+
+
+# OpenCV Commands
+@app.command()
+def opencv(
+    image_path: Optional[str] = typer.Option(None, "--image", "-i", help="Input image path"),
+    operation: Optional[str] = typer.Option(None, "--operation", "-o", help="Image processing operation"),
+    output_path: Optional[str] = typer.Option(None, "--output", "-out", help="Output image path"),
+    detect: Optional[str] = typer.Option(None, "--detect", "-d", help="Object detection type"),
+    extract_features: Optional[str] = typer.Option(None, "--extract", "-e", help="Feature extraction type"),
+    info: bool = typer.Option(False, "--info", help="Get image information"),
+    list_operations: bool = typer.Option(False, "--list-operations", "-lo", help="List available operations"),
+    list_objects: bool = typer.Option(False, "--list-objects", help="List available object types"),
+    list_features: bool = typer.Option(False, "--list-features", help="List available feature types"),
+    # Image processing parameters
+    width: Optional[int] = typer.Option(None, "--width", "-w", help="Image width for resize"),
+    height: Optional[int] = typer.Option(None, "--height", "-h", help="Image height for resize"),
+    scale: Optional[float] = typer.Option(None, "--scale", "-s", help="Scale factor for resize"),
+    filter_type: Optional[str] = typer.Option(None, "--filter-type", help="Filter type (blur, gaussian, median, bilateral, sharpen, emboss, edge)"),
+    brightness: Optional[float] = typer.Option(None, "--brightness", "-b", help="Brightness adjustment"),
+    contrast: Optional[float] = typer.Option(None, "--contrast", "-c", help="Contrast adjustment"),
+    color_map: Optional[str] = typer.Option(None, "--color-map", help="Color map for visualization"),
+    angle: Optional[float] = typer.Option(None, "--angle", "-a", help="Rotation angle in degrees"),
+    direction: Optional[str] = typer.Option(None, "--direction", help="Flip direction (horizontal, vertical)"),
+    crop_x: Optional[int] = typer.Option(None, "--crop-x", help="Crop X coordinate"),
+    crop_y: Optional[int] = typer.Option(None, "--crop-y", help="Crop Y coordinate"),
+    crop_width: Optional[int] = typer.Option(None, "--crop-width", help="Crop width"),
+    crop_height: Optional[int] = typer.Option(None, "--crop-height", help="Crop height"),
+    text: Optional[str] = typer.Option(None, "--text", "-t", help="Text to add to image"),
+    text_x: int = typer.Option(50, "--text-x", help="Text X position"),
+    text_y: int = typer.Option(50, "--text-y", help="Text Y position"),
+    # Object detection parameters
+    draw_boxes: bool = typer.Option(True, "--draw-boxes/--no-draw-boxes", help="Draw bounding boxes on detections"),
+    # Output format
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json)")
+):
+    """Computer vision and image processing operations"""
+    initialize_system()
+    
+    try:
+        if list_operations:
+            opencv_tools.list_operations(format)
+        
+        elif list_objects:
+            opencv_tools.list_object_types(format)
+        
+        elif list_features:
+            opencv_tools.list_feature_types(format)
+        
+        elif info and image_path:
+            opencv_tools.get_image_info(image_path, format)
+        
+        elif extract_features and image_path:
+            opencv_tools.extract_features(image_path, extract_features, format)
+        
+        elif detect and image_path:
+            opencv_tools.detect_objects(image_path, detect, output_path, draw_boxes)
+        
+        elif operation and image_path:
+            # Build operation parameters
+            kwargs = {}
+            if width is not None:
+                kwargs['width'] = width
+            if height is not None:
+                kwargs['height'] = height
+            if scale is not None:
+                kwargs['scale'] = scale
+            if filter_type is not None:
+                kwargs['filter_type'] = filter_type
+            if brightness is not None:
+                kwargs['brightness'] = brightness
+            if contrast is not None:
+                kwargs['contrast'] = contrast
+            if color_map is not None:
+                kwargs['color_map'] = color_map
+            if angle is not None:
+                kwargs['angle'] = angle
+            if direction is not None:
+                kwargs['direction'] = direction
+            if crop_x is not None:
+                kwargs['x'] = crop_x
+            if crop_y is not None:
+                kwargs['y'] = crop_y
+            if crop_width is not None:
+                kwargs['width'] = crop_width
+            if crop_height is not None:
+                kwargs['height'] = crop_height
+            if text is not None:
+                kwargs['text'] = text
+                kwargs['position'] = (text_x, text_y)
+            
+            opencv_tools.process_image(image_path, operation, output_path, **kwargs)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno opencv --list-operations[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]OpenCV operation error: {e}[/red]")
 
 
 # Version Command

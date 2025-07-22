@@ -187,6 +187,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Flexible data input** supporting DataFrames, lists, and dictionaries
 - **Advanced chart features** with grid lines, legends, annotations, and custom styling
 
+#### ✅ Computer Vision Tools
+- **Comprehensive computer vision capabilities** with image processing, object detection, and feature extraction
+- **Image processing operations** including resize, filter, brightness/contrast, rotation, flip, crop, and text overlay
+- **Object detection** using Haar cascade classifiers for faces, eyes, bodies, and cars
+- **Feature extraction** with basic statistics, edge detection, and corner detection
+- **Multiple filter types** including blur, gaussian, median, bilateral, sharpen, emboss, and edge detection
+- **Color space conversions** supporting BGR, RGB, HSV, LAB, and grayscale transformations
+- **Image analysis** with detailed metadata extraction and statistical information
+- **Rich output formatting** with beautiful progress indicators and detailed result tables
+- **Automatic output management** with organized file structure and timestamped outputs
+- **Error handling** with robust image validation and graceful error recovery
+- **Performance optimization** with efficient OpenCV operations and memory management
+- **Flexible input formats** supporting all major image formats (JPEG, PNG, BMP, etc.)
+- **Advanced image manipulation** with rotation, cropping, flipping, and text overlay capabilities
+- **Statistical analysis** with histogram generation, mean, standard deviation, and data type information
+- **Professional styling** with consistent output formatting and detailed operation results
+- **Multi-format support** with table and JSON output options for all operations
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -202,6 +220,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `sleep` command** with delay and timing operations
 - **New `hackernews` command** with Hacker News integration
 - **New `visualization` command** with data visualization tools
+- **New `opencv` command** with computer vision operations
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -443,6 +462,12 @@ agno hackernews --user "pg"
 agno visualization --list-types
 agno visualization --chart-type line --sample --sample-size 50
 agno visualization --dashboard --chart-types "line,bar" --sample-size 30
+
+# Computer vision operations testing
+agno opencv --list-operations
+agno opencv --image test_image.jpg --info
+agno opencv --image test_image.jpg --operation resize --width 200 --height 150
+agno opencv --image test_image.jpg --extract basic
 
 # Agent system testing
 agno agents --list

@@ -254,6 +254,14 @@ class MultiAgentSystem:
                     tools.append(VisualizationTools())
                 except ImportError:
                     pass
+            
+            # Add OpenCV tools if available
+            if agent_state.has_tool("opencv_tools"):
+                try:
+                    from agno.tools.opencv_tools import OpenCVTools
+                    tools.append(OpenCVTools())
+                except ImportError:
+                    pass
         
         return tools
     
