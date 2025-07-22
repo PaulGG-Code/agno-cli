@@ -170,6 +170,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Error handling** with robust API error management and graceful degradation
 - **Rate limiting** for respectful API usage and optimal performance
 
+#### ✅ Data Visualization Tools
+- **Comprehensive data visualization capabilities** with multiple chart types and interactive features
+- **Chart generation and plotting** with support for line, bar, scatter, pie, histogram, box, and heatmap charts
+- **Interactive visualizations** using Plotly with zoom, pan, hover, and export capabilities
+- **Multi-chart dashboards** with configurable layouts and subplot arrangements
+- **Sample data generation** with multiple data types (random, trend, categorical) for testing
+- **Rich output formatting** with beautiful HTML charts and detailed information tables
+- **Customizable chart configuration** with titles, dimensions, themes, and styling options
+- **Data validation and processing** with automatic type detection and column selection
+- **Export capabilities** with HTML file generation and JSON metadata output
+- **Chart information system** with detailed descriptions and usage guidelines
+- **Multiple chart themes** with professional styling and color palettes
+- **Error handling** with robust data validation and graceful error recovery
+- **Performance optimization** with efficient data processing and rendering
+- **Flexible data input** supporting DataFrames, lists, and dictionaries
+- **Advanced chart features** with grid lines, legends, annotations, and custom styling
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -184,6 +201,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `pubmed` command** with medical research paper search and analysis
 - **New `sleep` command** with delay and timing operations
 - **New `hackernews` command** with Hacker News integration
+- **New `visualization` command** with data visualization tools
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -420,6 +438,11 @@ agno sleep --performance --monitor-duration 5
 agno hackernews --top --limit 5
 agno hackernews --story 1
 agno hackernews --user "pg"
+
+# Visualization operations testing
+agno visualization --list-types
+agno visualization --chart-type line --sample --sample-size 50
+agno visualization --dashboard --chart-types "line,bar" --sample-size 30
 
 # Agent system testing
 agno agents --list

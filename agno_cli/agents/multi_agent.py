@@ -246,6 +246,14 @@ class MultiAgentSystem:
                     tools.append(HackerNewsTools())
                 except ImportError:
                     pass
+            
+            # Add Visualization tools if available
+            if agent_state.has_tool("visualization_tools"):
+                try:
+                    from agno.tools.visualization_tools import VisualizationTools
+                    tools.append(VisualizationTools())
+                except ImportError:
+                    pass
         
         return tools
     

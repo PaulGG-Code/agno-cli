@@ -39,6 +39,7 @@ from tools.arxiv_tools import ArxivToolsManager
 from tools.pubmed_tools import PubMedToolsManager
 from tools.sleep_tools import SleepToolsManager
 from tools.hackernews_tools import HackerNewsToolsManager
+from tools.visualization_tools import VisualizationToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -69,7 +70,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -99,6 +100,7 @@ def initialize_system():
         pubmed_tools = PubMedToolsManager()
         sleep_tools = SleepToolsManager()
         hackernews_tools = HackerNewsToolsManager()
+        visualization_tools = VisualizationToolsManager()
 
 
 # Chat Commands
@@ -2075,6 +2077,72 @@ def hackernews(
     
     except Exception as e:
         console.print(f"[red]Hacker News operation error: {e}[/red]")
+
+
+# Visualization Commands
+@app.command()
+def visualization(
+    chart_type: str = typer.Option(None, "--chart-type", "-c", help="Type of chart to create"),
+    data_file: Optional[str] = typer.Option(None, "--data-file", "-f", help="CSV file with data"),
+    x_column: Optional[str] = typer.Option(None, "--x-column", "-x", help="X-axis column name"),
+    y_column: Optional[str] = typer.Option(None, "--y-column", "-y", help="Y-axis column name"),
+    title: Optional[str] = typer.Option(None, "--title", "-t", help="Chart title"),
+    width: int = typer.Option(800, "--width", "-w", help="Chart width"),
+    height: int = typer.Option(600, "--height", "-h", help="Chart height"),
+    sample: bool = typer.Option(False, "--sample", "-s", help="Create sample chart with generated data"),
+    sample_type: str = typer.Option("random", "--sample-type", help="Sample data type (random, trend, categorical)"),
+    sample_size: int = typer.Option(100, "--sample-size", help="Sample data size"),
+    dashboard: bool = typer.Option(False, "--dashboard", "-d", help="Create multi-chart dashboard"),
+    chart_types: Optional[str] = typer.Option(None, "--chart-types", help="Comma-separated chart types for dashboard"),
+    list_types: bool = typer.Option(False, "--list-types", "-l", help="List available chart types"),
+    chart_info: Optional[str] = typer.Option(None, "--chart-info", help="Get info about specific chart type"),
+    format: str = typer.Option("html", "--format", help="Output format (html, json)")
+):
+    """Data visualization and charting tools"""
+    initialize_system()
+    
+    try:
+        if list_types:
+            visualization_tools.list_chart_types(format)
+        
+        elif chart_info:
+            visualization_tools.get_chart_info(chart_info, format)
+        
+        elif sample and chart_type:
+            visualization_tools.create_sample_chart(chart_type, sample_type, sample_size, format)
+        
+        elif dashboard and chart_types:
+            # Parse chart types for dashboard
+            chart_type_list = [ct.strip() for ct in chart_types.split(',')]
+            
+            # Create sample data for dashboard
+            data = visualization_tools.viz_tools.create_sample_data(sample_type, sample_size)
+            
+            visualization_tools.create_dashboard(data, chart_type_list, title=title, format=format)
+        
+        elif chart_type and data_file:
+            # Load data from file
+            try:
+                import pandas as pd
+                data = pd.read_csv(data_file)
+                visualization_tools.create_chart(chart_type, data, x_column, y_column, title, width, height, format)
+            except Exception as e:
+                console.print(f"[red]Error loading data file: {e}[/red]")
+        
+        elif chart_type and sample:
+            # Create sample chart
+            visualization_tools.create_sample_chart(chart_type, sample_type, sample_size, format)
+        
+        elif chart_type:
+            # Create sample chart with default settings
+            visualization_tools.create_sample_chart(chart_type, "random", 100, format)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno visualization --list-types[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]Visualization operation error: {e}[/red]")
 
 
 # Version Command

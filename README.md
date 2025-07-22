@@ -614,6 +614,32 @@ agno hackernews --clear-cache
 agno hackernews --format json --top --limit 5
 ```
 
+### Data Visualization
+```bash
+# Chart creation
+agno visualization --chart-type line --sample --sample-size 100
+agno visualization --chart-type bar --sample --sample-type categorical
+agno visualization --chart-type scatter --sample --sample-type trend
+agno visualization --chart-type pie --sample --sample-type categorical
+agno visualization --chart-type histogram --sample --sample-size 200
+agno visualization --chart-type box --sample --sample-type categorical
+agno visualization --chart-type heatmap --sample
+
+# Dashboard creation
+agno visualization --dashboard --chart-types "line,bar,scatter" --sample-size 100
+
+# Chart information
+agno visualization --list-types
+agno visualization --chart-info scatter
+
+# Custom data
+agno visualization --chart-type line --data-file data.csv --x-column "x" --y-column "y"
+agno visualization --chart-type bar --title "Sales Data" --width 1000 --height 800
+
+# Options
+agno visualization --format json --chart-type line --sample
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -683,6 +709,7 @@ agno_cli/
 │   ├── pubmed_tools.py      # PubMed medical research papers
 │   ├── sleep_tools.py       # Sleep and timing operations
 │   ├── hackernews_tools.py  # Hacker News integration
+│   ├── visualization_tools.py # Data visualization and charting
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -727,6 +754,7 @@ agno_cli/
 - **PubMed Research**: Medical paper search, author analysis, journal filtering
 - **Sleep & Timing**: Delay operations, performance monitoring, scheduling
 - **Hacker News**: Story retrieval, comments, user profiles, trending
+- **Data Visualization**: Chart generation, interactive plots, dashboards
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -910,6 +938,11 @@ agno sleep --performance --monitor-duration 5
 agno hackernews --top --limit 5
 agno hackernews --story 1
 agno hackernews --user "pg"
+
+# Test visualization operations
+agno visualization --list-types
+agno visualization --chart-type line --sample --sample-size 50
+agno visualization --dashboard --chart-types "line,bar" --sample-size 30
 
 # Test agent operations
 agno agents --list                                  # List all agents
