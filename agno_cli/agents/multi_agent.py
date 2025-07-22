@@ -311,15 +311,14 @@ class MultiAgentSystem:
                             print(chunk, end="", flush=True)
                 print()  # New line after streaming
             else:
-                response_event = agent.run(message=message)
-                response = response_event.get_content_as_string() if hasattr(response_event, 'get_content_as_string') else str(response_event)
-        
+                response = agent.run(message=message)
+            
             # Update agent state
             agent_state.update_status(AgentStatus.IDLE)
             agent_state.metrics.last_active = datetime.now()
-        
+            
             return response or "No response generated"
-        
+            
         except Exception as e:
             agent_state.update_status(AgentStatus.ERROR)
             error_msg = f"Error in chat: {str(e)}"
@@ -465,3 +464,4 @@ class MultiAgentSystem:
     def __contains__(self, agent_id: str) -> bool:
         """Check if agent exists in the system"""
         return agent_id in self.agent_states
+

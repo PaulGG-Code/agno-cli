@@ -9,7 +9,7 @@ description = "Enhanced Agno CLI - Multi-Agent Terminal Assistant with Advanced 
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Agno CLI Team", email = "team@agno-cli.dev"}
+    {name = "Paul Gedeon"}
 ]
 keywords = ["ai", "cli", "agents", "multi-agent", "reasoning", "terminal", "assistant"]
 classifiers = [
@@ -105,11 +105,11 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/agno-agi/agno-cli"
+Homepage = "https://github.com/paulgg-code/agno-cli"
 Documentation = "https://agno-cli.readthedocs.io"
-Repository = "https://github.com/agno-agi/agno-cli"
-Issues = "https://github.com/agno-agi/agno-cli/issues"
-Changelog = "https://github.com/agno-agi/agno-cli/blob/main/CHANGELOG.md"
+Repository = "https://github.com/paulgg-code/agno-cli"
+Issues = "https://github.com/paulgg-code/agno-cli/issues"
+Changelog = "https://github.com/paulgg-code/agno-cli/blob/main/CHANGELOG.md"
 
 [project.scripts]
 agno = "agno_cli.cli:app"

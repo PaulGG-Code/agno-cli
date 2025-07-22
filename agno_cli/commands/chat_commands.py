@@ -226,12 +226,13 @@ Type 'exit' to end chat, 'help' for commands, 'switch' to change agent
         
         try:
             # Get response from agent
-            response_event = self.multi_agent_system.chat_with_agent(
+            response = self.multi_agent_system.chat_with_agent(
                 self.current_agent_id, 
                 message, 
                 stream=False
             )
-            response = response_event.get_content_as_string() if hasattr(response_event, 'get_content_as_string') else str(response_event)
+            
+            # Calculate response time
             response_time = time.time() - start_time
             
             # Display response
@@ -485,3 +486,4 @@ Type 'exit' to end chat, 'help' for commands, 'switch' to change agent
             return "\n".join(lines)
         
         return str(self.chat_history)
+

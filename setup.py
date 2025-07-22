@@ -10,9 +10,8 @@ setup(
     description="A Python SDK CLI that wraps around Agno AI",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    author="Agno CLI Team",
-    author_email="team@agno-cli.dev",
-    url="https://github.com/agno-cli/agno-cli",
+    author="Paul Gedeon",
+    url="https://github.com/paulgg-code/agno-cli",
     packages=find_packages(),
     install_requires=[
         "agno>=1.7.0",

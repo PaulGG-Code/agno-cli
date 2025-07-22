@@ -86,7 +86,7 @@ pip install agno-cli[knowledge]
 
 ### Development Installation
 ```bash
-git clone https://github.com/agno-agi/agno-cli.git
+git clone https://github.com/paulgg-code/agno-cli.git
 cd agno-cli
 pip install -e ".[dev]"
 ```
@@ -379,7 +379,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ### Development Setup
 ```bash
-git clone https://github.com/agno-agi/agno-cli.git
+git clone https://github.com/paulgg-code/agno-cli.git
 cd agno-cli
 pip install -e .[dev]
 pre-commit install
@@ -404,8 +404,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Documentation**: [https://agno-cli.readthedocs.io](https://agno-cli.readthedocs.io)
-- **Issues**: [GitHub Issues](https://github.com/agno-agi/agno-cli/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/agno-agi/agno-cli/discussions)
+- **Issues**: [GitHub Issues](https://github.com/paulgg-code/agno-cli/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/paulgg-code/agno-cli/discussions)
 - **Discord**: [Join our community](https://discord.gg/agno-cli)
 
 ---
