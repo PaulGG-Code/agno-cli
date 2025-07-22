@@ -206,6 +206,14 @@ class MultiAgentSystem:
                     tools.append(DockerTools())
                 except ImportError:
                     pass
+            
+            # Add Wikipedia tools if available
+            if agent_state.has_tool("wikipedia_tools"):
+                try:
+                    from agno.tools.wikipedia_tools import WikipediaTools
+                    tools.append(WikipediaTools())
+                except ImportError:
+                    pass
         
         return tools
     

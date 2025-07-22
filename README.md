@@ -492,6 +492,32 @@ agno docker --prune-containers
 agno docker --prune-images
 ```
 
+### Wikipedia Research
+```bash
+# Search operations
+agno wikipedia --search "Python programming"
+agno wikipedia --search "Machine learning" --limit 5
+agno wikipedia --suggestions "artificial intelligence"
+
+# Article operations
+agno wikipedia --summary "Python (programming language)"
+agno wikipedia --article "Machine learning"
+agno wikipedia --random
+
+# Related content
+agno wikipedia --related "Python (programming language)"
+agno wikipedia --categories "Python (programming language)"
+agno wikipedia --category-articles "Programming languages"
+
+# Language support
+agno wikipedia --language-versions "Python (programming language)"
+agno wikipedia --search "Python" --language "es"
+
+# Text analysis
+agno wikipedia --keywords "Python is a high-level programming language"
+agno wikipedia --clear-cache
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -556,6 +582,7 @@ agno_cli/
 │   ├── postgres_tools.py    # PostgreSQL database integration
 │   ├── shell_tools.py       # System command execution
 │   ├── docker_tools.py      # Docker container management
+│   ├── wikipedia_tools.py   # Wikipedia research and content retrieval
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -595,6 +622,7 @@ agno_cli/
 - **PostgreSQL Database**: Specialized PostgreSQL integration, advanced features
 - **Shell Operations**: Safe system command execution, process management
 - **Docker Management**: Container lifecycle, image management, system monitoring
+- **Wikipedia Research**: Search, content retrieval, language support, text analysis
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -753,6 +781,11 @@ agno docker --system
 agno docker --list
 agno docker --images
 agno docker --pull "hello-world:latest"
+
+# Test Wikipedia operations
+agno wikipedia --search "Python programming"
+agno wikipedia --summary "Python (programming language)"
+agno wikipedia --random
 
 # Test agent operations
 agno agents --list                                  # List all agents

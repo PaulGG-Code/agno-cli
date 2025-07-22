@@ -34,6 +34,7 @@ from tools.sql_tools import SQLToolsManager, DatabaseConnection
 from tools.postgres_tools import PostgresToolsManager, PostgresConnection
 from tools.shell_tools import ShellToolsManager
 from tools.docker_tools import DockerToolsManager
+from tools.wikipedia_tools import WikipediaToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -64,7 +65,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -89,6 +90,7 @@ def initialize_system():
         postgres_tools = None
         shell_tools = ShellToolsManager()
         docker_tools = DockerToolsManager()
+        wikipedia_tools = WikipediaToolsManager()
 
 
 # Chat Commands
@@ -1626,6 +1628,115 @@ def docker(
     
     except Exception as e:
         console.print(f"[red]Docker operation error: {e}[/red]")
+
+
+# Wikipedia Commands
+@app.command()
+def wikipedia(
+    search: Optional[str] = typer.Option(None, "--search", "-s", help="Search Wikipedia articles"),
+    article: Optional[str] = typer.Option(None, "--article", "-a", help="Get full article by title"),
+    summary: Optional[str] = typer.Option(None, "--summary", help="Get article summary by title"),
+    random: bool = typer.Option(False, "--random", "-r", help="Get a random Wikipedia article"),
+    related: Optional[str] = typer.Option(None, "--related", help="Get articles related to title"),
+    suggestions: Optional[str] = typer.Option(None, "--suggestions", help="Get search suggestions for query"),
+    keywords: Optional[str] = typer.Option(None, "--keywords", help="Extract keywords from text"),
+    categories: Optional[str] = typer.Option(None, "--categories", help="Get categories for article"),
+    category_articles: Optional[str] = typer.Option(None, "--category-articles", help="Get articles in category"),
+    language_versions: Optional[str] = typer.Option(None, "--language-versions", help="Get available language versions"),
+    limit: int = typer.Option(10, "--limit", "-l", help="Number of results to return"),
+    sentences: int = typer.Option(3, "--sentences", help="Number of sentences for summary"),
+    max_keywords: int = typer.Option(10, "--max-keywords", help="Maximum number of keywords to extract"),
+    language: str = typer.Option("en", "--language", help="Wikipedia language code"),
+    clear_cache: bool = typer.Option(False, "--clear-cache", help="Clear Wikipedia cache"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """Wikipedia research and knowledge retrieval with rich features"""
+    initialize_system()
+    
+    try:
+        # Set language if specified
+        if language != "en":
+            wikipedia_tools.set_language(language)
+        
+        if clear_cache:
+            wikipedia_tools.clear_cache()
+        
+        elif search:
+            wikipedia_tools.search(search, limit, format)
+        
+        elif article:
+            wikipedia_tools.get_article(article, format)
+        
+        elif summary:
+            wikipedia_tools.get_summary(summary, sentences, format)
+        
+        elif random:
+            wikipedia_tools.get_random_article(format)
+        
+        elif related:
+            wikipedia_tools.get_related_articles(related, limit, format)
+        
+        elif suggestions:
+            wikipedia_tools.get_suggestions(suggestions, limit, format)
+        
+        elif keywords:
+            wikipedia_tools.extract_keywords(keywords, max_keywords, format)
+        
+        elif categories:
+            try:
+                categories_list = wikipedia_tools.wikipedia_tools.get_article_categories(categories)
+                if format == "json":
+                    import json
+                    console.print(json.dumps({'categories': categories_list}, indent=2))
+                else:
+                    categories_text = ", ".join(categories_list)
+                    console.print(Panel(categories_text, title=f"Categories for '{categories}'", border_style="yellow"))
+            except Exception as e:
+                console.print(f"[red]Categories error: {e}[/red]")
+        
+        elif category_articles:
+            try:
+                articles = wikipedia_tools.wikipedia_tools.get_category_articles(category_articles, limit)
+                if format == "json":
+                    import json
+                    console.print(json.dumps([{
+                        'title': a.title,
+                        'snippet': a.snippet,
+                        'url': a.url,
+                        'wordcount': a.wordcount
+                    } for a in articles], indent=2))
+                else:
+                    table = Table(title=f"Articles in Category '{category_articles}'")
+                    table.add_column("Title", style="cyan", no_wrap=True)
+                    table.add_column("Snippet", style="white")
+                    table.add_column("Word Count", style="yellow", justify="right")
+                    table.add_column("URL", style="blue", no_wrap=True)
+                    
+                    for article in articles:
+                        snippet = article.snippet[:100] + "..." if len(article.snippet) > 100 else article.snippet
+                        table.add_row(article.title, snippet, str(article.wordcount), article.url)
+                    
+                    console.print(table)
+            except Exception as e:
+                console.print(f"[red]Category articles error: {e}[/red]")
+        
+        elif language_versions:
+            try:
+                versions = wikipedia_tools.wikipedia_tools.get_language_versions(language_versions)
+                if format == "json":
+                    import json
+                    console.print(json.dumps({'language_versions': versions}, indent=2))
+                else:
+                    versions_text = ", ".join([f"{lang}: {title}" for lang, title in versions.items()])
+                    console.print(Panel(versions_text, title=f"Language Versions of '{language_versions}'", border_style="blue"))
+            except Exception as e:
+                console.print(f"[red]Language versions error: {e}[/red]")
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]Wikipedia operation error: {e}[/red]")
 
 
 # Version Command

@@ -91,6 +91,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Port and volume mapping** for container configuration
 - **Environment variable management** for container setup
 
+#### ✅ Wikipedia Research Tool
+- **Advanced search functionality** with comprehensive article discovery
+- **Content retrieval and parsing** with full article access
+- **Article summaries and extracts** with customizable sentence count
+- **Related articles discovery** with intelligent linking
+- **Language support** with multi-language Wikipedia access
+- **Search suggestions** for improved query refinement
+- **Category exploration** with article categorization
+- **Keyword extraction** with intelligent text analysis
+- **Caching system** for improved performance
+- **Rich output formatting** with beautiful tables and panels
+- **Random article discovery** for exploration
+- **Language version detection** for international content
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -100,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `postgres` command** with specialized PostgreSQL integration
 - **New `shell` command** with safe system command execution
 - **New `docker` command** with comprehensive container management
+- **New `wikipedia` command** with research and knowledge retrieval
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -311,6 +326,11 @@ agno docker --system
 agno docker --list
 agno docker --images
 agno docker --pull "hello-world:latest"
+
+# Wikipedia operations testing
+agno wikipedia --search "Python programming"
+agno wikipedia --summary "Python (programming language)"
+agno wikipedia --random
 
 # Agent system testing
 agno agents --list
