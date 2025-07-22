@@ -42,6 +42,7 @@ from tools.hackernews_tools import HackerNewsToolsManager
 from tools.visualization_tools import VisualizationToolsManager
 from tools.opencv_tools import OpenCVToolsManager
 from tools.models_tools import ModelsToolsManager
+from tools.thinking_tools import ThinkingToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -72,7 +73,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -105,6 +106,7 @@ def initialize_system():
         visualization_tools = VisualizationToolsManager()
         opencv_tools = OpenCVToolsManager()
         models_tools = ModelsToolsManager()
+        thinking_tools = ThinkingToolsManager()
 
 
 # Chat Commands
@@ -2386,6 +2388,108 @@ def models(
     
     except Exception as e:
         console.print(f"[red]Models operation error: {e}[/red]")
+
+
+# Thinking Commands
+@app.command()
+def thinking(
+    start: Optional[str] = typer.Option(None, "--start", help="Start new session (format: title:problem)"),
+    framework: str = typer.Option("first_principles", "--framework", help="Thinking framework to use"),
+    add_node: Optional[str] = typer.Option(None, "--add-node", help="Add node (format: session_id:title:content:type)"),
+    show_session: Optional[str] = typer.Option(None, "--show", help="Show session by ID"),
+    list_sessions: bool = typer.Option(False, "--list", "-l", help="List all sessions"),
+    analyze: Optional[str] = typer.Option(None, "--analyze", help="Analyze problem statement"),
+    decision_tree: Optional[str] = typer.Option(None, "--decision-tree", help="Create decision tree (format: title:criteria:options)"),
+    thought_experiment: Optional[str] = typer.Option(None, "--experiment", help="Create thought experiment (format: title:scenario:assumptions)"),
+    detect_biases: Optional[str] = typer.Option(None, "--detect-biases", help="Detect biases in session"),
+    list_frameworks: bool = typer.Option(False, "--list-frameworks", help="List available frameworks"),
+    list_biases: bool = typer.Option(False, "--list-biases", help="List cognitive biases"),
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json)")
+):
+    """Advanced thinking and reasoning operations"""
+    initialize_system()
+    
+    try:
+        if start:
+            # Start new session (format: title:problem)
+            try:
+                parts = start.split(':', 1)
+                if len(parts) == 2:
+                    title = parts[0]
+                    problem = parts[1]
+                    thinking_tools.start_session(title, problem, framework, format)
+                else:
+                    console.print("[red]Invalid start format. Use: title:problem[/red]")
+            except Exception as e:
+                console.print(f"[red]Error starting session: {e}[/red]")
+        
+        elif add_node:
+            # Add node (format: session_id:title:content:type)
+            try:
+                parts = add_node.split(':', 3)
+                if len(parts) == 4:
+                    session_id = parts[0]
+                    title = parts[1]
+                    content = parts[2]
+                    node_type = parts[3]
+                    thinking_tools.add_node(session_id, title, content, node_type, format=format)
+                else:
+                    console.print("[red]Invalid add-node format. Use: session_id:title:content:type[/red]")
+            except Exception as e:
+                console.print(f"[red]Error adding node: {e}[/red]")
+        
+        elif show_session:
+            thinking_tools.show_session(show_session, format)
+        
+        elif list_sessions:
+            thinking_tools.list_sessions(format)
+        
+        elif analyze:
+            thinking_tools.analyze_problem(analyze, format)
+        
+        elif decision_tree:
+            # Create decision tree (format: title:criteria:options)
+            try:
+                parts = decision_tree.split(':', 2)
+                if len(parts) == 3:
+                    title = parts[0]
+                    criteria = [c.strip() for c in parts[1].split(',')]
+                    options = [o.strip() for o in parts[2].split(',')]
+                    thinking_tools.create_decision_tree(title, criteria, options, format)
+                else:
+                    console.print("[red]Invalid decision-tree format. Use: title:criteria:options[/red]")
+            except Exception as e:
+                console.print(f"[red]Error creating decision tree: {e}[/red]")
+        
+        elif thought_experiment:
+            # Create thought experiment (format: title:scenario:assumptions)
+            try:
+                parts = thought_experiment.split(':', 2)
+                if len(parts) == 3:
+                    title = parts[0]
+                    scenario = parts[1]
+                    assumptions = [a.strip() for a in parts[2].split(',')]
+                    thinking_tools.create_thought_experiment(title, scenario, assumptions, format)
+                else:
+                    console.print("[red]Invalid experiment format. Use: title:scenario:assumptions[/red]")
+            except Exception as e:
+                console.print(f"[red]Error creating thought experiment: {e}[/red]")
+        
+        elif detect_biases:
+            thinking_tools.detect_biases(detect_biases, format)
+        
+        elif list_frameworks:
+            thinking_tools.list_frameworks(format)
+        
+        elif list_biases:
+            thinking_tools.list_biases(format)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno thinking --list-frameworks[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]Thinking operation error: {e}[/red]")
 
 
 # Version Command

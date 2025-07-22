@@ -270,6 +270,14 @@ class MultiAgentSystem:
                     tools.append(ModelsTools())
                 except ImportError:
                     pass
+            
+            # Add Thinking tools if available
+            if agent_state.has_tool("thinking_tools"):
+                try:
+                    from agno.tools.thinking_tools import ThinkingTools
+                    tools.append(ThinkingTools())
+                except ImportError:
+                    pass
         
         return tools
     

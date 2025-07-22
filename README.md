@@ -699,6 +699,34 @@ agno models --provider openai --list
 agno models --model-type text_generation --list
 ```
 
+### Advanced Thinking Operations
+```bash
+# Start thinking sessions
+agno thinking --start "Problem Title:Problem description"
+agno thinking --start "Website Optimization:Improve loading speed" --framework systems_thinking
+
+# Manage thinking sessions
+agno thinking --list
+agno thinking --show session_id
+agno thinking --add-node "session_id:Node Title:Content:node_type"
+
+# Problem analysis and decision making
+agno thinking --analyze "How to optimize database performance"
+agno thinking --decision-tree "Title:Criteria1,Criteria2:Option1,Option2,Option3"
+agno thinking --experiment "Title:Scenario:Assumption1,Assumption2"
+
+# Cognitive bias detection
+agno thinking --detect-biases session_id
+
+# Explore frameworks and biases
+agno thinking --list-frameworks
+agno thinking --list-biases
+
+# Options
+agno thinking --format json --list-frameworks
+agno thinking --framework design_thinking --start "Title:Problem"
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -771,6 +799,7 @@ agno_cli/
 │   ├── visualization_tools.py # Data visualization and charting
 │   ├── opencv_tools.py # Computer vision operations
 │   ├── models_tools.py # Model management and selection
+│   ├── thinking_tools.py # Advanced thinking and reasoning
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -818,6 +847,7 @@ agno_cli/
 - **Data Visualization**: Chart generation, interactive plots, dashboards
 - **Computer Vision**: Image processing, object detection, feature extraction
 - **Model Management**: Model selection, comparison, performance tracking
+- **Advanced Thinking**: Reasoning frameworks, problem analysis, decision trees
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -1018,6 +1048,12 @@ agno models --list
 agno models --show gpt-4o
 agno models --list-strategies
 agno models --stats
+
+# Test advanced thinking operations
+agno thinking --list-frameworks
+agno thinking --list-biases
+agno thinking --start "Test Problem:This is a test problem"
+agno thinking --analyze "How to improve system performance"
 
 # Test agent operations
 agno agents --list                                  # List all agents

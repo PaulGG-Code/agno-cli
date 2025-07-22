@@ -223,6 +223,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Professional styling** with consistent output formatting and detailed operation results
 - **Multi-format support** with table and JSON output options for all operations
 
+#### ✅ Advanced Thinking Tools
+- **Comprehensive thinking frameworks** with First Principles, Systems Thinking, Design Thinking, Lateral Thinking, and Critical Thinking
+- **Structured problem analysis** with component identification, root cause analysis, and constraint mapping
+- **Decision tree generation** with probability analysis, expected value calculations, and recommendations
+- **Thought experiment creation** with scenario analysis, variable identification, and outcome exploration
+- **Cognitive bias detection** with bias identification, mitigation strategies, and awareness building
+- **Session management** with persistent storage, node-based thinking processes, and confidence tracking
+- **Rich output formatting** with beautiful tables, trees, and detailed analysis displays
+- **Multiple thinking strategies** supporting convergent, divergent, analytical, and creative thinking
+- **Problem decomposition** with systematic breakdown of complex problems into manageable components
+- **Stakeholder analysis** with identification of key stakeholders and their needs
+- **Risk assessment** with identification of potential risks and mitigation strategies
+- **Opportunity identification** with recognition of potential improvements and enhancements
+- **Professional styling** with consistent output formatting and detailed operation results
+- **Multi-format support** with table and JSON output options for all operations
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -240,6 +256,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `visualization` command** with data visualization tools
 - **New `opencv` command** with computer vision operations
 - **New `models` command** with model management and selection
+- **New `thinking` command** with advanced thinking and reasoning tools
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -493,6 +510,12 @@ agno models --list
 agno models --show gpt-4o
 agno models --list-strategies
 agno models --stats
+
+# Advanced thinking operations testing
+agno thinking --list-frameworks
+agno thinking --list-biases
+agno thinking --start "Test Problem:This is a test problem"
+agno thinking --analyze "How to improve system performance"
 
 # Agent system testing
 agno agents --list
