@@ -143,13 +143,21 @@ class MultiAgentSystem:
             except ImportError:
                 pass
         
-        # Add file system tools if available
-        if agent_state.has_tool("file_system_tools"):
-            try:
-                from agno.tools.file_system_tools import FileSystemTools
-                tools.append(FileSystemTools())
-            except ImportError:
-                pass
+                    # Add file system tools if available
+            if agent_state.has_tool("file_system_tools"):
+                try:
+                    from agno.tools.file_system_tools import FileSystemTools
+                    tools.append(FileSystemTools())
+                except ImportError:
+                    pass
+            
+            # Add CSV tools if available
+            if agent_state.has_tool("csv_tools"):
+                try:
+                    from agno.tools.csv_tools import CSVTools
+                    tools.append(CSVTools())
+                except ImportError:
+                    pass
         
         return tools
     

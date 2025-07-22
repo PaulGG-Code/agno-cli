@@ -305,6 +305,48 @@ agno files --tree
 agno files --tree --hidden
 ```
 
+### CSV Data Operations
+```bash
+# Read and display CSV data
+agno csv --read data.csv
+
+# Read with custom encoding and delimiter
+agno csv --read data.csv --encoding utf-8 --delimiter ";"
+
+# Show sample of data
+agno csv --read data.csv --sample --sample-size 5
+
+# Get CSV file information
+agno csv --info data.csv
+
+# Analyze CSV data (statistics, data types, missing values)
+agno csv --analyze data.csv
+
+# Filter data by conditions
+agno csv --read data.csv --filter '{"age": {"min": 30}}'
+
+# Filter with multiple conditions
+agno csv --read data.csv --filter '{"age": {"min": 25, "max": 35}, "city": "New York"}'
+
+# Sort data by columns
+agno csv --read data.csv --sort "age" --ascending "1"
+
+# Sort by multiple columns
+agno csv --read data.csv --sort "age,salary" --ascending "1,0"
+
+# Convert CSV to JSON
+agno csv --convert "data.csv:output.json:json"
+
+# Convert CSV to Excel
+agno csv --convert "data.csv:output.xlsx:excel"
+
+# Write new CSV file
+agno csv --write new_data.csv
+
+# Merge CSV files
+agno csv --merge "file1.csv:file2.csv:key_column" --output merged.csv
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -362,6 +404,7 @@ agno_cli/
 │   ├── financial_tools.py # Financial data
 │   ├── math_tools.py      # Math and data
 │   ├── file_system_tools.py # File system operations
+│   ├── csv_tools.py         # CSV data operations
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -394,6 +437,7 @@ agno_cli/
 - **Financial**: Stock analysis, market data, portfolio management
 - **Math**: Calculations, statistics, data analysis
 - **File System**: Local file operations, directory management, file search
+- **CSV Data**: CSV reading, writing, analysis, filtering, sorting, conversion
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -502,6 +546,15 @@ agno files --delete test.txt --no-confirm           # Delete file without confir
 agno files --delete test_directory --recursive --no-confirm # Delete directory recursively
 agno files --tree                                   # Display directory tree
 agno files --tree --hidden                          # Display tree with hidden files
+
+# Test CSV operations
+agno csv --read sample_data.csv                     # Read CSV file
+agno csv --info sample_data.csv                     # Get CSV information
+agno csv --analyze sample_data.csv                  # Analyze CSV data
+agno csv --read sample_data.csv --filter '{"age": {"min": 30}}' # Filter data
+agno csv --read sample_data.csv --sort "age" --ascending "1" # Sort data
+agno csv --convert "sample_data.csv:output.json:json" # Convert to JSON
+agno csv --write new_data.csv                       # Write new CSV file
 
 # Test agent operations
 agno agents --list                                  # List all agents
@@ -688,10 +741,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Documentation**: [https://agno-cli.readthedocs.io](https://agno-cli.readthedocs.io)
+
 - **Issues**: [GitHub Issues](https://github.com/paulgg-code/agno-cli/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/paulgg-code/agno-cli/discussions)
-- **Discord**: [Join our community](https://discord.gg/agno-cli)
 
 ---
 

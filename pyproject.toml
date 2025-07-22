@@ -106,7 +106,6 @@ all = [
 
 [project.urls]
 Homepage = "https://github.com/paulgg-code/agno-cli"
-Documentation = "https://agno-cli.readthedocs.io"
 Repository = "https://github.com/paulgg-code/agno-cli"
 Issues = "https://github.com/paulgg-code/agno-cli/issues"
 Changelog = "https://github.com/paulgg-code/agno-cli/blob/main/CHANGELOG.md"

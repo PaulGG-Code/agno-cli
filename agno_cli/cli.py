@@ -27,6 +27,7 @@ from tools.search_tools import SearchToolsManager
 from tools.financial_tools import FinancialToolsManager
 from tools.math_tools import MathToolsManager
 from tools.file_system_tools import FileSystemToolsManager
+from tools.csv_tools import CSVToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -47,12 +48,13 @@ search_tools = None
 financial_tools = None
 math_tools = None
 file_system_tools = None
+csv_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -69,6 +71,7 @@ def initialize_system():
         financial_tools = FinancialToolsManager({})
         math_tools = MathToolsManager({})
         file_system_tools = FileSystemToolsManager()
+        csv_tools = CSVToolsManager()
 
 
 # Chat Commands
@@ -951,6 +954,135 @@ def files(
     
     except Exception as e:
         console.print(f"[red]File system error: {e}[/red]")
+
+
+# CSV Commands
+@app.command()
+def csv(
+    read: Optional[str] = typer.Option(None, "--read", "-r", help="Read CSV file"),
+    write: Optional[str] = typer.Option(None, "--write", "-w", help="Write CSV file"),
+    info: Optional[str] = typer.Option(None, "--info", "-i", help="Get CSV file information"),
+    analyze: Optional[str] = typer.Option(None, "--analyze", "-a", help="Analyze CSV data"),
+    filter: Optional[str] = typer.Option(None, "--filter", "-f", help="Filter CSV data (JSON format)"),
+    sort: Optional[str] = typer.Option(None, "--sort", "-s", help="Sort CSV by columns (comma-separated)"),
+    merge: Optional[str] = typer.Option(None, "--merge", "-m", help="Merge CSV files (format: file1:file2:key)"),
+    convert: Optional[str] = typer.Option(None, "--convert", "-c", help="Convert CSV to other format (format: input:output:type)"),
+    encoding: str = typer.Option("utf-8", "--encoding", help="File encoding"),
+    delimiter: str = typer.Option(",", "--delimiter", help="CSV delimiter"),
+    max_rows: Optional[int] = typer.Option(None, "--max-rows", help="Maximum rows to read"),
+    sample: bool = typer.Option(False, "--sample", help="Show sample of data"),
+    sample_size: int = typer.Option(10, "--sample-size", help="Number of sample rows"),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Output file path"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)"),
+    overwrite: bool = typer.Option(False, "--overwrite", help="Overwrite existing files"),
+    ascending: Optional[str] = typer.Option(None, "--ascending", help="Sort order (comma-separated booleans)")
+):
+    """CSV file operations - read, write, analyze, filter, sort, merge, convert"""
+    initialize_system()
+    
+    try:
+        # Handle filter operation first if both read and filter are specified
+        if read and filter:
+            try:
+                filters = json.loads(filter)
+                csv_tools.filter_csv(
+                    path=read,
+                    filters=filters,
+                    output_path=output
+                )
+                return
+            except json.JSONDecodeError:
+                console.print("[red]Invalid JSON format for filters[/red]")
+                return
+        
+        # Handle sort operation if both read and sort are specified
+        if read and sort:
+            sort_columns = [col.strip() for col in sort.split(",")]
+            ascending_list = None
+            if ascending:
+                ascending_list = [bool(int(x.strip())) for x in ascending.split(",")]
+            
+            csv_tools.sort_csv(
+                path=read,
+                sort_columns=sort_columns,
+                ascending=ascending_list,
+                output_path=output
+            )
+            return
+        
+        if read:
+            csv_tools.read_csv(
+                path=read,
+                encoding=encoding,
+                delimiter=delimiter,
+                max_rows=max_rows,
+                sample=sample,
+                sample_size=sample_size,
+                format=format
+            )
+        
+        elif write:
+            # For write, we need data - this would typically come from another operation
+            # For now, we'll create a sample dataset
+            sample_data = [
+                {"name": "John", "age": 30, "city": "New York"},
+                {"name": "Jane", "age": 25, "city": "Los Angeles"},
+                {"name": "Bob", "age": 35, "city": "Chicago"}
+            ]
+            csv_tools.write_csv(
+                path=write,
+                data=sample_data,
+                encoding=encoding,
+                delimiter=delimiter,
+                overwrite=overwrite
+            )
+        
+        elif info:
+            csv_tools.get_csv_info(
+                path=info,
+                format=format
+            )
+        
+        elif analyze:
+            csv_tools.analyze_csv(
+                path=analyze,
+                format=format
+            )
+        
+
+        
+        elif merge:
+            # Parse merge parameters: file1:file2:key
+            parts = merge.split(":")
+            if len(parts) >= 3:
+                file1, file2, merge_key = parts[0], parts[1], parts[2]
+                csv_tools.merge_csv(
+                    file1=file1,
+                    file2=file2,
+                    merge_key=merge_key,
+                    output_path=output
+                )
+            else:
+                console.print("[red]Merge format should be: file1:file2:key[/red]")
+        
+        elif convert:
+            # Parse convert parameters: input:output:type
+            parts = convert.split(":")
+            if len(parts) >= 3:
+                input_path, output_path, convert_type = parts[0], parts[1], parts[2]
+                csv_tools.convert_format(
+                    input_path=input_path,
+                    output_path=output_path,
+                    output_format=convert_type
+                )
+            else:
+                console.print("[red]Convert format should be: input:output:type[/red]")
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]CSV operation error: {e}[/red]")
 
 
 # Version Command

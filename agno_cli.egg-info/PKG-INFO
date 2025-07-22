@@ -2,11 +2,10 @@ Metadata-Version: 2.4
 Name: agno-cli
 Version: 2.0.0
 Summary: Enhanced Agno CLI - Multi-Agent Terminal Assistant with Advanced Reasoning and Tool Integration
-Home-page: https://github.com/agno-cli/agno-cli
+Home-page: https://github.com/paulgg-code/agno-cli
 Author: Paul Gedeon
 License: MIT
 Project-URL: Homepage, https://github.com/paulgg-code/agno-cli
-Project-URL: Documentation, https://agno-cli.readthedocs.io
 Project-URL: Repository, https://github.com/paulgg-code/agno-cli
 Project-URL: Issues, https://github.com/paulgg-code/agno-cli/issues
 Project-URL: Changelog, https://github.com/paulgg-code/agno-cli/blob/main/CHANGELOG.md
@@ -483,7 +482,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Documentation**: [https://agno-cli.readthedocs.io](https://agno-cli.readthedocs.io)
+
 - **Issues**: [GitHub Issues](https://github.com/paulgg-code/agno-cli/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/paulgg-code/agno-cli/discussions)
 - **Discord**: [Join our community](https://discord.gg/agno-cli)
