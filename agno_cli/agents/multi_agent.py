@@ -238,6 +238,14 @@ class MultiAgentSystem:
                     tools.append(SleepTools())
                 except ImportError:
                     pass
+            
+            # Add Hacker News tools if available
+            if agent_state.has_tool("hackernews_tools"):
+                try:
+                    from agno.tools.hackernews_tools import HackerNewsTools
+                    tools.append(HackerNewsTools())
+                except ImportError:
+                    pass
         
         return tools
     

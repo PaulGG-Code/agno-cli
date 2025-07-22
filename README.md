@@ -586,6 +586,34 @@ agno sleep --no-progress --duration 3
 agno sleep --format json --time-info
 ```
 
+### Hacker News Integration
+```bash
+# Story operations
+agno hackernews --top --limit 10
+agno hackernews --new --limit 5
+agno hackernews --best --limit 10
+agno hackernews --ask --limit 5
+agno hackernews --show --limit 5
+agno hackernews --jobs --limit 5
+
+# Story details and comments
+agno hackernews --story 44653072
+agno hackernews --comments 44653072 --max-depth 3
+
+# User operations
+agno hackernews --user "pg"
+agno hackernews --user-stories "pg" --limit 10
+
+# Search and trending
+agno hackernews --search "AI" --limit 10
+agno hackernews --trending --hours 24 --limit 10
+agno hackernews --updates
+
+# Options
+agno hackernews --clear-cache
+agno hackernews --format json --top --limit 5
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -654,6 +682,7 @@ agno_cli/
 │   ├── arxiv_tools.py       # arXiv academic paper search
 │   ├── pubmed_tools.py      # PubMed medical research papers
 │   ├── sleep_tools.py       # Sleep and timing operations
+│   ├── hackernews_tools.py  # Hacker News integration
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -697,6 +726,7 @@ agno_cli/
 - **arXiv Papers**: Academic paper search, author analysis, category filtering
 - **PubMed Research**: Medical paper search, author analysis, journal filtering
 - **Sleep & Timing**: Delay operations, performance monitoring, scheduling
+- **Hacker News**: Story retrieval, comments, user profiles, trending
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -875,6 +905,11 @@ agno pubmed --databases
 agno sleep --time-info
 agno sleep --countdown 3 --no-progress
 agno sleep --performance --monitor-duration 5
+
+# Test Hacker News operations
+agno hackernews --top --limit 5
+agno hackernews --story 1
+agno hackernews --user "pg"
 
 # Test agent operations
 agno agents --list                                  # List all agents

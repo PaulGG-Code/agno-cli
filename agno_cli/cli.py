@@ -38,6 +38,7 @@ from tools.wikipedia_tools import WikipediaToolsManager
 from tools.arxiv_tools import ArxivToolsManager
 from tools.pubmed_tools import PubMedToolsManager
 from tools.sleep_tools import SleepToolsManager
+from tools.hackernews_tools import HackerNewsToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -68,7 +69,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -97,6 +98,7 @@ def initialize_system():
         arxiv_tools = ArxivToolsManager()
         pubmed_tools = PubMedToolsManager()
         sleep_tools = SleepToolsManager()
+        hackernews_tools = HackerNewsToolsManager()
 
 
 # Chat Commands
@@ -1997,6 +1999,82 @@ def sleep(
     
     except Exception as e:
         console.print(f"[red]Sleep operation error: {e}[/red]")
+
+
+# Hacker News Commands
+@app.command()
+def hackernews(
+    top: bool = typer.Option(False, "--top", "-t", help="Get top stories"),
+    new: bool = typer.Option(False, "--new", "-n", help="Get new stories"),
+    best: bool = typer.Option(False, "--best", "-b", help="Get best stories"),
+    ask: bool = typer.Option(False, "--ask", "-a", help="Get ask HN stories"),
+    show: bool = typer.Option(False, "--show", "-s", help="Get show HN stories"),
+    jobs: bool = typer.Option(False, "--jobs", "-j", help="Get job stories"),
+    story: Optional[int] = typer.Option(None, "--story", help="Get story by ID"),
+    comments: Optional[int] = typer.Option(None, "--comments", help="Get comments for story ID"),
+    user: Optional[str] = typer.Option(None, "--user", "-u", help="Get user information"),
+    user_stories: Optional[str] = typer.Option(None, "--user-stories", help="Get stories by user"),
+    search: Optional[str] = typer.Option(None, "--search", help="Search stories"),
+    trending: bool = typer.Option(False, "--trending", help="Get trending stories"),
+    updates: bool = typer.Option(False, "--updates", help="Get recent updates"),
+    limit: int = typer.Option(20, "--limit", "-l", help="Number of stories to fetch"),
+    hours: int = typer.Option(24, "--hours", help="Hours for trending stories"),
+    max_depth: int = typer.Option(3, "--max-depth", help="Maximum comment depth"),
+    clear_cache: bool = typer.Option(False, "--clear-cache", help="Clear HN cache"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """Hacker News integration with rich features"""
+    initialize_system()
+    
+    try:
+        if clear_cache:
+            hackernews_tools.clear_cache()
+        
+        elif top:
+            hackernews_tools.get_stories("top", limit, format)
+        
+        elif new:
+            hackernews_tools.get_stories("new", limit, format)
+        
+        elif best:
+            hackernews_tools.get_stories("best", limit, format)
+        
+        elif ask:
+            hackernews_tools.get_stories("ask", limit, format)
+        
+        elif show:
+            hackernews_tools.get_stories("show", limit, format)
+        
+        elif jobs:
+            hackernews_tools.get_stories("job", limit, format)
+        
+        elif story:
+            hackernews_tools.get_story(story, format)
+        
+        elif comments:
+            hackernews_tools.get_comments(comments, max_depth, format)
+        
+        elif user:
+            hackernews_tools.get_user(user, format)
+        
+        elif user_stories:
+            hackernews_tools.get_user_stories(user_stories, limit, format)
+        
+        elif search:
+            hackernews_tools.search_stories(search, limit, format)
+        
+        elif trending:
+            hackernews_tools.get_trending(hours, limit, format)
+        
+        elif updates:
+            hackernews_tools.get_updates(format)
+        
+        else:
+            # Default to top stories
+            hackernews_tools.get_stories("top", limit, format)
+    
+    except Exception as e:
+        console.print(f"[red]Hacker News operation error: {e}[/red]")
 
 
 # Version Command

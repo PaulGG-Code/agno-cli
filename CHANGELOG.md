@@ -153,6 +153,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Scheduling system** with background task management
 - **Rate limiting system** for controlled resource access
 
+#### ✅ Hacker News Integration Tool
+- **Comprehensive Hacker News API integration** with full story and comment access
+- **Story retrieval and filtering** with support for top, new, best, ask, show, and job stories
+- **Comment thread navigation** with configurable depth and threading support
+- **User profile analysis** with karma, submission history, and account information
+- **Advanced search capabilities** with title-based story filtering and discovery
+- **Trending story detection** with time-based filtering and popularity analysis
+- **Real-time updates** with recent activity monitoring and change tracking
+- **Rich output formatting** with beautiful tables and detailed story information
+- **Caching system** for improved performance and reduced API calls
+- **Multiple story types** supporting regular stories, ask HN, show HN, and job postings
+- **Comment hierarchy** with parent-child relationships and nested discussions
+- **User activity tracking** with submission history and engagement metrics
+- **Time formatting** with human-readable timestamps and relative time display
+- **Error handling** with robust API error management and graceful degradation
+- **Rate limiting** for respectful API usage and optimal performance
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -166,6 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `arxiv` command** with academic paper search and analysis
 - **New `pubmed` command** with medical research paper search and analysis
 - **New `sleep` command** with delay and timing operations
+- **New `hackernews` command** with Hacker News integration
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -397,6 +415,11 @@ agno pubmed --databases
 agno sleep --time-info
 agno sleep --countdown 3 --no-progress
 agno sleep --performance --monitor-duration 5
+
+# Hacker News operations testing
+agno hackernews --top --limit 5
+agno hackernews --story 1
+agno hackernews --user "pg"
 
 # Agent system testing
 agno agents --list
