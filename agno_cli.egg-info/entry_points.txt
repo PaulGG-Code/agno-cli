@@ -1,0 +1,5 @@
+[console_scripts]
+agno = agno_cli.cli:app
+agno-agents = agno_cli.commands.agent_commands:main
+agno-chat = agno_cli.commands.chat_commands:main
+agno-team = agno_cli.commands.team_commands:main

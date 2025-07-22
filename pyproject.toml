@@ -1,0 +1,239 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agno-cli"
+version = "2.0.0"
+description = "Enhanced Agno CLI - Multi-Agent Terminal Assistant with Advanced Reasoning and Tool Integration"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Agno CLI Team", email = "team@agno-cli.dev"}
+]
+keywords = ["ai", "cli", "agents", "multi-agent", "reasoning", "terminal", "assistant"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Shells",
+    "Topic :: Utilities"
+]
+requires-python = ">=3.8"
+dependencies = [
+    "agno>=0.1.0",
+    "typer[all]>=0.9.0",
+    "rich>=13.0.0",
+    "pyyaml>=6.0",
+    "requests>=2.28.0",
+    "pandas>=1.5.0",
+    "numpy>=1.21.0"
+]
+
+[project.optional-dependencies]
+# Search tools
+search = [
+    "duckduckgo-search>=3.8.0",
+    "googlesearch-python>=1.2.0",
+    "beautifulsoup4>=4.11.0"
+]
+
+# Financial tools
+fintech = [
+    "yfinance>=0.2.0",
+    "matplotlib>=3.6.0",
+    "seaborn>=0.12.0",
+    "plotly>=5.15.0"
+]
+
+# Math and data tools
+math = [
+    "sympy>=1.11.0",
+    "scipy>=1.9.0",
+    "scikit-learn>=1.2.0",
+    "openpyxl>=3.0.0"
+]
+
+# Communication tools
+comm = [
+    "slack-sdk>=3.20.0",
+    "discord.py>=2.2.0",
+    "python-telegram-bot>=20.0",
+    "twilio>=8.0.0",
+    "sendgrid>=6.10.0",
+    "PyGithub>=1.58.0"
+]
+
+# Media and visualization tools
+media = [
+    "pillow>=9.5.0",
+    "opencv-python>=4.7.0",
+    "moviepy>=1.0.3",
+    "matplotlib>=3.6.0",
+    "plotly>=5.15.0"
+]
+
+# Knowledge APIs
+knowledge = [
+    "wikipedia>=1.4.0",
+    "arxiv>=1.4.0",
+    "feedparser>=6.0.0"
+]
+
+# Development tools
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0"
+]
+
+# All extras
+all = [
+    "agno-cli[search,fintech,math,comm,media,knowledge,dev]"
+]
+
+[project.urls]
+Homepage = "https://github.com/agno-agi/agno-cli"
+Documentation = "https://agno-cli.readthedocs.io"
+Repository = "https://github.com/agno-agi/agno-cli"
+Issues = "https://github.com/agno-agi/agno-cli/issues"
+Changelog = "https://github.com/agno-agi/agno-cli/blob/main/CHANGELOG.md"
+
+[project.scripts]
+agno = "agno_cli.cli:app"
+agno-chat = "agno_cli.commands.chat_commands:main"
+agno-agents = "agno_cli.commands.agent_commands:main"
+agno-team = "agno_cli.commands.team_commands:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agno_cli*"]
+exclude = ["tests*", "docs*", "examples*"]
+
+[tool.setuptools.package-data]
+agno_cli = [
+    "*.yaml",
+    "*.yml", 
+    "*.json",
+    "templates/*.json",
+    "templates/*.yaml"
+]
+
+# Black configuration
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "agno.*",
+    "yfinance.*",
+    "duckduckgo_search.*",
+    "slack_sdk.*",
+    "discord.*",
+    "telegram.*",
+    "twilio.*",
+    "sendgrid.*",
+    "github.*"
+]
+ignore_missing_imports = true
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests"
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["agno_cli"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod"
+]
+
+# Flake8 configuration
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503", "E501"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "old",
+    "build",
+    "dist",
+    ".venv",
+    "venv"
+]
+per-file-ignores = [
+    "__init__.py:F401"
+]
+
