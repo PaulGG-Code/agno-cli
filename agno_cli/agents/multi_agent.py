@@ -158,6 +158,14 @@ class MultiAgentSystem:
                     tools.append(CSVTools())
                 except ImportError:
                     pass
+            
+            # Add pandas tools if available
+            if agent_state.has_tool("pandas_tools"):
+                try:
+                    from agno.tools.pandas_tools import PandasTools
+                    tools.append(PandasTools())
+                except ImportError:
+                    pass
         
         return tools
     

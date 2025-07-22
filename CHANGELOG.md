@@ -29,9 +29,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Data Merging**: Merge multiple CSV files based on common keys
 - **Rich Display**: Beautiful tables and formatted output for data visualization
 
+#### ✅ Pandas Toolkit Tool
+- **Advanced data manipulation and analysis** with comprehensive functionality
+- **Multi-format Support**: Read/write CSV, JSON, Excel, Parquet, Pickle, HDF5
+- **Data Analysis**: Comprehensive statistical analysis, correlation matrices, data profiling
+- **Data Cleaning**: Handle missing values, remove duplicates, outlier detection
+- **Data Transformation**: Column operations, filtering, sorting, feature engineering
+- **Data Visualization**: Create histograms, scatter plots, box plots, correlation matrices
+- **Memory Optimization**: Efficient memory usage and large dataset handling
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
+- **New `pandas` command** with advanced data manipulation and analysis
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -202,6 +212,14 @@ agno csv --read sample_data.csv --filter '{"age": {"min": 30}}'
 agno csv --read sample_data.csv --sort "age" --ascending "1"
 agno csv --convert "sample_data.csv:output.json:json"
 agno csv --write new_data.csv
+
+# Pandas operations testing
+agno pandas --read sample_data.csv
+agno pandas --analyze sample_data.csv
+agno pandas --read sample_data.csv --show 5
+agno pandas --read sample_data.csv --clean '{"handle_missing": "drop"}'
+agno pandas --read sample_data.csv --transform '{"columns": {"select": ["name", "age"]}}'
+agno pandas --read sample_data.csv --write output.csv
 
 # Agent system testing
 agno agents --list

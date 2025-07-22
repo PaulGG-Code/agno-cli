@@ -347,6 +347,27 @@ agno csv --write new_data.csv
 agno csv --merge "file1.csv:file2.csv:key_column" --output merged.csv
 ```
 
+### Pandas Data Analysis
+```bash
+# Read and analyze data
+agno pandas --read data.csv
+agno pandas --analyze data.csv
+agno pandas --read data.csv --show 10
+
+# Clean and transform data
+agno pandas --read data.csv --clean '{"handle_missing": "drop", "remove_duplicates": true}'
+agno pandas --read data.csv --transform '{"columns": {"select": ["name", "age"]}, "rows": {"filter": [{"column": "age", "operator": ">=", "value": 30}]}}'
+
+# Write data to different formats
+agno pandas --read data.csv --write output.csv
+agno pandas --read data.csv --write output.json --format json
+agno pandas --read data.csv --write output.xlsx --format excel
+
+# Create visualizations
+agno pandas --read data.csv --visualize '{"type": "histogram", "column": "age"}' --output plot.png
+agno pandas --read data.csv --visualize '{"type": "scatter", "x": "age", "y": "salary"}' --output scatter.png
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -405,6 +426,7 @@ agno_cli/
 │   ├── math_tools.py      # Math and data
 │   ├── file_system_tools.py # File system operations
 │   ├── csv_tools.py         # CSV data operations
+│   ├── pandas_tools.py      # Pandas data analysis
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -438,6 +460,7 @@ agno_cli/
 - **Math**: Calculations, statistics, data analysis
 - **File System**: Local file operations, directory management, file search
 - **CSV Data**: CSV reading, writing, analysis, filtering, sorting, conversion
+- **Pandas Data**: Advanced data manipulation, analysis, cleaning, transformation, visualization
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -555,6 +578,14 @@ agno csv --read sample_data.csv --filter '{"age": {"min": 30}}' # Filter data
 agno csv --read sample_data.csv --sort "age" --ascending "1" # Sort data
 agno csv --convert "sample_data.csv:output.json:json" # Convert to JSON
 agno csv --write new_data.csv                       # Write new CSV file
+
+# Test pandas operations
+agno pandas --read sample_data.csv                  # Read data file
+agno pandas --analyze sample_data.csv               # Analyze data
+agno pandas --read sample_data.csv --show 5         # Show data preview
+agno pandas --read sample_data.csv --clean '{"handle_missing": "drop"}' # Clean data
+agno pandas --read sample_data.csv --transform '{"columns": {"select": ["name", "age"]}}' # Transform data
+agno pandas --read sample_data.csv --write output.csv # Write data
 
 # Test agent operations
 agno agents --list                                  # List all agents

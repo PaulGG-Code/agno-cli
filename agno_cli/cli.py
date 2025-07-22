@@ -28,6 +28,7 @@ from tools.financial_tools import FinancialToolsManager
 from tools.math_tools import MathToolsManager
 from tools.file_system_tools import FileSystemToolsManager
 from tools.csv_tools import CSVToolsManager
+from tools.pandas_tools import PandasToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -49,12 +50,13 @@ financial_tools = None
 math_tools = None
 file_system_tools = None
 csv_tools = None
+pandas_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -72,6 +74,7 @@ def initialize_system():
         math_tools = MathToolsManager({})
         file_system_tools = FileSystemToolsManager()
         csv_tools = CSVToolsManager()
+        pandas_tools = PandasToolsManager()
 
 
 # Chat Commands
@@ -1083,6 +1086,85 @@ def csv(
     
     except Exception as e:
         console.print(f"[red]CSV operation error: {e}[/red]")
+
+
+# Pandas Commands
+@app.command()
+def pandas(
+    read: Optional[str] = typer.Option(None, "--read", "-r", help="Read data file"),
+    write: Optional[str] = typer.Option(None, "--write", "-w", help="Write data to file"),
+    analyze: Optional[str] = typer.Option(None, "--analyze", "-a", help="Analyze data (file path or current data)"),
+    clean: Optional[str] = typer.Option(None, "--clean", help="Clean data (JSON operations)"),
+    transform: Optional[str] = typer.Option(None, "--transform", help="Transform data (JSON operations)"),
+    visualize: Optional[str] = typer.Option(None, "--visualize", help="Create visualization (JSON config)"),
+    show: Optional[int] = typer.Option(None, "--show", "-s", help="Show data preview (number of rows)"),
+    format: str = typer.Option("csv", "--format", help="File format (csv, json, excel, parquet)"),
+    output_format: str = typer.Option("table", "--output-format", help="Output format (table, json)"),
+    output_path: Optional[str] = typer.Option(None, "--output", "-o", help="Output file path")
+):
+    """Advanced data manipulation and analysis with pandas"""
+    initialize_system()
+    
+    try:
+        if read:
+            pandas_tools.read_data(
+                path=read,
+                format=format
+            )
+        
+        if show:
+            if pandas_tools.current_dataframe is None:
+                console.print("[red]No data loaded. Use --read to load data first.[/red]")
+                return
+            pandas_tools.show_data(rows=show, format=output_format)
+        
+        elif write:
+            if pandas_tools.current_dataframe is None:
+                console.print("[red]No data loaded. Use --read to load data first.[/red]")
+                return
+            
+            pandas_tools.write_data(
+                path=write,
+                format=format
+            )
+        
+        elif analyze:
+            if analyze and analyze != "":  # If file path provided
+                pandas_tools.read_data(analyze, format)
+            elif pandas_tools.current_dataframe is None:
+                console.print("[red]No data loaded. Use --read to load data first.[/red]")
+                return
+            pandas_tools.analyze_data(format=output_format)
+        
+        elif clean:
+            try:
+                operations = json.loads(clean)
+                pandas_tools.clean_data(operations)
+            except json.JSONDecodeError:
+                console.print("[red]Invalid JSON format for clean operations[/red]")
+        
+        elif transform:
+            try:
+                operations = json.loads(transform)
+                pandas_tools.transform_data(operations)
+            except json.JSONDecodeError:
+                console.print("[red]Invalid JSON format for transform operations[/red]")
+        
+        elif visualize:
+            try:
+                plot_config = json.loads(visualize)
+                pandas_tools.create_visualization(plot_config, output_path)
+            except json.JSONDecodeError:
+                console.print("[red]Invalid JSON format for visualization config[/red]")
+        
+        elif show:
+            pandas_tools.show_data(rows=show, format=output_format)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]Pandas operation error: {e}[/red]")
 
 
 # Version Command

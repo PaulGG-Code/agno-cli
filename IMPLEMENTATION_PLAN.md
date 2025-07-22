@@ -17,7 +17,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 ### File System & Data Operations
 - [✅] `local_file_system` - File system operations (read, write, list, delete, copy, move, search, tree view)
 - [✅] `csv_toolkit` - CSV file reading, writing, and manipulation
-- [ ] `pandas` - Data manipulation and analysis
+- [✅] `pandas` - Data manipulation and analysis
 - [ ] `duckdb` - Lightweight database operations
 - [ ] `sql` - SQL query execution
 - [ ] `postgres` - PostgreSQL database integration
