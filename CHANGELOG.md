@@ -38,10 +38,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Data Visualization**: Create histograms, scatter plots, box plots, correlation matrices
 - **Memory Optimization**: Efficient memory usage and large dataset handling
 
+#### ✅ DuckDB Database Tool
+- **Lightweight database operations** with comprehensive SQL support
+- **Multi-format Import/Export**: CSV, JSON, Parquet, Excel support
+- **SQL Query Execution**: Full SQL support with parameterized queries
+- **Table Management**: Create, describe, list, and manage tables
+- **Database Operations**: Backup, restore, optimize, and maintenance
+- **In-Memory & File-based**: Support for both in-memory and persistent databases
+- **Rich Display**: Beautiful tables and formatted output for query results
+- **Performance**: High-performance analytical database operations
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
 - **New `pandas` command** with advanced data manipulation and analysis
+- **New `duckdb` command** with lightweight database operations
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -220,6 +231,13 @@ agno pandas --read sample_data.csv --show 5
 agno pandas --read sample_data.csv --clean '{"handle_missing": "drop"}'
 agno pandas --read sample_data.csv --transform '{"columns": {"select": ["name", "age"]}}'
 agno pandas --read sample_data.csv --write output.csv
+
+# DuckDB operations testing
+agno duckdb --database test.db --file --import "sample_data.csv:employees"
+agno duckdb --database test.db --file --list
+agno duckdb --database test.db --file --query "SELECT * FROM employees WHERE age > 30"
+agno duckdb --database test.db --file --show-table employees
+agno duckdb --database test.db --file --export "employees:export.csv"
 
 # Agent system testing
 agno agents --list

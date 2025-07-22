@@ -166,6 +166,14 @@ class MultiAgentSystem:
                     tools.append(PandasTools())
                 except ImportError:
                     pass
+            
+            # Add DuckDB tools if available
+            if agent_state.has_tool("duckdb_tools"):
+                try:
+                    from agno.tools.duckdb_tools import DuckDBTools
+                    tools.append(DuckDBTools())
+                except ImportError:
+                    pass
         
         return tools
     

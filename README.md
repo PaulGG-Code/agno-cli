@@ -368,6 +368,27 @@ agno pandas --read data.csv --visualize '{"type": "histogram", "column": "age"}'
 agno pandas --read data.csv --visualize '{"type": "scatter", "x": "age", "y": "salary"}' --output scatter.png
 ```
 
+### DuckDB Database Operations
+```bash
+# Basic database operations
+agno duckdb --database mydb.db --file --import "data.csv:employees"
+agno duckdb --database mydb.db --file --list
+agno duckdb --database mydb.db --file --info
+
+# SQL queries
+agno duckdb --database mydb.db --file --query "SELECT * FROM employees WHERE age > 30"
+agno duckdb --database mydb.db --file --query "SELECT name, AVG(salary) FROM employees GROUP BY department"
+
+# Table management
+agno duckdb --database mydb.db --file --create-table "products:{\"id\": \"INTEGER\", \"name\": \"VARCHAR(100)\", \"price\": \"DECIMAL(10,2)\"}"
+agno duckdb --database mydb.db --file --show-table employees
+agno duckdb --database mydb.db --file --export "employees:export.csv"
+
+# Database maintenance
+agno duckdb --database mydb.db --file --backup backup.db
+agno duckdb --database mydb.db --file --optimize
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -427,6 +448,7 @@ agno_cli/
 │   ├── file_system_tools.py # File system operations
 │   ├── csv_tools.py         # CSV data operations
 │   ├── pandas_tools.py      # Pandas data analysis
+│   ├── duckdb_tools.py      # DuckDB database operations
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -461,6 +483,7 @@ agno_cli/
 - **File System**: Local file operations, directory management, file search
 - **CSV Data**: CSV reading, writing, analysis, filtering, sorting, conversion
 - **Pandas Data**: Advanced data manipulation, analysis, cleaning, transformation, visualization
+- **DuckDB Database**: Lightweight database operations, SQL queries, data import/export
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -586,6 +609,13 @@ agno pandas --read sample_data.csv --show 5         # Show data preview
 agno pandas --read sample_data.csv --clean '{"handle_missing": "drop"}' # Clean data
 agno pandas --read sample_data.csv --transform '{"columns": {"select": ["name", "age"]}}' # Transform data
 agno pandas --read sample_data.csv --write output.csv # Write data
+
+# Test DuckDB operations
+agno duckdb --database test.db --file --import "sample_data.csv:employees" # Import CSV
+agno duckdb --database test.db --file --list # List tables
+agno duckdb --database test.db --file --query "SELECT * FROM employees WHERE age > 30" # SQL query
+agno duckdb --database test.db --file --show-table employees # Show table info
+agno duckdb --database test.db --file --export "employees:export.csv" # Export data
 
 # Test agent operations
 agno agents --list                                  # List all agents

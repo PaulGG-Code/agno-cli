@@ -29,6 +29,7 @@ from tools.math_tools import MathToolsManager
 from tools.file_system_tools import FileSystemToolsManager
 from tools.csv_tools import CSVToolsManager
 from tools.pandas_tools import PandasToolsManager
+from tools.duckdb_tools import DuckDBToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -51,12 +52,13 @@ math_tools = None
 file_system_tools = None
 csv_tools = None
 pandas_tools = None
+duckdb_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -75,6 +77,7 @@ def initialize_system():
         file_system_tools = FileSystemToolsManager()
         csv_tools = CSVToolsManager()
         pandas_tools = PandasToolsManager()
+        duckdb_tools = DuckDBToolsManager()
 
 
 # Chat Commands
@@ -1165,6 +1168,87 @@ def pandas(
     
     except Exception as e:
         console.print(f"[red]Pandas operation error: {e}[/red]")
+
+
+# DuckDB Commands
+@app.command()
+def duckdb(
+    query: Optional[str] = typer.Option(None, "--query", "-q", help="Execute SQL query"),
+    create_table: Optional[str] = typer.Option(None, "--create-table", help="Create table (format: name:schema_json)"),
+    import_csv: Optional[str] = typer.Option(None, "--import", help="Import CSV file (format: file:table)"),
+    export_csv: Optional[str] = typer.Option(None, "--export", help="Export table to CSV (format: table:file)"),
+    show_table: Optional[str] = typer.Option(None, "--show-table", help="Show table information"),
+    list_tables: bool = typer.Option(False, "--list", "-l", help="List all tables"),
+    database_info: bool = typer.Option(False, "--info", "-i", help="Show database information"),
+    backup: Optional[str] = typer.Option(None, "--backup", help="Backup database to file"),
+    restore: Optional[str] = typer.Option(None, "--restore", help="Restore database from backup"),
+    optimize: bool = typer.Option(False, "--optimize", help="Optimize database performance"),
+    database: Optional[str] = typer.Option(None, "--database", "-d", help="Database file path (default: memory)"),
+    memory: bool = typer.Option(True, "--memory/--file", help="Use in-memory database"),
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json)")
+):
+    """Lightweight database operations with DuckDB"""
+    initialize_system()
+    
+    try:
+        # Initialize database connection if different from default
+        if database and not memory:
+            duckdb_tools = DuckDBToolsManager(database, memory_mode=False)
+        else:
+            duckdb_tools = DuckDBToolsManager()
+        
+        if query:
+            duckdb_tools.execute_query(query, format=format)
+        
+        elif create_table:
+            try:
+                table_name, schema_json = create_table.split(':', 1)
+                schema = json.loads(schema_json)
+                duckdb_tools.create_table(table_name, schema)
+            except (ValueError, json.JSONDecodeError):
+                console.print("[red]Invalid create-table format. Use: name:schema_json[/red]")
+        
+        elif import_csv:
+            try:
+                file_path, table_name = import_csv.split(':', 1)
+                duckdb_tools.import_csv(file_path, table_name)
+            except ValueError:
+                console.print("[red]Invalid import format. Use: file:table[/red]")
+        
+        elif export_csv:
+            try:
+                table_name, file_path = export_csv.split(':', 1)
+                duckdb_tools.export_csv(table_name, file_path)
+            except ValueError:
+                console.print("[red]Invalid export format. Use: table:file[/red]")
+        
+        elif show_table:
+            duckdb_tools.show_table_info(show_table, format=format)
+        
+        elif list_tables:
+            duckdb_tools.list_tables(format=format)
+        
+        elif database_info:
+            duckdb_tools.show_database_info(format=format)
+        
+        elif backup:
+            duckdb_tools.backup_database(backup)
+        
+        elif restore:
+            duckdb_tools.restore_database(restore)
+        
+        elif optimize:
+            duckdb_tools.optimize_database()
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+        
+        # Close connection if we created a new one
+        if database and not memory:
+            duckdb_tools.close()
+    
+    except Exception as e:
+        console.print(f"[red]DuckDB operation error: {e}[/red]")
 
 
 # Version Command
