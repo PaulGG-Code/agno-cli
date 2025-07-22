@@ -389,6 +389,26 @@ agno duckdb --database mydb.db --file --backup backup.db
 agno duckdb --database mydb.db --file --optimize
 ```
 
+### SQL Query Execution
+```bash
+# Basic SQL operations
+agno sql --file database.db --script create_tables.sql
+agno sql --file database.db --list
+agno sql --file database.db --info
+
+# SQL queries
+agno sql --file database.db --query "SELECT * FROM employees WHERE age > 30"
+agno sql --file database.db --query "SELECT city, AVG(salary) FROM employees GROUP BY city"
+
+# Table management
+agno sql --file database.db --show-table employees
+agno sql --file database.db --backup backup.db
+
+# Multiple database types
+agno sql --type mysql --host localhost --database mydb --username user --password pass --query "SELECT * FROM users"
+agno sql --type postgresql --host localhost --database mydb --username user --password pass --query "SELECT * FROM users"
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -449,6 +469,7 @@ agno_cli/
 │   ├── csv_tools.py         # CSV data operations
 │   ├── pandas_tools.py      # Pandas data analysis
 │   ├── duckdb_tools.py      # DuckDB database operations
+│   ├── sql_tools.py         # SQL query execution
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -484,6 +505,7 @@ agno_cli/
 - **CSV Data**: CSV reading, writing, analysis, filtering, sorting, conversion
 - **Pandas Data**: Advanced data manipulation, analysis, cleaning, transformation, visualization
 - **DuckDB Database**: Lightweight database operations, SQL queries, data import/export
+- **SQL Database**: General SQL query execution, multi-database support
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -616,6 +638,13 @@ agno duckdb --database test.db --file --list # List tables
 agno duckdb --database test.db --file --query "SELECT * FROM employees WHERE age > 30" # SQL query
 agno duckdb --database test.db --file --show-table employees # Show table info
 agno duckdb --database test.db --file --export "employees:export.csv" # Export data
+
+# Test SQL operations
+agno sql --file test.db --script create_tables.sql # Execute SQL script
+agno sql --file test.db --list # List tables
+agno sql --file test.db --query "SELECT * FROM employees WHERE age > 30" # SQL query
+agno sql --file test.db --show-table employees # Show table info
+agno sql --file test.db --backup backup.db # Backup database
 
 # Test agent operations
 agno agents --list                                  # List all agents

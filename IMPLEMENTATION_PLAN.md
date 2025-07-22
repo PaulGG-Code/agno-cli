@@ -19,7 +19,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 - [✅] `csv_toolkit` - CSV file reading, writing, and manipulation
 - [✅] `pandas` - Data manipulation and analysis
 - [✅] `duckdb` - Lightweight database operations
-- [ ] `sql` - SQL query execution
+- [✅] `sql` - SQL query execution
 - [ ] `postgres` - PostgreSQL database integration
 
 ### System & Shell Operations

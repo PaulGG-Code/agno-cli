@@ -48,11 +48,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Rich Display**: Beautiful tables and formatted output for query results
 - **Performance**: High-performance analytical database operations
 
+#### ✅ SQL Database Tool
+- **General SQL query execution** with multiple database backends
+- **Multi-Database Support**: SQLite, MySQL, PostgreSQL
+- **SQL Script Execution**: Execute SQL script files with multiple statements
+- **Query Execution**: Full SQL support with parameterized queries
+- **Table Management**: List, describe, and manage tables
+- **Database Operations**: Backup, restore, and maintenance
+- **Rich Display**: Beautiful tables and formatted output for query results
+- **Connection Management**: Secure database connections with authentication
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
 - **New `pandas` command** with advanced data manipulation and analysis
 - **New `duckdb` command** with lightweight database operations
+- **New `sql` command** with general SQL query execution
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -238,6 +249,13 @@ agno duckdb --database test.db --file --list
 agno duckdb --database test.db --file --query "SELECT * FROM employees WHERE age > 30"
 agno duckdb --database test.db --file --show-table employees
 agno duckdb --database test.db --file --export "employees:export.csv"
+
+# SQL operations testing
+agno sql --file test.db --script create_tables.sql
+agno sql --file test.db --list
+agno sql --file test.db --query "SELECT * FROM employees WHERE age > 30"
+agno sql --file test.db --show-table employees
+agno sql --file test.db --backup backup.db
 
 # Agent system testing
 agno agents --list

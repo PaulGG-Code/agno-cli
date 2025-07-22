@@ -30,6 +30,7 @@ from tools.file_system_tools import FileSystemToolsManager
 from tools.csv_tools import CSVToolsManager
 from tools.pandas_tools import PandasToolsManager
 from tools.duckdb_tools import DuckDBToolsManager
+from tools.sql_tools import SQLToolsManager, DatabaseConnection
 
 # Create the main CLI app
 app = typer.Typer(
@@ -53,12 +54,13 @@ file_system_tools = None
 csv_tools = None
 pandas_tools = None
 duckdb_tools = None
+sql_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -78,6 +80,7 @@ def initialize_system():
         csv_tools = CSVToolsManager()
         pandas_tools = PandasToolsManager()
         duckdb_tools = DuckDBToolsManager()
+        sql_tools = SQLToolsManager(DatabaseConnection(type='sqlite'))
 
 
 # Chat Commands
@@ -1249,6 +1252,78 @@ def duckdb(
     
     except Exception as e:
         console.print(f"[red]DuckDB operation error: {e}[/red]")
+
+
+# SQL Commands
+@app.command()
+def sql(
+    query: Optional[str] = typer.Option(None, "--query", "-q", help="Execute SQL query"),
+    script: Optional[str] = typer.Option(None, "--script", "-s", help="Execute SQL script file"),
+    show_table: Optional[str] = typer.Option(None, "--show-table", help="Show table information"),
+    list_tables: bool = typer.Option(False, "--list", "-l", help="List all tables"),
+    database_info: bool = typer.Option(False, "--info", "-i", help="Show database information"),
+    backup: Optional[str] = typer.Option(None, "--backup", help="Backup database to file"),
+    database_type: str = typer.Option("sqlite", "--type", help="Database type (sqlite, mysql, postgresql)"),
+    host: Optional[str] = typer.Option(None, "--host", help="Database host"),
+    port: Optional[int] = typer.Option(None, "--port", help="Database port"),
+    database: Optional[str] = typer.Option(None, "--database", "-d", help="Database name"),
+    username: Optional[str] = typer.Option(None, "--username", "-u", help="Database username"),
+    password: Optional[str] = typer.Option(None, "--password", "-p", help="Database password"),
+    file_path: Optional[str] = typer.Option(None, "--file", "-f", help="SQLite database file path"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """General SQL query execution with multiple database backends"""
+    initialize_system()
+    
+    try:
+        # Create database connection configuration
+        connection_config = DatabaseConnection(
+            type=database_type,
+            host=host,
+            port=port,
+            database=database,
+            username=username,
+            password=password,
+            file_path=file_path
+        )
+        
+        # Initialize SQL tools with connection
+        sql_tools = SQLToolsManager(connection_config)
+        
+        if query:
+            sql_tools.execute_query(query, format=format)
+        
+        elif script:
+            # Read script file
+            try:
+                with open(script, 'r') as f:
+                    script_content = f.read()
+                sql_tools.execute_script(script_content, format=format)
+            except FileNotFoundError:
+                console.print(f"[red]Script file not found: {script}[/red]")
+            except Exception as e:
+                console.print(f"[red]Error reading script file: {e}[/red]")
+        
+        elif show_table:
+            sql_tools.show_table_info(show_table, format=format)
+        
+        elif list_tables:
+            sql_tools.list_tables(format=format)
+        
+        elif database_info:
+            sql_tools.show_database_info(format=format)
+        
+        elif backup:
+            sql_tools.backup_database(backup)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+        
+        # Close connection
+        sql_tools.close()
+    
+    except Exception as e:
+        console.print(f"[red]SQL operation error: {e}[/red]")
 
 
 # Version Command

@@ -174,6 +174,14 @@ class MultiAgentSystem:
                     tools.append(DuckDBTools())
                 except ImportError:
                     pass
+            
+            # Add SQL tools if available
+            if agent_state.has_tool("sql_tools"):
+                try:
+                    from agno.tools.sql_tools import SQLTools
+                    tools.append(SQLTools())
+                except ImportError:
+                    pass
         
         return tools
     
