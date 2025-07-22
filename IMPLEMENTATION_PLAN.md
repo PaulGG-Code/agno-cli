@@ -25,7 +25,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 ### System & Shell Operations
 - [✅] `shell` - Execute shell commands
 - [✅] `docker` - Docker container management
-- [ ] `sleep` - Delay/sleep operations
+- [✅] `sleep` - Delay/sleep operations
 
 ### Research & Information
 - [✅] `wikipedia` - Wikipedia search and content retrieval

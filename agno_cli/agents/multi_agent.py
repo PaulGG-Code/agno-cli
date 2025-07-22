@@ -230,6 +230,14 @@ class MultiAgentSystem:
                     tools.append(PubMedTools())
                 except ImportError:
                     pass
+            
+            # Add Sleep tools if available
+            if agent_state.has_tool("sleep_tools"):
+                try:
+                    from agno.tools.sleep_tools import SleepTools
+                    tools.append(SleepTools())
+                except ImportError:
+                    pass
         
         return tools
     

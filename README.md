@@ -564,6 +564,28 @@ agno pubmed --keywords "This study examines the effects of treatment on patient 
 agno pubmed --clear-cache
 ```
 
+### Sleep & Timing Operations
+```bash
+# Basic sleep operations
+agno sleep --duration 5
+agno sleep --countdown 10
+agno sleep --until "14:30:00"
+
+# Timer and performance
+agno sleep --timer "ls -la" --iterations 3
+agno sleep --performance --monitor-duration 30
+agno sleep --time-info
+
+# Scheduling and rate limiting
+agno sleep --schedules
+agno sleep --clear-schedules
+agno sleep --rate-limit-info
+
+# Options
+agno sleep --no-progress --duration 3
+agno sleep --format json --time-info
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -631,6 +653,7 @@ agno_cli/
 │   ├── wikipedia_tools.py   # Wikipedia research and content retrieval
 │   ├── arxiv_tools.py       # arXiv academic paper search
 │   ├── pubmed_tools.py      # PubMed medical research papers
+│   ├── sleep_tools.py       # Sleep and timing operations
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -673,6 +696,7 @@ agno_cli/
 - **Wikipedia Research**: Search, content retrieval, language support, text analysis
 - **arXiv Papers**: Academic paper search, author analysis, category filtering
 - **PubMed Research**: Medical paper search, author analysis, journal filtering
+- **Sleep & Timing**: Delay operations, performance monitoring, scheduling
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -846,6 +870,11 @@ agno arxiv --categories
 agno pubmed --search "cancer treatment"
 agno pubmed --paper "37828275"
 agno pubmed --databases
+
+# Test sleep operations
+agno sleep --time-info
+agno sleep --countdown 3 --no-progress
+agno sleep --performance --monitor-duration 5
 
 # Test agent operations
 agno agents --list                                  # List all agents

@@ -137,6 +137,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Multiple database support** for PubMed, PMC, Gene, and Protein databases
 - **Medical terminology support** with MeSH term integration
 
+#### ✅ Sleep & Timing Operations Tool
+- **Advanced delay and timing functionality** with precise control and progress tracking
+- **Countdown timers** with customizable time formats and progress display
+- **Performance monitoring** with real-time system resource tracking
+- **Command timing and benchmarking** with detailed execution statistics
+- **Time-based scheduling** with periodic task execution capabilities
+- **Rate limiting and throttling** for API and resource management
+- **Time utilities** with comprehensive date and time information
+- **Progress tracking** with beautiful progress bars and real-time updates
+- **Interrupt handling** with graceful signal management
+- **Rich output formatting** with detailed statistics and timing information
+- **Multiple time formats** supporting seconds, minutes, and hours
+- **System performance analysis** with CPU, memory, and disk monitoring
+- **Scheduling system** with background task management
+- **Rate limiting system** for controlled resource access
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -149,6 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `wikipedia` command** with research and knowledge retrieval
 - **New `arxiv` command** with academic paper search and analysis
 - **New `pubmed` command** with medical research paper search and analysis
+- **New `sleep` command** with delay and timing operations
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -375,6 +392,11 @@ agno arxiv --categories
 agno pubmed --search "cancer treatment"
 agno pubmed --paper "37828275"
 agno pubmed --databases
+
+# Sleep operations testing
+agno sleep --time-info
+agno sleep --countdown 3 --no-progress
+agno sleep --performance --monitor-duration 5
 
 # Agent system testing
 agno agents --list

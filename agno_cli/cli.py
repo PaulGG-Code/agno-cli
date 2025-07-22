@@ -37,6 +37,7 @@ from tools.docker_tools import DockerToolsManager
 from tools.wikipedia_tools import WikipediaToolsManager
 from tools.arxiv_tools import ArxivToolsManager
 from tools.pubmed_tools import PubMedToolsManager
+from tools.sleep_tools import SleepToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -67,7 +68,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -95,6 +96,7 @@ def initialize_system():
         wikipedia_tools = WikipediaToolsManager()
         arxiv_tools = ArxivToolsManager()
         pubmed_tools = PubMedToolsManager()
+        sleep_tools = SleepToolsManager()
 
 
 # Chat Commands
@@ -1902,6 +1904,99 @@ def pubmed(
     
     except Exception as e:
         console.print(f"[red]PubMed operation error: {e}[/red]")
+
+
+# Sleep Commands
+@app.command()
+def sleep(
+    duration: float = typer.Option(None, "--duration", "-d", help="Sleep duration in seconds"),
+    countdown: float = typer.Option(None, "--countdown", "-c", help="Countdown duration in seconds"),
+    until: Optional[str] = typer.Option(None, "--until", "-u", help="Sleep until time (format: HH:MM:SS)"),
+    timer: Optional[str] = typer.Option(None, "--timer", "-t", help="Time command execution"),
+    iterations: int = typer.Option(1, "--iterations", "-i", help="Number of iterations for timer"),
+    time_info: bool = typer.Option(False, "--time-info", help="Show current time information"),
+    performance: bool = typer.Option(False, "--performance", help="Monitor system performance"),
+    monitor_duration: float = typer.Option(60, "--monitor-duration", help="Performance monitor duration"),
+    schedules: bool = typer.Option(False, "--schedules", help="List scheduled functions"),
+    clear_schedules: bool = typer.Option(False, "--clear-schedules", help="Clear all scheduled functions"),
+    rate_limit_info: bool = typer.Option(False, "--rate-limit-info", help="Show rate limiting information"),
+    no_progress: bool = typer.Option(False, "--no-progress", help="Disable progress display"),
+    format_type: str = typer.Option("seconds", "--format-type", help="Time format (seconds, minutes, hours)"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """Sleep and timing operations with rich features"""
+    initialize_system()
+    
+    try:
+        if duration is not None:
+            show_progress = not no_progress
+            sleep_tools.sleep(duration, show_progress, "Sleeping", format)
+        
+        elif countdown is not None:
+            show_progress = not no_progress
+            sleep_tools.countdown(countdown, show_progress, format_type, format)
+        
+        elif until:
+            try:
+                # Parse time format
+                if ':' in until:
+                    time_parts = until.split(':')
+                    if len(time_parts) == 3:
+                        hour, minute, second = map(int, time_parts)
+                        target_time = datetime.datetime.now().replace(hour=hour, minute=minute, second=second, microsecond=0)
+                        
+                        # If time has passed today, schedule for tomorrow
+                        if target_time <= datetime.datetime.now():
+                            target_time += datetime.timedelta(days=1)
+                        
+                        show_progress = not no_progress
+                        result = sleep_tools.sleep_tools.sleep_until(target_time, show_progress)
+                        
+                        if format == "json":
+                            import json
+                            console.print(json.dumps({
+                                'duration': result.duration,
+                                'start_time': result.start_time,
+                                'end_time': result.end_time,
+                                'interrupted': result.interrupted,
+                                'actual_duration': result.actual_duration,
+                                'target_duration': result.target_duration
+                            }, indent=2))
+                        else:
+                            if result.interrupted:
+                                console.print("[yellow]Sleep interrupted[/yellow]")
+                            else:
+                                console.print("[green]Sleep completed[/green]")
+                    else:
+                        console.print("[red]Invalid time format. Use HH:MM:SS[/red]")
+                else:
+                    console.print("[red]Invalid time format. Use HH:MM:SS[/red]")
+            except ValueError:
+                console.print("[red]Invalid time format. Use HH:MM:SS[/red]")
+        
+        elif timer:
+            sleep_tools.timer(timer, iterations, format)
+        
+        elif time_info:
+            sleep_tools.time_info(format)
+        
+        elif performance:
+            sleep_tools.performance_monitor(monitor_duration, format)
+        
+        elif schedules:
+            sleep_tools.list_schedules(format)
+        
+        elif clear_schedules:
+            sleep_tools.clear_schedules()
+        
+        elif rate_limit_info:
+            sleep_tools.rate_limit_info(format)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]Sleep operation error: {e}[/red]")
 
 
 # Version Command
