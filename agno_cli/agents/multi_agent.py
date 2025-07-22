@@ -182,6 +182,14 @@ class MultiAgentSystem:
                     tools.append(SQLTools())
                 except ImportError:
                     pass
+            
+            # Add PostgreSQL tools if available
+            if agent_state.has_tool("postgres_tools"):
+                try:
+                    from agno.tools.postgres_tools import PostgresTools
+                    tools.append(PostgresTools())
+                except ImportError:
+                    pass
         
         return tools
     

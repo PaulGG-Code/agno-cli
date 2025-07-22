@@ -409,6 +409,28 @@ agno sql --type mysql --host localhost --database mydb --username user --passwor
 agno sql --type postgresql --host localhost --database mydb --username user --password pass --query "SELECT * FROM users"
 ```
 
+### PostgreSQL Database Integration
+```bash
+# Basic PostgreSQL operations
+agno postgres --host localhost --database mydb --username user --password pass --info
+agno postgres --host localhost --database mydb --username user --password pass --list
+agno postgres --host localhost --database mydb --username user --password pass --schemas
+
+# PostgreSQL queries
+agno postgres --host localhost --database mydb --username user --password pass --query "SELECT * FROM users WHERE age > 30"
+agno postgres --host localhost --database mydb --username user --password pass --query "SELECT schema_name, table_name FROM information_schema.tables"
+
+# Table management
+agno postgres --host localhost --database mydb --username user --password pass --show-table users
+agno postgres --host localhost --database mydb --username user --password pass --indexes users
+agno postgres --host localhost --database mydb --username user --password pass --vacuum public.users
+agno postgres --host localhost --database mydb --username user --password pass --reindex public.users
+
+# Database maintenance
+agno postgres --host localhost --database mydb --username user --password pass --backup backup.dump
+agno postgres --host localhost --database mydb --username user --password pass --restore backup.dump
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -470,6 +492,7 @@ agno_cli/
 │   ├── pandas_tools.py      # Pandas data analysis
 │   ├── duckdb_tools.py      # DuckDB database operations
 │   ├── sql_tools.py         # SQL query execution
+│   ├── postgres_tools.py    # PostgreSQL database integration
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -506,6 +529,7 @@ agno_cli/
 - **Pandas Data**: Advanced data manipulation, analysis, cleaning, transformation, visualization
 - **DuckDB Database**: Lightweight database operations, SQL queries, data import/export
 - **SQL Database**: General SQL query execution, multi-database support
+- **PostgreSQL Database**: Specialized PostgreSQL integration, advanced features
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -645,6 +669,13 @@ agno sql --file test.db --list # List tables
 agno sql --file test.db --query "SELECT * FROM employees WHERE age > 30" # SQL query
 agno sql --file test.db --show-table employees # Show table info
 agno sql --file test.db --backup backup.db # Backup database
+
+# Test PostgreSQL operations
+agno postgres --host localhost --database testdb --username user --password pass --info # Database info
+agno postgres --host localhost --database testdb --username user --password pass --list # List tables
+agno postgres --host localhost --database testdb --username user --password pass --schemas # List schemas
+agno postgres --host localhost --database testdb --username user --password pass --show-table users # Show table info
+agno postgres --host localhost --database testdb --username user --password pass --indexes users # Show indexes
 
 # Test agent operations
 agno agents --list                                  # List all agents

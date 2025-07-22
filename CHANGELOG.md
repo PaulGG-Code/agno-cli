@@ -58,12 +58,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Rich Display**: Beautiful tables and formatted output for query results
 - **Connection Management**: Secure database connections with authentication
 
+#### ✅ PostgreSQL Database Tool
+- **Specialized PostgreSQL integration** with advanced database features
+- **PostgreSQL-Specific Operations**: VACUUM, REINDEX, schema management
+- **Advanced Table Information**: Detailed table stats, index information, performance metrics
+- **Schema Management**: List and manage database schemas
+- **Index Management**: View and manage database indexes
+- **Database Maintenance**: Backup/restore using pg_dump/pg_restore
+- **Performance Optimization**: VACUUM and REINDEX operations
+- **Rich PostgreSQL Metadata**: Comprehensive database statistics and information
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
 - **New `pandas` command** with advanced data manipulation and analysis
 - **New `duckdb` command** with lightweight database operations
 - **New `sql` command** with general SQL query execution
+- **New `postgres` command** with specialized PostgreSQL integration
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -256,6 +267,13 @@ agno sql --file test.db --list
 agno sql --file test.db --query "SELECT * FROM employees WHERE age > 30"
 agno sql --file test.db --show-table employees
 agno sql --file test.db --backup backup.db
+
+# PostgreSQL operations testing
+agno postgres --host localhost --database testdb --username user --password pass --info
+agno postgres --host localhost --database testdb --username user --password pass --list
+agno postgres --host localhost --database testdb --username user --password pass --schemas
+agno postgres --host localhost --database testdb --username user --password pass --show-table users
+agno postgres --host localhost --database testdb --username user --password pass --indexes users
 
 # Agent system testing
 agno agents --list

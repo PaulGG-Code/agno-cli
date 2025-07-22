@@ -31,6 +31,7 @@ from tools.csv_tools import CSVToolsManager
 from tools.pandas_tools import PandasToolsManager
 from tools.duckdb_tools import DuckDBToolsManager
 from tools.sql_tools import SQLToolsManager, DatabaseConnection
+from tools.postgres_tools import PostgresToolsManager, PostgresConnection
 
 # Create the main CLI app
 app = typer.Typer(
@@ -55,12 +56,13 @@ csv_tools = None
 pandas_tools = None
 duckdb_tools = None
 sql_tools = None
+postgres_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -81,6 +83,8 @@ def initialize_system():
         pandas_tools = PandasToolsManager()
         duckdb_tools = DuckDBToolsManager()
         sql_tools = SQLToolsManager(DatabaseConnection(type='sqlite'))
+        # Don't initialize PostgreSQL tools immediately - they require a connection
+        postgres_tools = None
 
 
 # Chat Commands
@@ -1324,6 +1328,109 @@ def sql(
     
     except Exception as e:
         console.print(f"[red]SQL operation error: {e}[/red]")
+
+
+# PostgreSQL Commands
+@app.command()
+def postgres(
+    query: Optional[str] = typer.Option(None, "--query", "-q", help="Execute PostgreSQL query"),
+    script: Optional[str] = typer.Option(None, "--script", "-s", help="Execute PostgreSQL script file"),
+    show_table: Optional[str] = typer.Option(None, "--show-table", help="Show table information"),
+    list_tables: bool = typer.Option(False, "--list", "-l", help="List all tables"),
+    list_schemas: bool = typer.Option(False, "--schemas", help="List all schemas"),
+    database_info: bool = typer.Option(False, "--info", "-i", help="Show database information"),
+    show_indexes: Optional[str] = typer.Option(None, "--indexes", help="Show index information for table"),
+    vacuum: Optional[str] = typer.Option(None, "--vacuum", help="Vacuum table (format: schema.table)"),
+    reindex: Optional[str] = typer.Option(None, "--reindex", help="Reindex table (format: schema.table)"),
+    backup: Optional[str] = typer.Option(None, "--backup", help="Backup database to file"),
+    restore: Optional[str] = typer.Option(None, "--restore", help="Restore database from backup"),
+    host: str = typer.Option("localhost", "--host", help="PostgreSQL host"),
+    port: int = typer.Option(5432, "--port", help="PostgreSQL port"),
+    database: str = typer.Option("postgres", "--database", "-d", help="Database name"),
+    username: str = typer.Option("postgres", "--username", "-u", help="Database username"),
+    password: Optional[str] = typer.Option(None, "--password", "-p", help="Database password"),
+    schema: str = typer.Option("public", "--schema", help="Schema name"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """PostgreSQL database integration with advanced features"""
+    initialize_system()
+    
+    try:
+        # Create PostgreSQL connection configuration
+        connection_config = PostgresConnection(
+            host=host,
+            port=port,
+            database=database,
+            username=username,
+            password=password
+        )
+        
+        # Initialize PostgreSQL tools with connection
+        postgres_tools = PostgresToolsManager(connection_config)
+        
+        if query:
+            postgres_tools.execute_query(query, format=format)
+        
+        elif script:
+            # Read script file
+            try:
+                with open(script, 'r') as f:
+                    script_content = f.read()
+                postgres_tools.execute_script(script_content, format=format)
+            except FileNotFoundError:
+                console.print(f"[red]Script file not found: {script}[/red]")
+            except Exception as e:
+                console.print(f"[red]Error reading script file: {e}[/red]")
+        
+        elif show_table:
+            postgres_tools.show_table_info(show_table, schema, format=format)
+        
+        elif list_tables:
+            postgres_tools.list_tables(schema, format=format)
+        
+        elif list_schemas:
+            postgres_tools.list_schemas(format=format)
+        
+        elif database_info:
+            postgres_tools.show_database_info(format=format)
+        
+        elif show_indexes:
+            postgres_tools.show_index_info(show_indexes, schema, format=format)
+        
+        elif vacuum:
+            try:
+                if '.' in vacuum:
+                    schema_name, table_name = vacuum.split('.', 1)
+                else:
+                    schema_name, table_name = schema, vacuum
+                postgres_tools.vacuum_table(table_name, schema_name)
+            except ValueError:
+                console.print("[red]Invalid vacuum format. Use: schema.table[/red]")
+        
+        elif reindex:
+            try:
+                if '.' in reindex:
+                    schema_name, table_name = reindex.split('.', 1)
+                else:
+                    schema_name, table_name = schema, reindex
+                postgres_tools.reindex_table(table_name, schema_name)
+            except ValueError:
+                console.print("[red]Invalid reindex format. Use: schema.table[/red]")
+        
+        elif backup:
+            postgres_tools.backup_database(backup)
+        
+        elif restore:
+            postgres_tools.restore_database(restore)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+        
+        # Close connection
+        postgres_tools.close()
+    
+    except Exception as e:
+        console.print(f"[red]PostgreSQL operation error: {e}[/red]")
 
 
 # Version Command
