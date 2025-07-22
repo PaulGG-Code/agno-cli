@@ -454,6 +454,44 @@ agno shell --history-limit 10
 agno shell --clear-history
 ```
 
+### Docker Container Management
+```bash
+# Container operations
+agno docker --list
+agno docker --all
+agno docker --info container_id
+agno docker --start container_id
+agno docker --stop container_id
+agno docker --restart container_id
+agno docker --remove container_id --force
+
+# Container creation
+agno docker --create "nginx:latest:my-nginx"
+agno docker --create "python:3.9:my-app" --command "python app.py"
+agno docker --create "postgres:13:my-db" --ports "5432:5432" --env "POSTGRES_PASSWORD=mypass"
+
+# Container execution
+agno docker --exec "container_id:ls -la"
+agno docker --exec "container_id:cat /etc/hosts" --exec-user root
+
+# Container logs
+agno docker --logs container_id
+agno docker --logs container_id --logs-tail 50
+agno docker --logs container_id --logs-follow
+
+# Image management
+agno docker --images
+agno docker --pull "ubuntu:20.04"
+agno docker --rmi image_id --force
+agno docker --build "./app:my-app" --dockerfile "Dockerfile.prod"
+
+# System management
+agno docker --system
+agno docker --prune
+agno docker --prune-containers
+agno docker --prune-images
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -517,6 +555,7 @@ agno_cli/
 │   ├── sql_tools.py         # SQL query execution
 │   ├── postgres_tools.py    # PostgreSQL database integration
 │   ├── shell_tools.py       # System command execution
+│   ├── docker_tools.py      # Docker container management
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -555,6 +594,7 @@ agno_cli/
 - **SQL Database**: General SQL query execution, multi-database support
 - **PostgreSQL Database**: Specialized PostgreSQL integration, advanced features
 - **Shell Operations**: Safe system command execution, process management
+- **Docker Management**: Container lifecycle, image management, system monitoring
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -707,6 +747,12 @@ agno shell --info # System information
 agno shell --command "ls -la" # List directory
 agno shell --process $$ # Current process info
 agno shell --history # Command history
+
+# Test Docker operations
+agno docker --system
+agno docker --list
+agno docker --images
+agno docker --pull "hello-world:latest"
 
 # Test agent operations
 agno agents --list                                  # List all agents

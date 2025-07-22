@@ -33,6 +33,7 @@ from tools.duckdb_tools import DuckDBToolsManager
 from tools.sql_tools import SQLToolsManager, DatabaseConnection
 from tools.postgres_tools import PostgresToolsManager, PostgresConnection
 from tools.shell_tools import ShellToolsManager
+from tools.docker_tools import DockerToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -63,7 +64,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -87,6 +88,7 @@ def initialize_system():
         # Don't initialize PostgreSQL tools immediately - they require a connection
         postgres_tools = None
         shell_tools = ShellToolsManager()
+        docker_tools = DockerToolsManager()
 
 
 # Chat Commands
@@ -1497,6 +1499,133 @@ def shell(
     
     except Exception as e:
         console.print(f"[red]Shell operation error: {e}[/red]")
+
+
+# Docker Commands
+@app.command()
+def docker(
+    list_containers: bool = typer.Option(False, "--list", "-l", help="List containers"),
+    all_containers: bool = typer.Option(False, "--all", "-a", help="Show all containers (including stopped)"),
+    container_info: Optional[str] = typer.Option(None, "--info", help="Show container information"),
+    start: Optional[str] = typer.Option(None, "--start", help="Start container by ID"),
+    stop: Optional[str] = typer.Option(None, "--stop", help="Stop container by ID"),
+    restart: Optional[str] = typer.Option(None, "--restart", help="Restart container by ID"),
+    remove: Optional[str] = typer.Option(None, "--remove", help="Remove container by ID"),
+    force: bool = typer.Option(False, "--force", help="Force operation"),
+    volumes: bool = typer.Option(False, "--volumes", "-v", help="Remove volumes with container"),
+    create: Optional[str] = typer.Option(None, "--create", help="Create container (format: image:name)"),
+    command: Optional[str] = typer.Option(None, "--command", "-c", help="Command for container creation"),
+    ports: Optional[str] = typer.Option(None, "--ports", "-p", help="Port mappings (format: host:container,host2:container2)"),
+    volumes_mount: Optional[str] = typer.Option(None, "--volumes-mount", help="Volume mounts (format: host:container,host2:container2)"),
+    environment: Optional[str] = typer.Option(None, "--env", "-e", help="Environment variables (format: VAR=value,VAR2=value2)"),
+    detach: bool = typer.Option(True, "--detach/--no-detach", help="Run container in background"),
+    exec_command: Optional[str] = typer.Option(None, "--exec", help="Execute command in container (format: container_id:command)"),
+    exec_user: Optional[str] = typer.Option(None, "--exec-user", help="User for exec command"),
+    logs: Optional[str] = typer.Option(None, "--logs", help="Show container logs by ID"),
+    logs_tail: int = typer.Option(100, "--logs-tail", help="Number of log lines to show"),
+    logs_follow: bool = typer.Option(False, "--logs-follow", help="Follow log output"),
+    list_images: bool = typer.Option(False, "--images", help="List Docker images"),
+    pull: Optional[str] = typer.Option(None, "--pull", help="Pull image (format: name:tag)"),
+    remove_image: Optional[str] = typer.Option(None, "--rmi", help="Remove image by ID"),
+    build: Optional[str] = typer.Option(None, "--build", help="Build image (format: path:tag)"),
+    dockerfile: str = typer.Option("Dockerfile", "--dockerfile", help="Dockerfile name"),
+    system_info: bool = typer.Option(False, "--system", help="Show Docker system information"),
+    prune: bool = typer.Option(False, "--prune", help="Prune unused Docker resources"),
+    prune_containers: bool = typer.Option(False, "--prune-containers", help="Prune only containers"),
+    prune_images: bool = typer.Option(False, "--prune-images", help="Prune only images"),
+    prune_volumes: bool = typer.Option(False, "--prune-volumes", help="Prune only volumes"),
+    prune_networks: bool = typer.Option(False, "--prune-networks", help="Prune only networks"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """Docker container management with rich features"""
+    initialize_system()
+    
+    try:
+        if list_containers or all_containers:
+            docker_tools.list_containers(all_containers, format)
+        
+        elif container_info:
+            docker_tools.show_container_info(container_info, format)
+        
+        elif start:
+            docker_tools.start_container(start)
+        
+        elif stop:
+            docker_tools.stop_container(stop)
+        
+        elif restart:
+            docker_tools.restart_container(restart)
+        
+        elif remove:
+            docker_tools.remove_container(remove, force, volumes)
+        
+        elif create:
+            try:
+                if ':' in create:
+                    image, name = create.split(':', 1)
+                else:
+                    image, name = create, None
+                docker_tools.create_container(image, name, command, ports, volumes_mount, environment, detach)
+            except ValueError:
+                console.print("[red]Invalid create format. Use: image:name[/red]")
+        
+        elif exec_command:
+            try:
+                if ':' in exec_command:
+                    container_id, cmd = exec_command.split(':', 1)
+                else:
+                    console.print("[red]Invalid exec format. Use: container_id:command[/red]")
+                    return
+                docker_tools.execute_command(container_id, cmd, exec_user)
+            except ValueError:
+                console.print("[red]Invalid exec format. Use: container_id:command[/red]")
+        
+        elif logs:
+            docker_tools.show_logs(logs, logs_tail, logs_follow)
+        
+        elif list_images:
+            docker_tools.list_images(format)
+        
+        elif pull:
+            try:
+                if ':' in pull:
+                    image_name, tag = pull.split(':', 1)
+                else:
+                    image_name, tag = pull, "latest"
+                docker_tools.pull_image(image_name, tag)
+            except ValueError:
+                console.print("[red]Invalid pull format. Use: name:tag[/red]")
+        
+        elif remove_image:
+            docker_tools.remove_image(remove_image, force)
+        
+        elif build:
+            try:
+                if ':' in build:
+                    path, tag = build.split(':', 1)
+                else:
+                    console.print("[red]Invalid build format. Use: path:tag[/red]")
+                    return
+                docker_tools.build_image(path, tag, dockerfile)
+            except ValueError:
+                console.print("[red]Invalid build format. Use: path:tag[/red]")
+        
+        elif system_info:
+            docker_tools.show_system_info(format)
+        
+        elif prune or prune_containers or prune_images or prune_volumes or prune_networks:
+            docker_tools.prune_system(
+                containers=prune or prune_containers,
+                images=prune or prune_images,
+                volumes=prune or prune_volumes,
+                networks=prune or prune_networks
+            )
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]Docker operation error: {e}[/red]")
 
 
 # Version Command

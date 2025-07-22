@@ -79,6 +79,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Timeout management** with configurable command timeouts
 - **Rich output formatting** with beautiful tables and syntax highlighting
 
+#### ✅ Docker Container Management Tool
+- **Container lifecycle management** with start, stop, restart, and remove operations
+- **Image management** with pull, build, and remove capabilities
+- **Container creation** with flexible configuration options
+- **Command execution** within running containers
+- **Log monitoring** with real-time log following
+- **System monitoring** with comprehensive Docker statistics
+- **Resource management** with pruning capabilities
+- **Rich output formatting** with beautiful tables and progress indicators
+- **Port and volume mapping** for container configuration
+- **Environment variable management** for container setup
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -87,6 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `sql` command** with general SQL query execution
 - **New `postgres` command** with specialized PostgreSQL integration
 - **New `shell` command** with safe system command execution
+- **New `docker` command** with comprehensive container management
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -292,6 +305,12 @@ agno shell --info
 agno shell --command "ls -la"
 agno shell --process $$
 agno shell --history
+
+# Docker operations testing
+agno docker --system
+agno docker --list
+agno docker --images
+agno docker --pull "hello-world:latest"
 
 # Agent system testing
 agno agents --list

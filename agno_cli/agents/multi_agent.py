@@ -198,6 +198,14 @@ class MultiAgentSystem:
                     tools.append(ShellTools())
                 except ImportError:
                     pass
+            
+            # Add Docker tools if available
+            if agent_state.has_tool("docker_tools"):
+                try:
+                    from agno.tools.docker_tools import DockerTools
+                    tools.append(DockerTools())
+                except ImportError:
+                    pass
         
         return tools
     
