@@ -119,8 +119,22 @@ def agents(
     status: Optional[str] = typer.Option(None, "--status", help="Show agent status by ID"),
     capabilities: Optional[str] = typer.Option(None, "--capabilities", help="JSON capabilities for new agent")
 ):
+    global multi_agent_system
     """Manage agents in the multi-agent system"""
     initialize_system()
+    # --- AGENT STATE PERSISTENCE PATCH START ---
+    from pathlib import Path
+    AGENT_STATE_PATH = Path(__file__).parent.parent / 'agents_state_agents.json'
+    if AGENT_STATE_PATH.exists():
+        try:
+            # Load the saved state and replace the current system
+            # Use the agents file as the base path for loading
+            base_path = AGENT_STATE_PATH.parent / 'agents_state.json'
+            loaded_system = MultiAgentSystem.load_system_state(base_path, config)
+            multi_agent_system = loaded_system
+        except Exception as e:
+            console.print(f"[red]Failed to load agent state: {e}[/red]")
+    # --- AGENT STATE PERSISTENCE PATCH END ---
     
     if list_agents:
         agents = multi_agent_system.list_agents()
@@ -184,9 +198,13 @@ def agents(
                 description=description,
                 capabilities=caps
             )
-            
             console.print(f"[green]Created agent '{create}' with ID: {agent_id}[/green]")
-            
+            # --- AGENT STATE PERSISTENCE PATCH: Save after create ---
+            try:
+                multi_agent_system.save_system_state(AGENT_STATE_PATH)
+            except Exception as e:
+                console.print(f"[red]Failed to save agent state: {e}[/red]")
+            # --- END PATCH ---
         except ValueError as e:
             console.print(f"[red]Error creating agent: {e}[/red]")
         except json.JSONDecodeError:
@@ -196,6 +214,12 @@ def agents(
         try:
             if multi_agent_system.remove_agent(remove):
                 console.print(f"[green]Removed agent {remove}[/green]")
+                # --- AGENT STATE PERSISTENCE PATCH: Save after remove ---
+                try:
+                    multi_agent_system.save_system_state(AGENT_STATE_PATH)
+                except Exception as e:
+                    console.print(f"[red]Failed to save agent state: {e}[/red]")
+                # --- END PATCH ---
             else:
                 console.print(f"[red]Agent {remove} not found[/red]")
         except ValueError as e:
@@ -404,10 +428,10 @@ def finance(
 **Price:** ${stock_info.price:.2f}
 **Change:** ${stock_info.change:.2f} ({stock_info.change_percent:.2f}%)
 **Volume:** {stock_info.volume:,}
-**Market Cap:** ${stock_info.market_cap:,.0f} if stock_info.market_cap else 'N/A'
-**P/E Ratio:** {stock_info.pe_ratio:.2f} if stock_info.pe_ratio else 'N/A'
-**52W High:** ${stock_info.fifty_two_week_high:.2f} if stock_info.fifty_two_week_high else 'N/A'
-**52W Low:** ${stock_info.fifty_two_week_low:.2f} if stock_info.fifty_two_week_low else 'N/A'
+**Market Cap:** {'${:,.0f}'.format(stock_info.market_cap) if stock_info.market_cap is not None else 'N/A'}
+**P/E Ratio:** {'{:.2f}'.format(stock_info.pe_ratio) if stock_info.pe_ratio is not None else 'N/A'}
+**52W High:** {'${:.2f}'.format(stock_info.fifty_two_week_high) if stock_info.fifty_two_week_high is not None else 'N/A'}
+**52W Low:** {'${:.2f}'.format(stock_info.fifty_two_week_low) if stock_info.fifty_two_week_low is not None else 'N/A'}
 """
             
             panel = Panel(
