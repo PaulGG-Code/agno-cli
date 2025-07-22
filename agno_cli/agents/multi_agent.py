@@ -214,6 +214,14 @@ class MultiAgentSystem:
                     tools.append(WikipediaTools())
                 except ImportError:
                     pass
+            
+            # Add arXiv tools if available
+            if agent_state.has_tool("arxiv_tools"):
+                try:
+                    from agno.tools.arxiv_tools import ArxivTools
+                    tools.append(ArxivTools())
+                except ImportError:
+                    pass
         
         return tools
     

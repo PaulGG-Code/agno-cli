@@ -35,6 +35,7 @@ from tools.postgres_tools import PostgresToolsManager, PostgresConnection
 from tools.shell_tools import ShellToolsManager
 from tools.docker_tools import DockerToolsManager
 from tools.wikipedia_tools import WikipediaToolsManager
+from tools.arxiv_tools import ArxivToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -65,7 +66,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -91,6 +92,7 @@ def initialize_system():
         shell_tools = ShellToolsManager()
         docker_tools = DockerToolsManager()
         wikipedia_tools = WikipediaToolsManager()
+        arxiv_tools = ArxivToolsManager()
 
 
 # Chat Commands
@@ -1737,6 +1739,84 @@ def wikipedia(
     
     except Exception as e:
         console.print(f"[red]Wikipedia operation error: {e}[/red]")
+
+
+# arXiv Commands
+@app.command()
+def arxiv(
+    search: Optional[str] = typer.Option(None, "--search", "-s", help="Search arXiv papers"),
+    paper: Optional[str] = typer.Option(None, "--paper", "-p", help="Get paper by ID"),
+    author: Optional[str] = typer.Option(None, "--author", "-a", help="Search papers by author"),
+    category: Optional[str] = typer.Option(None, "--category", "-c", help="Search papers by category"),
+    recent: bool = typer.Option(False, "--recent", "-r", help="Get recent papers"),
+    related: Optional[str] = typer.Option(None, "--related", help="Get papers related to paper ID"),
+    author_info: Optional[str] = typer.Option(None, "--author-info", help="Get information about author"),
+    categories: bool = typer.Option(False, "--categories", help="List available categories"),
+    keywords: Optional[str] = typer.Option(None, "--keywords", help="Extract keywords from text"),
+    date_range: Optional[str] = typer.Option(None, "--date-range", help="Search by date range (format: start:end)"),
+    max_results: int = typer.Option(10, "--max-results", "-m", help="Maximum number of results"),
+    sort_by: str = typer.Option("relevance", "--sort-by", help="Sort by (relevance, lastUpdatedDate, submittedDate)"),
+    sort_order: str = typer.Option("descending", "--sort-order", help="Sort order (ascending, descending)"),
+    filter_categories: Optional[str] = typer.Option(None, "--filter-categories", help="Filter by categories (comma-separated)"),
+    max_keywords: int = typer.Option(10, "--max-keywords", help="Maximum number of keywords to extract"),
+    clear_cache: bool = typer.Option(False, "--clear-cache", help="Clear arXiv cache"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """arXiv academic paper search and retrieval with rich features"""
+    initialize_system()
+    
+    try:
+        if clear_cache:
+            arxiv_tools.clear_cache()
+        
+        elif search:
+            categories_list = None
+            if filter_categories:
+                categories_list = [cat.strip() for cat in filter_categories.split(',')]
+            arxiv_tools.search(search, max_results, sort_by, sort_order, categories_list, format)
+        
+        elif paper:
+            arxiv_tools.get_paper(paper, format)
+        
+        elif author:
+            arxiv_tools.search_by_author(author, max_results, format)
+        
+        elif category:
+            arxiv_tools.search_by_category(category, max_results, format)
+        
+        elif recent:
+            arxiv_tools.get_recent_papers(category, max_results, format)
+        
+        elif related:
+            arxiv_tools.get_related_papers(related, max_results, format)
+        
+        elif author_info:
+            arxiv_tools.get_author_info(author_info, format)
+        
+        elif categories:
+            arxiv_tools.get_categories(format)
+        
+        elif keywords:
+            arxiv_tools.extract_keywords(keywords, max_keywords, format)
+        
+        elif date_range:
+            try:
+                if ':' in date_range:
+                    start_date, end_date = date_range.split(':', 1)
+                else:
+                    console.print("[red]Invalid date range format. Use: start:end[/red]")
+                    return
+                
+                # This would require implementing date range search in the tools
+                console.print("[yellow]Date range search not yet implemented[/yellow]")
+            except ValueError:
+                console.print("[red]Invalid date range format. Use: start:end[/red]")
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]arXiv operation error: {e}[/red]")
 
 
 # Version Command

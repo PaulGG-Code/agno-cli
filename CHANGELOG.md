@@ -105,6 +105,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Random article discovery** for exploration
 - **Language version detection** for international content
 
+#### ✅ arXiv Academic Paper Search Tool
+- **Advanced paper search functionality** with comprehensive query capabilities
+- **Content retrieval and metadata extraction** with full paper information
+- **Author and category filtering** for targeted research
+- **Paper summaries and abstracts** with detailed content analysis
+- **Citation and reference analysis** for research connections
+- **Recent papers discovery** with latest academic publications
+- **Related papers search** for research exploration
+- **Author information analysis** with publication statistics
+- **Category exploration** with academic field classification
+- **Keyword extraction** with intelligent text analysis
+- **Caching system** for improved performance
+- **Rich output formatting** with beautiful tables and panels
+- **Multiple sorting options** for relevance and date-based ordering
+- **Date range filtering** for temporal research queries
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -115,6 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `shell` command** with safe system command execution
 - **New `docker` command** with comprehensive container management
 - **New `wikipedia` command** with research and knowledge retrieval
+- **New `arxiv` command** with academic paper search and analysis
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -331,6 +348,11 @@ agno docker --pull "hello-world:latest"
 agno wikipedia --search "Python programming"
 agno wikipedia --summary "Python (programming language)"
 agno wikipedia --random
+
+# arXiv operations testing
+agno arxiv --search "machine learning"
+agno arxiv --paper "2401.00123"
+agno arxiv --categories
 
 # Agent system testing
 agno agents --list

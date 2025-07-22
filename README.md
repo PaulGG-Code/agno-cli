@@ -518,6 +518,29 @@ agno wikipedia --keywords "Python is a high-level programming language"
 agno wikipedia --clear-cache
 ```
 
+### arXiv Academic Papers
+```bash
+# Search operations
+agno arxiv --search "machine learning"
+agno arxiv --search "deep learning" --max-results 5
+agno arxiv --search "transformer" --filter-categories "cs.AI,cs.LG"
+
+# Paper operations
+agno arxiv --paper "2401.00123"
+agno arxiv --recent --max-results 10
+agno arxiv --related "2401.00123"
+
+# Author and category operations
+agno arxiv --author "Yann LeCun"
+agno arxiv --category "cs.AI" --max-results 20
+agno arxiv --author-info "Geoffrey Hinton"
+agno arxiv --categories
+
+# Text analysis
+agno arxiv --keywords "This paper presents a novel approach to machine learning"
+agno arxiv --clear-cache
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -583,6 +606,7 @@ agno_cli/
 │   ├── shell_tools.py       # System command execution
 │   ├── docker_tools.py      # Docker container management
 │   ├── wikipedia_tools.py   # Wikipedia research and content retrieval
+│   ├── arxiv_tools.py       # arXiv academic paper search
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -623,6 +647,7 @@ agno_cli/
 - **Shell Operations**: Safe system command execution, process management
 - **Docker Management**: Container lifecycle, image management, system monitoring
 - **Wikipedia Research**: Search, content retrieval, language support, text analysis
+- **arXiv Papers**: Academic paper search, author analysis, category filtering
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -786,6 +811,11 @@ agno docker --pull "hello-world:latest"
 agno wikipedia --search "Python programming"
 agno wikipedia --summary "Python (programming language)"
 agno wikipedia --random
+
+# Test arXiv operations
+agno arxiv --search "machine learning"
+agno arxiv --paper "2401.00123"
+agno arxiv --categories
 
 # Test agent operations
 agno agents --list                                  # List all agents
