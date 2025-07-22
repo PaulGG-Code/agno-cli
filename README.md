@@ -671,6 +671,34 @@ agno opencv --list-features
 agno opencv --format json --image image.jpg --info
 ```
 
+### Model Management Operations
+```bash
+# List and explore models
+agno models --list
+agno models --show gpt-4o
+agno models --list-strategies
+agno models --stats
+
+# Model selection and comparison
+agno models --select text_generation --strategy balanced
+agno models --compare "gpt-4o,claude-3-5-sonnet,gemini-1.5-pro"
+
+# Performance tracking
+agno models --performance gpt-4o --days 7
+agno models --record-performance '{"model_name":"gpt-4o","provider":"openai","test_date":"2024-01-01","latency_ms":150,"throughput_tokens_per_sec":1000}'
+
+# Model management
+agno models --register model_config.json
+agno models --update "gpt-4o:temperature:0.8"
+agno models --export "gpt-4o:exported_model.json"
+agno models --import new_model.json
+
+# Options
+agno models --format json --list
+agno models --provider openai --list
+agno models --model-type text_generation --list
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -742,6 +770,7 @@ agno_cli/
 │   ├── hackernews_tools.py  # Hacker News integration
 │   ├── visualization_tools.py # Data visualization and charting
 │   ├── opencv_tools.py # Computer vision operations
+│   ├── models_tools.py # Model management and selection
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -788,6 +817,7 @@ agno_cli/
 - **Hacker News**: Story retrieval, comments, user profiles, trending
 - **Data Visualization**: Chart generation, interactive plots, dashboards
 - **Computer Vision**: Image processing, object detection, feature extraction
+- **Model Management**: Model selection, comparison, performance tracking
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -982,6 +1012,12 @@ agno opencv --list-operations
 agno opencv --image test_image.jpg --info
 agno opencv --image test_image.jpg --operation resize --width 200 --height 150
 agno opencv --image test_image.jpg --extract basic
+
+# Test model management operations
+agno models --list
+agno models --show gpt-4o
+agno models --list-strategies
+agno models --stats
 
 # Test agent operations
 agno agents --list                                  # List all agents

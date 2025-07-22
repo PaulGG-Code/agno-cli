@@ -41,6 +41,7 @@ from tools.sleep_tools import SleepToolsManager
 from tools.hackernews_tools import HackerNewsToolsManager
 from tools.visualization_tools import VisualizationToolsManager
 from tools.opencv_tools import OpenCVToolsManager
+from tools.models_tools import ModelsToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -71,7 +72,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -103,6 +104,7 @@ def initialize_system():
         hackernews_tools = HackerNewsToolsManager()
         visualization_tools = VisualizationToolsManager()
         opencv_tools = OpenCVToolsManager()
+        models_tools = ModelsToolsManager()
 
 
 # Chat Commands
@@ -2244,6 +2246,146 @@ def opencv(
     
     except Exception as e:
         console.print(f"[red]OpenCV operation error: {e}[/red]")
+
+
+# Models Commands
+@app.command()
+def models(
+    list_models: bool = typer.Option(False, "--list", "-l", help="List all models"),
+    show: Optional[str] = typer.Option(None, "--show", "-s", help="Show model details"),
+    compare: Optional[str] = typer.Option(None, "--compare", "-c", help="Compare models (comma-separated)"),
+    select: Optional[str] = typer.Option(None, "--select", help="Select model by strategy"),
+    strategy: Optional[str] = typer.Option("balanced", "--strategy", help="Selection strategy"),
+    model_type: Optional[str] = typer.Option(None, "--model-type", help="Model type filter"),
+    provider: Optional[str] = typer.Option(None, "--provider", help="Provider filter"),
+    status: Optional[str] = typer.Option(None, "--status", help="Status filter"),
+    performance: Optional[str] = typer.Option(None, "--performance", help="Show performance for model"),
+    days: int = typer.Option(30, "--days", "-d", help="Days for performance history"),
+    stats: bool = typer.Option(False, "--stats", help="Show model statistics"),
+    list_strategies: bool = typer.Option(False, "--list-strategies", help="List selection strategies"),
+    register: Optional[str] = typer.Option(None, "--register", help="Register model from config file"),
+    update: Optional[str] = typer.Option(None, "--update", help="Update model (format: name:field:value)"),
+    delete: Optional[str] = typer.Option(None, "--delete", help="Delete model by name"),
+    export: Optional[str] = typer.Option(None, "--export", help="Export model config (format: name:file)"),
+    import_config: Optional[str] = typer.Option(None, "--import", help="Import model config from file"),
+    record_performance: Optional[str] = typer.Option(None, "--record-performance", help="Record performance (JSON format)"),
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json)")
+):
+    """Model management and selection operations"""
+    initialize_system()
+    
+    try:
+        if list_models:
+            models_tools.list_models(provider, model_type, status, format)
+        
+        elif show:
+            models_tools.show_model(show, format)
+        
+        elif compare:
+            model_names = [name.strip() for name in compare.split(',')]
+            models_tools.compare_models(model_names, format)
+        
+        elif select:
+            models_tools.select_model(strategy, select, format)
+        
+        elif performance:
+            models_tools.show_performance(performance, days, format)
+        
+        elif stats:
+            models_tools.show_stats(format)
+        
+        elif list_strategies:
+            models_tools.list_strategies(format)
+        
+        elif register:
+            # Register model from config file
+            try:
+                with open(register, 'r') as f:
+                    config_data = f.read()
+                
+                # Try to detect format
+                if register.endswith('.yaml') or register.endswith('.yml'):
+                    config_format = "yaml"
+                else:
+                    config_format = "json"
+                
+                success = models_tools.models_tools.import_config(config_data, config_format)
+                if success:
+                    console.print(f"[green]Model registered from: {register}[/green]")
+                else:
+                    console.print(f"[red]Failed to register model from: {register}[/red]")
+            except Exception as e:
+                console.print(f"[red]Error registering model: {e}[/red]")
+        
+        elif update:
+            # Update model (format: name:field:value)
+            try:
+                parts = update.split(':')
+                if len(parts) >= 3:
+                    model_name = parts[0]
+                    field = parts[1]
+                    value = ':'.join(parts[2:])  # Handle values that might contain colons
+                    
+                    # Convert value to appropriate type
+                    if value.lower() in ['true', 'false']:
+                        value = value.lower() == 'true'
+                    elif value.isdigit():
+                        value = int(value)
+                    elif value.replace('.', '').isdigit():
+                        value = float(value)
+                    
+                    success = models_tools.models_tools.update_model(model_name, {field: value})
+                    if success:
+                        console.print(f"[green]Model updated: {model_name}[/green]")
+                    else:
+                        console.print(f"[red]Failed to update model: {model_name}[/red]")
+                else:
+                    console.print("[red]Invalid update format. Use: name:field:value[/red]")
+            except Exception as e:
+                console.print(f"[red]Error updating model: {e}[/red]")
+        
+        elif delete:
+            success = models_tools.models_tools.delete_model(delete)
+            if success:
+                console.print(f"[green]Model deleted: {delete}[/green]")
+            else:
+                console.print(f"[red]Failed to delete model: {delete}[/red]")
+        
+        elif export:
+            # Export model config (format: name:file)
+            try:
+                parts = export.split(':')
+                if len(parts) == 2:
+                    model_name = parts[0]
+                    output_file = parts[1]
+                    models_tools.export_model(model_name, output_file, format)
+                else:
+                    console.print("[red]Invalid export format. Use: name:file[/red]")
+            except Exception as e:
+                console.print(f"[red]Error exporting model: {e}[/red]")
+        
+        elif import_config:
+            models_tools.import_model(import_config, format)
+        
+        elif record_performance:
+            # Record performance (JSON format)
+            try:
+                perf_data = json.loads(record_performance)
+                performance = models_tools.models_tools.ModelPerformance(**perf_data)
+                success = models_tools.models_tools.record_performance(performance)
+                if success:
+                    console.print("[green]Performance recorded successfully[/green]")
+                else:
+                    console.print("[red]Failed to record performance[/red]")
+            except Exception as e:
+                console.print(f"[red]Error recording performance: {e}[/red]")
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno models --list[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]Models operation error: {e}[/red]")
 
 
 # Version Command

@@ -262,6 +262,14 @@ class MultiAgentSystem:
                     tools.append(OpenCVTools())
                 except ImportError:
                     pass
+            
+            # Add Models tools if available
+            if agent_state.has_tool("models_tools"):
+                try:
+                    from agno.tools.models_tools import ModelsTools
+                    tools.append(ModelsTools())
+                except ImportError:
+                    pass
         
         return tools
     

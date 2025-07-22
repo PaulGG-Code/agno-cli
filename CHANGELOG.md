@@ -205,6 +205,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Professional styling** with consistent output formatting and detailed operation results
 - **Multi-format support** with table and JSON output options for all operations
 
+#### ✅ Model Management Tools
+- **Comprehensive model management capabilities** with model selection, comparison, and performance tracking
+- **Model registry and configuration** with support for multiple providers (OpenAI, Anthropic, Google, etc.)
+- **Advanced selection strategies** including fastest, cheapest, most accurate, balanced, highest throughput, and lowest latency
+- **Performance tracking and metrics** with detailed latency, throughput, accuracy, and cost analysis
+- **Model comparison and benchmarking** with side-by-side performance analysis and recommendations
+- **Cost optimization** with detailed cost analysis and cost-effective model selection
+- **Database persistence** with SQLite backend for model configurations and performance history
+- **Rich output formatting** with beautiful tables and detailed model information displays
+- **Multiple model types** supporting text generation, embeddings, image generation, multimodal, and more
+- **Provider management** with support for OpenAI, Anthropic, Google, Meta, HuggingFace, Cohere, and custom providers
+- **Configuration import/export** with JSON and YAML format support
+- **Performance history tracking** with historical data analysis and trend identification
+- **Model status management** with active, deprecated, and experimental model states
+- **Usage statistics** with comprehensive model usage tracking and analytics
+- **Professional styling** with consistent output formatting and detailed operation results
+- **Multi-format support** with table and JSON output options for all operations
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -221,6 +239,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `hackernews` command** with Hacker News integration
 - **New `visualization` command** with data visualization tools
 - **New `opencv` command** with computer vision operations
+- **New `models` command** with model management and selection
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -468,6 +487,12 @@ agno opencv --list-operations
 agno opencv --image test_image.jpg --info
 agno opencv --image test_image.jpg --operation resize --width 200 --height 150
 agno opencv --image test_image.jpg --extract basic
+
+# Model management operations testing
+agno models --list
+agno models --show gpt-4o
+agno models --list-strategies
+agno models --stats
 
 # Agent system testing
 agno agents --list
