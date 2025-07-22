@@ -1,4 +1,4 @@
-# Agno CLI Enhanced - Multi-Agent Terminal Assistant
+# Agno CLI Enhanced - Multi-Agent Terminal Assistant (Beta)
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -7,6 +7,11 @@
 A powerful, terminal-native multi-agent assistant built on the Agno AI framework. Features advanced reasoning, team collaboration, comprehensive tool integration, and performance analytics.
 
 ## 🚀 Features
+
+### 📊 Current Implementation Status
+- **✅ Completed**: Multi-agent system, file system operations, basic CLI framework
+- **🔄 In Progress**: Additional tool integrations (see [Implementation Plan](IMPLEMENTATION_PLAN.md))
+- **📋 Planned**: 73+ Agno AI tools integration for full feature parity
 
 ### 🤖 Multi-Agent System
 - **Agent Orchestration**: Coordinate multiple AI agents with different roles and specializations
@@ -22,18 +27,25 @@ A powerful, terminal-native multi-agent assistant built on the Agno AI framework
 
 ### 🔧 Comprehensive Tool Integration
 
-#### Search Tools
+#### ✅ File System Tools (Implemented)
+- **File Operations**: Read, write, list, delete, copy, and move files
+- **Directory Management**: Create directories, tree view, recursive operations
+- **File Search**: Pattern-based file searching with wildcards
+- **File Information**: Detailed metadata, permissions, and MIME type detection
+- **Security**: Path validation and safe file operations
+
+#### 🔄 Search Tools (In Development)
 - **Multiple Engines**: DuckDuckGo, Google, SerpApi, Brave, SearXNG, Baidu
 - **Unified Interface**: Single command for multi-engine search and result aggregation
 - **Configurable**: Engine-specific settings and API key management
 
-#### Financial Tools
+#### 🔄 Financial Tools (In Development)
 - **Stock Analysis**: Real-time quotes, historical data, technical indicators
 - **Portfolio Management**: Multi-stock analysis and performance comparison
 - **Market Data**: Sector performance, analyst recommendations, financial statements
 - **News Integration**: Company-specific news and sentiment analysis
 
-#### Math & Data Tools
+#### 🔄 Math & Data Tools (In Development)
 - **Advanced Calculator**: Scientific functions, variables, step-by-step solutions
 - **Statistical Analysis**: Descriptive stats, correlation, regression analysis
 - **CSV Analysis**: Data loading, querying, and group analysis
@@ -50,6 +62,21 @@ A powerful, terminal-native multi-agent assistant built on the Agno AI framework
 - **Interactive Chat**: Multi-agent conversations with context switching
 - **Modular Commands**: Organized command structure for different functionalities
 - **Export Capabilities**: JSON, CSV, Markdown output formats
+
+## 🚀 Quick Start
+
+```bash
+# Install the CLI
+pip install agno-cli
+
+# Configure with your API key
+agno configure --provider anthropic --api-key your-api-key
+
+# Start exploring
+agno --help                    # See all commands
+agno files --list              # List files in current directory
+agno chat --quick "Hello!"     # Quick chat with AI
+```
 
 ## 📦 Installation
 
@@ -115,6 +142,38 @@ export AGNO_CONFIG_DIR="~/.agno_cli"
 ```
 
 ## 🎮 Usage Examples
+
+### Available Commands
+```bash
+# Core commands
+agno --help                    # Show all available commands
+agno version                   # Show version information
+
+# Agent management
+agno agents --help             # Agent operations
+agno agents --list             # List all agents
+agno agents --create           # Create new agent
+agno agents --remove           # Remove agent
+
+# Chat interface
+agno chat --help               # Chat operations
+agno chat                      # Interactive chat
+agno chat --quick "message"    # Quick single message
+
+# File system operations
+agno files --help              # File system operations
+agno files --list              # List directory contents
+agno files --read file.txt     # Read file contents
+agno files --write file.txt    # Write to file
+agno files --delete file.txt   # Delete file
+agno files --search "*.py"     # Search for files
+agno files --tree              # Display directory tree
+
+# Configuration
+agno configure --help          # Configuration management
+agno configure --show          # Show current config
+agno configure --set           # Set configuration values
+```
 
 ### Interactive Chat
 ```bash
@@ -204,6 +263,48 @@ agno calc "3*x + 2*x^2"
 agno calc --list-vars
 ```
 
+### File System Operations
+```bash
+# List directory contents
+agno files --list
+
+# List with hidden files and recursive search
+agno files --list --hidden --recursive
+
+# Read file contents
+agno files --read README.md
+
+# Write content to file
+agno files --write output.txt --content "Hello, World!"
+
+# Get file information
+agno files --info config.yaml
+
+# Search for files
+agno files --search "*.py"
+
+# Create directory
+agno files --mkdir new_project
+
+# Copy file
+agno files --copy source.txt:destination.txt
+
+# Move file
+agno files --move old_name.txt:new_name.txt
+
+# Delete file (with confirmation)
+agno files --delete temp_file.txt
+
+# Delete without confirmation
+agno files --delete temp_file.txt --no-confirm
+
+# Display directory tree
+agno files --tree
+
+# Display tree with hidden files
+agno files --tree --hidden
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -234,6 +335,15 @@ agno metrics --leaderboard success_rate
 agno metrics --export --format csv
 ```
 
+## 📋 Implementation Roadmap
+
+This project is actively being developed to achieve full feature parity with Agno AI. See our [Implementation Plan](IMPLEMENTATION_PLAN.md) for detailed progress tracking and upcoming features.
+
+### Current Status
+- **✅ Phase 1**: File system operations completed
+- **🔄 Phase 1**: Core infrastructure tools in progress
+- **📋 Phase 2-7**: AI/ML, Business, Web, Social, Cloud, and Advanced AI tools planned
+
 ## 🏗️ Architecture
 
 ### Core Components
@@ -251,10 +361,10 @@ agno_cli/
 │   ├── search_tools.py    # Search engines
 │   ├── financial_tools.py # Financial data
 │   ├── math_tools.py      # Math and data
+│   ├── file_system_tools.py # File system operations
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
-│   ├── media_tools.py     # Media processing
-│   └── file_tools.py      # File operations
+│   └── media_tools.py     # Media processing
 ├── commands/        # CLI command modules
 │   ├── chat_commands.py   # Chat interface
 │   ├── agent_commands.py  # Agent management
@@ -283,10 +393,10 @@ agno_cli/
 - **Search**: Web search across multiple engines
 - **Financial**: Stock analysis, market data, portfolio management
 - **Math**: Calculations, statistics, data analysis
+- **File System**: Local file operations, directory management, file search
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
-- **File**: Local file system operations
 
 ## 🔧 Advanced Configuration
 
@@ -358,8 +468,9 @@ tools:
 }
 ```
 
-## 🧪 Testing
+## 🧪 Testing & Development
 
+### Automated Testing
 ```bash
 # Run all tests
 pytest
@@ -373,6 +484,118 @@ pytest -m integration
 pytest -m "not slow"
 ```
 
+### Manual Testing Commands
+```bash
+# Test file system operations
+agno files --list                                    # List directory contents
+agno files --list --hidden --recursive              # List with hidden files and recursive search
+agno files --read README.md                         # Read file contents (text format)
+agno files --read README.md --format json           # Read file contents (JSON format)
+agno files --read setup.py --format text            # Read Python file
+agno files --write test.txt --content "Hello World" # Write content to file
+agno files --info README.md                         # Get file information
+agno files --search "*.py"                          # Search for Python files
+agno files --mkdir test_directory                   # Create directory
+agno files --copy test.txt:test_directory/copy.txt  # Copy file
+agno files --move test.txt:renamed.txt              # Move file
+agno files --delete test.txt --no-confirm           # Delete file without confirmation
+agno files --delete test_directory --recursive --no-confirm # Delete directory recursively
+agno files --tree                                   # Display directory tree
+agno files --tree --hidden                          # Display tree with hidden files
+
+# Test agent operations
+agno agents --list                                  # List all agents
+agno agents --create "DataAnalyst" --role specialist \
+  --description "Expert in data analysis" \
+  --capabilities '{"tools": ["math_tools"], "skills": ["statistics"]}'
+
+# Test chat functionality
+agno chat --quick "Hello, how are you?"             # Quick chat message
+agno chat --agent TeamLeader --trace                # Chat with specific agent and trace
+
+# Test configuration
+agno configure --show                               # Show current configuration
+agno configure --provider anthropic --api-key test-key # Set provider and API key
+
+# Test help and version
+agno --help                                         # Show all available commands
+agno files --help                                   # Show file system command help
+agno version                                        # Show version information
+```
+
+### Development Environment Setup
+```bash
+# Activate virtual environment
+pyenv activate agnocli2@virtuelenv
+
+# Install in development mode
+pip install -e .
+
+# Run CLI directly
+python -m agno_cli.cli --help
+
+# Test specific functionality
+python -c "from agno_cli.tools.file_system_tools import FileSystemToolsManager; fs = FileSystemToolsManager(); fs.list_directory()"
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### File System Operations
+```bash
+# Issue: Read command not showing output
+# Solution: Use --format text or --format json explicitly
+agno files --read file.txt --format text
+
+# Issue: DateTime serialization errors
+# Solution: Fixed in latest version - datetime objects are properly handled
+
+# Issue: Permission denied errors
+# Solution: Check file permissions and ensure safe path operations
+agno files --info file.txt  # Check file permissions first
+```
+
+#### Agent Operations
+```bash
+# Issue: UnboundLocalError with multi_agent_system
+# Solution: Fixed in latest version - proper initialization handling
+
+# Issue: Agent state not loading correctly
+# Solution: Check agents_state_agents.json and agents_state_orchestrator.json files
+ls -la agents_state*.json  # Verify state files exist
+```
+
+#### Chat Operations
+```bash
+# Issue: TypeError with RunResponse objects
+# Solution: Fixed in latest version - proper content extraction from RunResponse
+
+# Issue: Markdown rendering errors
+# Solution: Ensure content is string type before passing to Markdown()
+```
+
+### Debug Commands
+```bash
+# Check CLI installation
+which agno
+agno --version
+
+# Check Python environment
+python --version
+pip list | grep agno
+
+# Test file system tools directly
+python -c "
+from agno_cli.tools.file_system_tools import FileSystemToolsManager
+fs = FileSystemToolsManager()
+fs.list_directory()
+"
+
+# Check configuration
+agno configure --show
+```
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
@@ -383,6 +606,68 @@ git clone https://github.com/paulgg-code/agno-cli.git
 cd agno-cli
 pip install -e .[dev]
 pre-commit install
+```
+
+### Development Workflow Example
+
+#### File System Tool Development Commands Used
+```bash
+# Initial testing and debugging
+agno files --list                                    # Test basic listing
+agno files --read README.md                          # Test file reading (initially failed)
+agno files --read README.md --format text            # Test with explicit format
+agno files --read README.md --format json            # Test JSON output
+
+# Debug commands used during development
+python -c "from agno_cli.tools.file_system_tools import FileSystemToolsManager; fs = FileSystemToolsManager(); fs.list_directory()"
+python -c "from agno_cli.tools.file_system_tools import FileSystemTools; fs = FileSystemTools(); result = fs.read_file('README.md'); print(result.success)"
+
+# Testing all file operations
+agno files --write test.txt --content "Hello World"  # Test file writing
+agno files --read test.txt                           # Test reading written file
+agno files --info test.txt                           # Test file info
+agno files --search "*.txt"                          # Test file search
+agno files --mkdir test_dir                          # Test directory creation
+agno files --copy test.txt:test_dir/copy.txt         # Test file copying
+agno files --move test.txt:renamed.txt               # Test file moving
+agno files --delete renamed.txt --no-confirm         # Test file deletion
+agno files --delete test_dir --recursive --no-confirm # Test directory deletion
+agno files --tree                                    # Test tree view
+agno files --tree --hidden                           # Test tree with hidden files
+
+# Help and documentation testing
+agno --help                                          # Test main help
+agno files --help                                    # Test file system help
+```
+```bash
+# 1. Set up development environment
+pyenv activate agnocli2@virtuelenv
+pip install -e .
+
+# 2. Test current functionality
+agno --help
+agno files --help
+
+# 3. Implement new feature (example: file system tools)
+# Edit agno_cli/tools/file_system_tools.py
+# Edit agno_cli/cli.py to add new commands
+
+# 4. Test the implementation
+agno files --list
+agno files --read README.md
+agno files --write test.txt --content "test"
+
+# 5. Debug issues (if any)
+# Add debug output, test, remove debug output
+python -c "from agno_cli.tools.file_system_tools import FileSystemToolsManager; fs = FileSystemToolsManager(); fs.list_directory()"
+
+# 6. Update documentation
+# Edit README.md with new commands and examples
+
+# 7. Test all functionality
+agno files --list --hidden --recursive
+agno files --read README.md --format json
+agno files --tree
 ```
 
 ### Code Style

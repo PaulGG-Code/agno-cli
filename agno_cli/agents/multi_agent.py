@@ -143,6 +143,14 @@ class MultiAgentSystem:
             except ImportError:
                 pass
         
+        # Add file system tools if available
+        if agent_state.has_tool("file_system_tools"):
+            try:
+                from agno.tools.file_system_tools import FileSystemTools
+                tools.append(FileSystemTools())
+            except ImportError:
+                pass
+        
         return tools
     
     def _get_instructions_for_role(self, role: AgentRole) -> List[str]:

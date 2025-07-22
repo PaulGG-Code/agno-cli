@@ -26,6 +26,7 @@ from commands.chat_commands import ChatCommands
 from tools.search_tools import SearchToolsManager
 from tools.financial_tools import FinancialToolsManager
 from tools.math_tools import MathToolsManager
+from tools.file_system_tools import FileSystemToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -45,12 +46,13 @@ chat_commands = None
 search_tools = None
 financial_tools = None
 math_tools = None
+file_system_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -66,6 +68,7 @@ def initialize_system():
         search_tools = SearchToolsManager({})
         financial_tools = FinancialToolsManager({})
         math_tools = MathToolsManager({})
+        file_system_tools = FileSystemToolsManager()
 
 
 # Chat Commands
@@ -834,6 +837,120 @@ def configure(
     
     else:
         console.print("[yellow]Use --show, --set, --provider, --model, --api-key, or --reset[/yellow]")
+
+
+# File System Commands
+@app.command()
+def files(
+    list: bool = typer.Option(False, "--list", "-l", help="List directory contents"),
+    read: Optional[str] = typer.Option(None, "--read", "-r", help="Read file contents"),
+    write: Optional[str] = typer.Option(None, "--write", "-w", help="Write content to file"),
+    delete: Optional[str] = typer.Option(None, "--delete", "-d", help="Delete file or directory"),
+    info: Optional[str] = typer.Option(None, "--info", "-i", help="Get file information"),
+    search: Optional[str] = typer.Option(None, "--search", "-s", help="Search for files"),
+    create_dir: Optional[str] = typer.Option(None, "--mkdir", help="Create directory"),
+    copy: Optional[str] = typer.Option(None, "--copy", help="Copy file (format: source:destination)"),
+    move: Optional[str] = typer.Option(None, "--move", help="Move file (format: source:destination)"),
+    show_hidden: bool = typer.Option(False, "--hidden", help="Show hidden files"),
+    recursive: bool = typer.Option(False, "--recursive", help="Recursive operations"),
+    tree: bool = typer.Option(False, "--tree", help="Display directory tree"),
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json, tree)"),
+    encoding: str = typer.Option("utf-8", "--encoding", help="File encoding"),
+    overwrite: bool = typer.Option(False, "--overwrite", help="Overwrite existing files"),
+    confirm: bool = typer.Option(True, "--confirm/--no-confirm", help="Confirm deletions"),
+    content: Optional[str] = typer.Option(None, "--content", help="Content to write to file")
+):
+    """File system operations - list, read, write, delete, search files"""
+    initialize_system()
+    
+    try:
+        if list:
+            file_system_tools.list_directory(
+                path=".",
+                show_hidden=show_hidden,
+                recursive=recursive,
+                format=format
+            )
+        
+        elif read:
+            file_system_tools.read_file(
+                path=read,
+                encoding=encoding,
+                format=format
+            )
+        
+        elif write:
+            if not content:
+                console.print("[red]Content required for write operation. Use --content[/red]")
+                return
+            
+            file_system_tools.write_file(
+                path=write,
+                content=content,
+                encoding=encoding,
+                overwrite=overwrite
+            )
+        
+        elif delete:
+            file_system_tools.delete_file(
+                path=delete,
+                recursive=recursive,
+                confirm=confirm
+            )
+        
+        elif info:
+            file_system_tools.get_file_info(
+                path=info,
+                format=format
+            )
+        
+        elif search:
+            file_system_tools.search_files(
+                pattern=search,
+                recursive=recursive
+            )
+        
+        elif create_dir:
+            result = file_system_tools.fs_tools.create_directory(create_dir, parents=True)
+            if result.success:
+                console.print(f"[green]{result.message}[/green]")
+            else:
+                console.print(f"[red]{result.message}[/red]")
+        
+        elif copy:
+            try:
+                source, destination = copy.split(':', 1)
+                result = file_system_tools.fs_tools.copy_file(source.strip(), destination.strip(), overwrite)
+                if result.success:
+                    console.print(f"[green]{result.message}[/green]")
+                else:
+                    console.print(f"[red]{result.message}[/red]")
+            except ValueError:
+                console.print("[red]Invalid copy format. Use: source:destination[/red]")
+        
+        elif move:
+            try:
+                source, destination = move.split(':', 1)
+                result = file_system_tools.fs_tools.move_file(source.strip(), destination.strip(), overwrite)
+                if result.success:
+                    console.print(f"[green]{result.message}[/green]")
+                else:
+                    console.print(f"[red]{result.message}[/red]")
+            except ValueError:
+                console.print("[red]Invalid move format. Use: source:destination[/red]")
+        
+        elif tree:
+            tree_display = file_system_tools.fs_tools.display_directory_tree(
+                path=".",
+                show_hidden=show_hidden
+            )
+            console.print(Panel(tree_display, title="Directory Tree", border_style="green"))
+        
+        else:
+            console.print("[yellow]Use --list, --read, --write, --delete, --info, --search, --mkdir, --copy, --move, or --tree[/yellow]")
+    
+    except Exception as e:
+        console.print(f"[red]File system error: {e}[/red]")
 
 
 # Version Command
