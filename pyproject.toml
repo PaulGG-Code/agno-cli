@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agno-cli"
-version = "2.0.0"
+version = "2.4.0"
 description = "Enhanced Agno CLI - Multi-Agent Terminal Assistant with Advanced Reasoning and Tool Integration"
 readme = "README.md"
 license = {text = "MIT"}
@@ -151,7 +151,7 @@ extend-exclude = '''
 
 # MyPy configuration
 [tool.mypy]
-python_version = "3.8"
+python_version = "2.4.0"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -181,7 +181,7 @@ ignore_missing_imports = true
 
 # Pytest configuration
 [tool.pytest.ini_options]
-minversion = "7.0"
+minversion = "2.4.0"
 addopts = "-ra -q --strict-markers --strict-config"
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
