@@ -278,6 +278,14 @@ class MultiAgentSystem:
                     tools.append(ThinkingTools())
                 except ImportError:
                     pass
+            
+            # Add Function tools if available
+            if agent_state.has_tool("function_tools"):
+                try:
+                    from agno.tools.function_tools import FunctionTools
+                    tools.append(FunctionTools())
+                except ImportError:
+                    pass
         
         return tools
     

@@ -239,6 +239,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Professional styling** with consistent output formatting and detailed operation results
 - **Multi-format support** with table and JSON output options for all operations
 
+#### ✅ Function Calling Tools
+- **Dynamic function creation and execution** with support for Python, Shell, HTTP, and Template functions
+- **Code generation and templating** with built-in templates for common use cases
+- **Function composition and chaining** with data flow management and error handling
+- **Parameter validation and type checking** with custom validators and type enforcement
+- **Function registry and management** with persistent storage and version control
+- **Execution monitoring and logging** with detailed execution history and performance tracking
+- **Built-in templates** including Data Processor, HTTP Client, File Processor, and Data Validator
+- **Multiple execution modes** supporting sync, async, batch, stream, and validate modes
+- **Rich output formatting** with beautiful tables, syntax highlighting, and detailed execution results
+- **Error handling and recovery** with comprehensive error messages and graceful fallbacks
+- **Function discovery and filtering** with support for function types, tags, and metadata
+- **Execution history tracking** with detailed logs, timing, and result analysis
+- **Template-based function creation** with variable substitution and example generation
+- **Professional styling** with consistent output formatting and detailed operation results
+- **Multi-format support** with table and JSON output options for all operations
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -257,6 +274,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `opencv` command** with computer vision operations
 - **New `models` command** with model management and selection
 - **New `thinking` command** with advanced thinking and reasoning tools
+- **New `function` command** with dynamic function calling and code generation
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -516,6 +534,11 @@ agno thinking --list-frameworks
 agno thinking --list-biases
 agno thinking --start "Test Problem:This is a test problem"
 agno thinking --analyze "How to improve system performance"
+
+# Function calling operations testing
+agno function --list-builtin
+agno function --list
+agno function --create "Test Function:Test description:test_file.py"
 
 # Agent system testing
 agno agents --list

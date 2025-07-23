@@ -727,6 +727,33 @@ agno thinking --format json --list-frameworks
 agno thinking --framework design_thinking --start "Title:Problem"
 ```
 
+### Function Calling Operations
+```bash
+# Create and manage functions
+agno function --create "Function Name:Description:code_file.py"
+agno function --list
+agno function --show function_id
+agno function --delete function_id
+
+# Execute functions
+agno function --execute "function_id:param1=value1,param2=value2"
+agno function --execute "function_id:data=10" --timeout 60
+
+# Templates and code generation
+agno function --list-builtin
+agno function --list-templates
+agno function --create-from-template "template_id:name:description"
+
+# Execution history and monitoring
+agno function --history function_id
+agno function --history function_id --limit 10
+
+# Filtering and options
+agno function --type python --list
+agno function --tag math --list
+agno function --format json --list
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -800,6 +827,7 @@ agno_cli/
 │   ├── opencv_tools.py # Computer vision operations
 │   ├── models_tools.py # Model management and selection
 │   ├── thinking_tools.py # Advanced thinking and reasoning
+│   ├── function_tools.py # Dynamic function calling and code generation
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -848,6 +876,7 @@ agno_cli/
 - **Computer Vision**: Image processing, object detection, feature extraction
 - **Model Management**: Model selection, comparison, performance tracking
 - **Advanced Thinking**: Reasoning frameworks, problem analysis, decision trees
+- **Function Calling**: Dynamic function execution, code generation, automation
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -1054,6 +1083,11 @@ agno thinking --list-frameworks
 agno thinking --list-biases
 agno thinking --start "Test Problem:This is a test problem"
 agno thinking --analyze "How to improve system performance"
+
+# Test function calling operations
+agno function --list-builtin
+agno function --list
+agno function --create "Test Function:Test description:test_file.py"
 
 # Test agent operations
 agno agents --list                                  # List all agents

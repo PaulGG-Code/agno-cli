@@ -67,7 +67,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 - [ ] `jina` - Jina AI framework
 - [ ] `agentql` - AgentQL integration
 - [✅] `thinking` - Advanced thinking tools
-- [ ] `function` - Function calling capabilities
+- [✅] `function` - Function calling capabilities
 
 ---
 

@@ -1,0 +1,26 @@
+{
+  "id": "c6bbfed0",
+  "name": "Fibonacci Calculator",
+  "description": "Calculate Fibonacci numbers",
+  "function_type": "python",
+  "parameters": [
+    {
+      "name": "data",
+      "type": "Any",
+      "description": "Input data",
+      "required": true,
+      "default": null,
+      "validator": null,
+      "example": null
+    }
+  ],
+  "return_type": "Any",
+  "code": "def calculate_fibonacci(n):\n    \"\"\"Calculate the nth Fibonacci number\"\"\"\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        a, b = 0, 1\n        for _ in range(2, n + 1):\n            a, b = b, a + b\n        return b ",
+  "dependencies": [],
+  "tags": [],
+  "created_at": "2025-07-23T01:53:32.815334",
+  "updated_at": "2025-07-23T01:53:32.815336",
+  "version": "1.0.0",
+  "author": null,
+  "examples": []
+}

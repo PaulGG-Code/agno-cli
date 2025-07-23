@@ -1,2 +1,5 @@
 agents_state_agents.json
 agents_state_orchestrator.json
+function_executions/
+opencv_output/
+thinking_sessions/

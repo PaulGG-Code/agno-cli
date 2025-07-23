@@ -1,0 +1,26 @@
+{
+  "id": "673b6bd7",
+  "name": "Better Fibonacci",
+  "description": "Calculate Fibonacci with proper parameters",
+  "function_type": "python",
+  "parameters": [
+    {
+      "name": "data",
+      "type": "Any",
+      "description": "Input data",
+      "required": true,
+      "default": null,
+      "validator": null,
+      "example": null
+    }
+  ],
+  "return_type": "Any",
+  "code": "def calculate_fibonacci(n):\n    \"\"\"Calculate the nth Fibonacci number\"\"\"\n    # Convert string to int if needed\n    if isinstance(n, str):\n        n = int(n)\n    \n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        a, b = 0, 1\n        for _ in range(2, n + 1):\n            a, b = b, a + b\n        return b ",
+  "dependencies": [],
+  "tags": [],
+  "created_at": "2025-07-23T01:54:14.859766",
+  "updated_at": "2025-07-23T01:54:14.859768",
+  "version": "1.0.0",
+  "author": null,
+  "examples": []
+}

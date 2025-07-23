@@ -43,6 +43,7 @@ from tools.visualization_tools import VisualizationToolsManager
 from tools.opencv_tools import OpenCVToolsManager
 from tools.models_tools import ModelsToolsManager
 from tools.thinking_tools import ThinkingToolsManager
+from tools.function_tools import FunctionToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -73,7 +74,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -107,6 +108,7 @@ def initialize_system():
         opencv_tools = OpenCVToolsManager()
         models_tools = ModelsToolsManager()
         thinking_tools = ThinkingToolsManager()
+        function_tools = FunctionToolsManager()
 
 
 # Chat Commands
@@ -2490,6 +2492,154 @@ def thinking(
     
     except Exception as e:
         console.print(f"[red]Thinking operation error: {e}[/red]")
+
+
+# Function Commands
+@app.command()
+def function(
+    create: Optional[str] = typer.Option(None, "--create", help="Create function (format: name:description:code_file)"),
+    execute: Optional[str] = typer.Option(None, "--execute", help="Execute function (format: function_id:param1=value1,param2=value2)"),
+    list_functions: bool = typer.Option(False, "--list", "-l", help="List all functions"),
+    show: Optional[str] = typer.Option(None, "--show", help="Show function details"),
+    delete: Optional[str] = typer.Option(None, "--delete", help="Delete function by ID"),
+    list_templates: bool = typer.Option(False, "--list-templates", help="List function templates"),
+    list_builtin: bool = typer.Option(False, "--list-builtin", help="List built-in templates"),
+    create_from_template: Optional[str] = typer.Option(None, "--create-from-template", help="Create from template (format: template_id:name:description)"),
+    history: Optional[str] = typer.Option(None, "--history", help="Show execution history for function"),
+    function_type: Optional[str] = typer.Option(None, "--type", help="Filter by function type"),
+    tag: Optional[str] = typer.Option(None, "--tag", help="Filter by tag"),
+    execution_mode: str = typer.Option("sync", "--mode", help="Execution mode"),
+    timeout: int = typer.Option(30, "--timeout", help="Execution timeout in seconds"),
+    limit: int = typer.Option(20, "--limit", help="Limit results"),
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json)")
+):
+    """Dynamic function calling and code generation operations"""
+    initialize_system()
+    
+    try:
+        if create:
+            # Create function (format: name:description:code_file)
+            try:
+                parts = create.split(':', 2)
+                if len(parts) == 3:
+                    name = parts[0]
+                    description = parts[1]
+                    code_file = parts[2]
+                    
+                    # Read code from file
+                    with open(code_file, 'r') as f:
+                        code = f.read()
+                    
+                    # Basic parameters (can be enhanced)
+                    parameters = [
+                        {
+                            'name': 'data',
+                            'type': 'Any',
+                            'description': 'Input data',
+                            'required': True
+                        }
+                    ]
+                    
+                    function_tools.create_function(
+                        name=name,
+                        description=description,
+                        code=code,
+                        parameters=parameters,
+                        format=format
+                    )
+                else:
+                    console.print("[red]Invalid create format. Use: name:description:code_file[/red]")
+            except Exception as e:
+                console.print(f"[red]Error creating function: {e}[/red]")
+        
+        elif execute:
+            # Execute function (format: function_id:param1=value1,param2=value2)
+            try:
+                parts = execute.split(':', 1)
+                if len(parts) == 2:
+                    function_id = parts[0]
+                    params_str = parts[1]
+                    
+                    # Parse parameters
+                    parameters = {}
+                    if params_str:
+                        for param in params_str.split(','):
+                            if '=' in param:
+                                key, value = param.split('=', 1)
+                                parameters[key.strip()] = value.strip()
+                    
+                    function_tools.execute_function(
+                        function_id=function_id,
+                        parameters=parameters,
+                        execution_mode=execution_mode,
+                        timeout=timeout,
+                        format=format
+                    )
+                else:
+                    console.print("[red]Invalid execute format. Use: function_id:param1=value1,param2=value2[/red]")
+            except Exception as e:
+                console.print(f"[red]Error executing function: {e}[/red]")
+        
+        elif list_functions:
+            function_tools.list_functions(function_type, tag, format)
+        
+        elif show:
+            function_tools.show_function(show, format)
+        
+        elif delete:
+            function_tools.delete_function(delete)
+        
+        elif list_templates:
+            function_tools.list_templates(format)
+        
+        elif list_builtin:
+            function_tools.list_builtin_templates(format)
+        
+        elif create_from_template:
+            # Create from template (format: template_id:name:description)
+            try:
+                parts = create_from_template.split(':', 2)
+                if len(parts) == 3:
+                    template_id = parts[0]
+                    name = parts[1]
+                    description = parts[2]
+                    
+                    # Basic parameters
+                    parameters = [
+                        {
+                            'name': 'data',
+                            'type': 'Any',
+                            'description': 'Input data',
+                            'required': True
+                        }
+                    ]
+                    
+                    func_def = function_tools.function_tools.create_function_from_template(
+                        template_id=template_id,
+                        name=name,
+                        description=description,
+                        parameters=parameters
+                    )
+                    
+                    if format == "json":
+                        import json
+                        console.print(json.dumps(asdict(func_def), indent=2, default=str))
+                    else:
+                        console.print(f"[green]Function created from template: {func_def.id}[/green]")
+                else:
+                    console.print("[red]Invalid create-from-template format. Use: template_id:name:description[/red]")
+            except Exception as e:
+                console.print(f"[red]Error creating function from template: {e}[/red]")
+        
+        elif history:
+            function_tools.get_execution_history(history, limit, format)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno function --list[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]Function operation error: {e}[/red]")
 
 
 # Version Command
