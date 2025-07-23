@@ -302,6 +302,14 @@ class MultiAgentSystem:
                     tools.append(Crawl4AITools())
                 except ImportError:
                     pass
+            
+            # Add Screenshot tools if available
+            if agent_state.has_tool("screenshot_tools"):
+                try:
+                    from agno.tools.screenshot_tools import ScreenshotTools
+                    tools.append(ScreenshotTools())
+                except ImportError:
+                    pass
         
         return tools
     

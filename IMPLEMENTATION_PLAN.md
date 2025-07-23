@@ -57,6 +57,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 - [✅] `visualization` - Data visualization tools
 - [✅] `opencv` - Computer vision operations
 - [ ] `moviepy_video` - Video processing
+- [✅] `screenshot` - Screenshot capabilities locally and webpages
 
 ### Audio & Voice
 - [ ] `eleven_labs` - ElevenLabs voice synthesis

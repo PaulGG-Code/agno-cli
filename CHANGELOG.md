@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🚀 Major Features Added
 
+#### ✅ Screenshot Tools - Local and Webpage Capture
+- **Comprehensive screenshot capabilities** for local screens and webpages
+- **Full screen capture**: Capture entire screen with customizable quality and format
+- **Region capture**: Capture specific screen regions with precise coordinates
+- **Window capture**: Capture specific application windows by title
+- **Webpage screenshots**: Capture web pages with browser automation
+- **Element capture**: Capture specific webpage elements using CSS selectors
+- **Scrolling screenshots**: Capture full-length webpages with automatic scrolling
+- **Multiple output formats**: PNG, JPEG, BMP, TIFF, WebP support
+- **Screenshot management**: List, delete, and organize screenshots
+- **Rich CLI interface**: Beautiful tables and progress indicators
+- **Error handling**: Comprehensive error handling and validation
+- **Multi-agent integration**: Available to all agents in the system
+
 #### ✅ Enhanced Calculator with Equation Solving
 - **Advanced mathematical calculator** with comprehensive equation solving capabilities
 - **Equation solving**: Automatic detection and solution of linear equations (e.g., "2x + 5 = 13")
@@ -40,6 +54,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Version control best practices**: Proper Git workflow and history management
 
 ### 🔧 CLI Commands
+
+#### Screenshot Commands
+- **`agno screenshot --full-screen`**: Capture full screen screenshot
+- **`agno screenshot --region x,y,width,height`**: Capture region screenshot
+- **`agno screenshot --window "Window Title"`**: Capture specific window
+- **`agno screenshot --webpage https://example.com`**: Capture webpage screenshot
+- **`agno screenshot --element "url:selector"`**: Capture webpage element
+- **`agno screenshot --scrolling https://example.com`**: Capture scrolling webpage
+- **`agno screenshot --list`**: List all screenshots
+- **`agno screenshot --show-info filename`**: Show screenshot information
+- **`agno screenshot --screen-info`**: Show screen information
+- **`agno screenshot --clear`**: Clear all screenshots
 
 #### Enhanced Calculator Command
 - **Enhanced `calc` command** with equation solving and equality checking

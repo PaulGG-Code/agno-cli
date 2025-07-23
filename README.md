@@ -673,6 +673,18 @@ agno opencv --list-features
 agno opencv --format json --image image.jpg --info
 ```
 
+#### Screenshot Commands
+- **`agno screenshot --full-screen`**: Capture full screen screenshot
+- **`agno screenshot --region x,y,width,height`**: Capture region screenshot
+- **`agno screenshot --window "Window Title"`**: Capture specific window
+- **`agno screenshot --webpage https://example.com`**: Capture webpage screenshot
+- **`agno screenshot --element "url:selector"`**: Capture webpage element
+- **`agno screenshot --scrolling https://example.com`**: Capture scrolling webpage
+- **`agno screenshot --list`**: List all screenshots
+- **`agno screenshot --show-info filename`**: Show screenshot information
+- **`agno screenshot --screen-info`**: Show screen information
+- **`agno screenshot --clear`**: Clear all screenshots
+
 ### Model Management Operations
 ```bash
 # List and explore models

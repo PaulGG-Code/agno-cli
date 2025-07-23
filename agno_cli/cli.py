@@ -46,6 +46,7 @@ from tools.thinking_tools import ThinkingToolsManager
 from tools.function_tools import FunctionToolsManager
 from tools.openai_tools import OpenAIToolsManager
 from tools.crawl4ai_tools import Crawl4AIToolsManager
+from tools.screenshot_tools import ScreenshotToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -72,12 +73,13 @@ duckdb_tools = None
 sql_tools = None
 postgres_tools = None
 crawl4ai_tools = None
+screenshot_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, crawl4ai_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, crawl4ai_tools, screenshot_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -114,6 +116,7 @@ def initialize_system():
         function_tools = FunctionToolsManager()
         openai_tools = OpenAIToolsManager()
         crawl4ai_tools = Crawl4AIToolsManager()
+        screenshot_tools = ScreenshotToolsManager()
 
 
 # Chat Commands
@@ -2885,6 +2888,78 @@ def crawl4ai(
     
     except Exception as e:
         console.print(f"[red]Crawl4AI operation error: {e}[/red]")
+
+
+# Screenshot Commands
+@app.command()
+def screenshot(
+    full_screen: bool = typer.Option(False, "--full-screen", "-f", help="Capture full screen screenshot"),
+    region: Optional[str] = typer.Option(None, "--region", "-r", help="Capture region screenshot (format: x,y,width,height)"),
+    window: Optional[str] = typer.Option(None, "--window", "-w", help="Capture window screenshot by title"),
+    webpage: Optional[str] = typer.Option(None, "--webpage", help="Capture webpage screenshot"),
+    element: Optional[str] = typer.Option(None, "--element", help="Capture element screenshot (format: url:selector)"),
+    scrolling: Optional[str] = typer.Option(None, "--scrolling", help="Capture scrolling webpage screenshot"),
+    filename: Optional[str] = typer.Option(None, "--filename", help="Output filename"),
+    full_page: bool = typer.Option(False, "--full-page", help="Capture full page for webpage"),
+    wait_element: Optional[str] = typer.Option(None, "--wait-element", help="Wait for element before capturing"),
+    list_screenshots: bool = typer.Option(False, "--list", "-l", help="List all screenshots"),
+    show_info: Optional[str] = typer.Option(None, "--show-info", help="Show screenshot information"),
+    delete: Optional[str] = typer.Option(None, "--delete", help="Delete screenshot file"),
+    clear: bool = typer.Option(False, "--clear", help="Clear all screenshots"),
+    screen_info: bool = typer.Option(False, "--screen-info", help="Show screen information"),
+    format: str = typer.Option("table", "--format", help="Output format (table, json)")
+):
+    """Screenshot operations - local and webpage capture"""
+    initialize_system()
+    
+    try:
+        if full_screen:
+            screenshot_tools.capture_full_screen(filename, format)
+        
+        elif region:
+            try:
+                x, y, width, height = map(int, region.split(','))
+                screenshot_tools.capture_region(x, y, width, height, filename, format)
+            except ValueError:
+                console.print("[red]Invalid region format. Use: x,y,width,height[/red]")
+        
+        elif window:
+            screenshot_tools.capture_window(window, filename, format)
+        
+        elif webpage:
+            screenshot_tools.capture_webpage(webpage, filename, full_page, wait_element, format)
+        
+        elif element:
+            try:
+                url, selector = element.split(':', 1)
+                screenshot_tools.capture_element(url, selector, filename, format)
+            except ValueError:
+                console.print("[red]Invalid element format. Use: url:selector[/red]")
+        
+        elif scrolling:
+            screenshot_tools.capture_scrolling(scrolling, filename, format)
+        
+        elif list_screenshots:
+            screenshot_tools.list_screenshots(format)
+        
+        elif show_info:
+            screenshot_tools.show_screenshot_info(show_info, format)
+        
+        elif delete:
+            screenshot_tools.delete_screenshot(delete)
+        
+        elif clear:
+            screenshot_tools.clear_screenshots()
+        
+        elif screen_info:
+            screenshot_tools.get_screen_info()
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno screenshot --full-screen[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]Screenshot operation error: {e}[/red]")
 
 
 # Version Command
