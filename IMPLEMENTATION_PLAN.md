@@ -101,7 +101,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 ### Web Scraping & Automation
 - [ ] `apify` - Apify web scraping
 - [ ] `browserbase` - Browser automation
-- [ ] `crawl4ai` - Web crawling
+- [✅] `crawl4ai` - Web crawling
 - [ ] `firecrawl` - Firecrawl web scraping
 - [ ] `spider` - Web spidering
 - [ ] `webbrowser` - Web browser automation

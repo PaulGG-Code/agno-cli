@@ -787,6 +787,33 @@ agno openai --format json --chat "Test message"
 agno openai --model gpt-4o-mini --chat "Efficient response"
 ```
 
+### Web Crawling Operations
+```bash
+# Crawl a single web page
+agno crawl4ai --crawl https://example.com
+agno crawl4ai --crawl https://example.com --user-agent "Custom Bot/1.0" --timeout 60
+
+# Create and manage crawl jobs
+agno crawl4ai --create-job "My Crawl:Test crawl job:https://example.com"
+agno crawl4ai --create-job "Deep Crawl:Comprehensive site crawl:https://example.com" --strategy depth_first --max-depth 5 --max-pages 500
+
+# Execute crawl jobs
+agno crawl4ai --execute-job job-id-123
+
+# List and manage jobs
+agno crawl4ai --list-jobs
+agno crawl4ai --show-job job-id-123
+agno crawl4ai --delete-job job-id-123
+
+# Content search and analysis
+agno crawl4ai --search "Some text content" --pattern "\\b\\w+\\b" --case-sensitive
+agno crawl4ai --search "HTML content" --pattern "<[^>]+>" --format json
+
+# Options
+agno crawl4ai --format json --crawl https://example.com
+agno crawl4ai --strategy breadth_first --max-depth 3 --delay 2.0
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces

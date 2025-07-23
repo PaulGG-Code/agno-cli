@@ -45,6 +45,7 @@ from tools.models_tools import ModelsToolsManager
 from tools.thinking_tools import ThinkingToolsManager
 from tools.function_tools import FunctionToolsManager
 from tools.openai_tools import OpenAIToolsManager
+from tools.crawl4ai_tools import Crawl4AIToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -70,12 +71,13 @@ pandas_tools = None
 duckdb_tools = None
 sql_tools = None
 postgres_tools = None
+crawl4ai_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, crawl4ai_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -111,6 +113,7 @@ def initialize_system():
         thinking_tools = ThinkingToolsManager()
         function_tools = FunctionToolsManager()
         openai_tools = OpenAIToolsManager()
+        crawl4ai_tools = Crawl4AIToolsManager()
 
 
 # Chat Commands
@@ -2733,6 +2736,92 @@ def openai(
     
     except Exception as e:
         console.print(f"[red]OpenAI operation error: {e}[/red]")
+
+
+@app.command()
+def crawl4ai(
+    crawl: Optional[str] = typer.Option(None, "--crawl", "-c", help="Crawl a single web page"),
+    create_job: Optional[str] = typer.Option(None, "--create-job", help="Create crawl job (format: name:description:url)"),
+    execute_job: Optional[str] = typer.Option(None, "--execute-job", help="Execute crawl job by ID"),
+    list_jobs: bool = typer.Option(False, "--list-jobs", "-l", help="List all crawl jobs"),
+    show_job: Optional[str] = typer.Option(None, "--show-job", help="Show crawl job details by ID"),
+    delete_job: Optional[str] = typer.Option(None, "--delete-job", help="Delete crawl job by ID"),
+    search_content: Optional[str] = typer.Option(None, "--search", help="Search content with pattern"),
+    pattern: Optional[str] = typer.Option(None, "--pattern", help="Search pattern (regex)"),
+    case_sensitive: bool = typer.Option(False, "--case-sensitive", help="Case sensitive search"),
+    user_agent: Optional[str] = typer.Option(None, "--user-agent", help="Custom user agent"),
+    timeout: int = typer.Option(30, "--timeout", "-t", help="Request timeout in seconds"),
+    strategy: str = typer.Option("breadth_first", "--strategy", help="Crawling strategy"),
+    max_depth: int = typer.Option(3, "--max-depth", help="Maximum crawl depth"),
+    max_pages: int = typer.Option(100, "--max-pages", help="Maximum pages to crawl"),
+    delay: float = typer.Option(1.0, "--delay", help="Delay between requests in seconds"),
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json)")
+):
+    """Web crawling and data extraction operations"""
+    initialize_system()
+    
+    try:
+        if crawl:
+            crawl4ai_tools.crawl_page(
+                url=crawl,
+                user_agent=user_agent,
+                timeout=timeout,
+                format=format
+            )
+        
+        elif create_job:
+            if ':' not in create_job:
+                console.print("[red]Invalid format. Use: name:description:url[/red]")
+                return
+            
+            name, description, url = create_job.split(':', 2)
+            crawl4ai_tools.create_job(
+                name=name,
+                description=description,
+                start_url=url,
+                strategy=strategy,
+                max_depth=max_depth,
+                max_pages=max_pages,
+                delay=delay,
+                format=format
+            )
+        
+        elif execute_job:
+            crawl4ai_tools.execute_job(
+                job_id=execute_job,
+                format=format
+            )
+        
+        elif list_jobs:
+            crawl4ai_tools.list_jobs(format)
+        
+        elif show_job:
+            crawl4ai_tools.show_job(
+                job_id=show_job,
+                format=format
+            )
+        
+        elif delete_job:
+            crawl4ai_tools.delete_job(delete_job)
+        
+        elif search_content:
+            if not pattern:
+                console.print("[red]Pattern required for content search[/red]")
+                return
+            
+            crawl4ai_tools.search_content(
+                text=search_content,
+                pattern=pattern,
+                case_sensitive=case_sensitive,
+                format=format
+            )
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno crawl4ai --crawl https://example.com[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]Crawl4AI operation error: {e}[/red]")
 
 
 # Version Command

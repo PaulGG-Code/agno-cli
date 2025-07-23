@@ -294,6 +294,14 @@ class MultiAgentSystem:
                     tools.append(OpenAITools())
                 except ImportError:
                     pass
+            
+            # Add Crawl4AI tools if available
+            if agent_state.has_tool("crawl4ai_tools"):
+                try:
+                    from agno.tools.crawl4ai_tools import Crawl4AITools
+                    tools.append(Crawl4AITools())
+                except ImportError:
+                    pass
         
         return tools
     

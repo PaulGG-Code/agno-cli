@@ -294,6 +294,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `thinking` command** with advanced thinking and reasoning tools
 - **New `function` command** with dynamic function calling and code generation
 - **New `openai` command** with direct OpenAI API integration
+- **New `crawl4ai` command** with comprehensive web crawling and data extraction
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
