@@ -4,3 +4,11 @@ function_executions/
 opencv_output/
 thinking_sessions/
 crawls/
+
+# PyPI upload artifacts
+.pypirc
+dist/
+build/
+*.egg-info/
+__pycache__/
+*.pyc
