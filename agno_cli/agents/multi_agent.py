@@ -286,6 +286,14 @@ class MultiAgentSystem:
                     tools.append(FunctionTools())
                 except ImportError:
                     pass
+            
+            # Add OpenAI tools if available
+            if agent_state.has_tool("openai_tools"):
+                try:
+                    from agno.tools.openai_tools import OpenAITools
+                    tools.append(OpenAITools())
+                except ImportError:
+                    pass
         
         return tools
     

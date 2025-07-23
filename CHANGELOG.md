@@ -256,6 +256,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Professional styling** with consistent output formatting and detailed operation results
 - **Multi-format support** with table and JSON output options for all operations
 
+#### ✅ OpenAI Integration Tools
+- **Direct OpenAI API access** with comprehensive chat completion, embedding, and generation capabilities
+- **Multi-model support** including GPT-4o, GPT-4o-mini, DALL-E 3, Whisper, and TTS models
+- **Chat completions** with configurable temperature, max tokens, and system prompts
+- **Text embeddings** with support for text-embedding-3-small and text-embedding-3-large models
+- **Image generation** with DALL-E 3 and DALL-E 2, configurable size, quality, and style
+- **Audio processing** with Whisper transcription and TTS text-to-speech capabilities
+- **Content moderation** using OpenAI's moderation API for safety and compliance
+- **Function calling** with tool integration and structured output capabilities
+- **Cost tracking** with detailed token usage and cost calculation for all operations
+- **Operation history** with persistent storage and detailed execution logging
+- **Rich output formatting** with beautiful panels, tables, and detailed operation results
+- **Error handling** with graceful fallbacks and comprehensive error messages
+- **Model management** with listing and information retrieval for all available models
+- **Performance monitoring** with execution time tracking and usage analytics
+- **Professional styling** with consistent output formatting and detailed operation results
+- **Multi-format support** with table and JSON output options for all operations
+
 #### 🔧 CLI Commands
 - **New `files` command** with comprehensive file system operations
 - **New `csv` command** with comprehensive CSV data operations
@@ -275,6 +293,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New `models` command** with model management and selection
 - **New `thinking` command** with advanced thinking and reasoning tools
 - **New `function` command** with dynamic function calling and code generation
+- **New `openai` command** with direct OpenAI API integration
 - **Multiple output formats**: Table, JSON, and tree view
 - **Interactive features**: Confirmation prompts, progress feedback
 - **Help system**: Comprehensive help documentation for all commands
@@ -539,6 +558,10 @@ agno thinking --analyze "How to improve system performance"
 agno function --list-builtin
 agno function --list
 agno function --create "Test Function:Test description:test_file.py"
+
+# OpenAI integration operations testing
+agno openai --list-models
+agno openai --moderate "This is a test message"
 
 # Agent system testing
 agno agents --list

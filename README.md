@@ -754,6 +754,39 @@ agno function --tag math --list
 agno function --format json --list
 ```
 
+### OpenAI Integration Operations
+```bash
+# Chat completions
+agno openai --chat "Hello, how are you?"
+agno openai --chat "Explain quantum computing" --model gpt-4o --temperature 0.3
+agno openai --chat "Write a Python function" --system "You are a helpful coding assistant"
+
+# Text embeddings
+agno openai --embed "This is some text to embed"
+agno openai --embed "Another text for embedding" --model text-embedding-3-small
+
+# Image generation
+agno openai --generate-image "A beautiful sunset over mountains"
+agno openai --generate-image "A futuristic cityscape" --size 1792x1024 --quality hd
+
+# Audio processing
+agno openai --transcribe audio_file.mp3
+agno openai --transcribe audio_file.mp3 --language en
+agno openai --tts "Hello, this is a test" --voice alloy
+
+# Content moderation
+agno openai --moderate "This is a test message"
+
+# Model and history management
+agno openai --list-models
+agno openai --history
+agno openai --history --operation-type chat_completion --limit 10
+
+# Options
+agno openai --format json --chat "Test message"
+agno openai --model gpt-4o-mini --chat "Efficient response"
+```
+
 ### Reasoning Traces
 ```bash
 # List recent traces
@@ -828,6 +861,7 @@ agno_cli/
 │   ├── models_tools.py # Model management and selection
 │   ├── thinking_tools.py # Advanced thinking and reasoning
 │   ├── function_tools.py # Dynamic function calling and code generation
+│   ├── openai_tools.py # OpenAI API integration
 │   ├── communication_tools.py # Communication
 │   ├── knowledge_tools.py # Knowledge APIs
 │   └── media_tools.py     # Media processing
@@ -877,6 +911,7 @@ agno_cli/
 - **Model Management**: Model selection, comparison, performance tracking
 - **Advanced Thinking**: Reasoning frameworks, problem analysis, decision trees
 - **Function Calling**: Dynamic function execution, code generation, automation
+- **OpenAI Integration**: Direct API access for chat, embeddings, images, audio
 - **Communication**: Slack, Discord, email, GitHub integration
 - **Knowledge**: Wikipedia, arXiv, news APIs
 - **Media**: Image/video processing, visualization
@@ -1088,6 +1123,10 @@ agno thinking --analyze "How to improve system performance"
 agno function --list-builtin
 agno function --list
 agno function --create "Test Function:Test description:test_file.py"
+
+# Test OpenAI integration operations
+agno openai --list-models
+agno openai --moderate "This is a test message"
 
 # Test agent operations
 agno agents --list                                  # List all agents

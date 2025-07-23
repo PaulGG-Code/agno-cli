@@ -44,6 +44,7 @@ from tools.opencv_tools import OpenCVToolsManager
 from tools.models_tools import ModelsToolsManager
 from tools.thinking_tools import ThinkingToolsManager
 from tools.function_tools import FunctionToolsManager
+from tools.openai_tools import OpenAIToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -74,7 +75,7 @@ postgres_tools = None
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -109,6 +110,7 @@ def initialize_system():
         models_tools = ModelsToolsManager()
         thinking_tools = ThinkingToolsManager()
         function_tools = FunctionToolsManager()
+        openai_tools = OpenAIToolsManager()
 
 
 # Chat Commands
@@ -2640,6 +2642,97 @@ def function(
     
     except Exception as e:
         console.print(f"[red]Function operation error: {e}[/red]")
+
+
+# OpenAI Commands
+@app.command()
+def openai(
+    chat: Optional[str] = typer.Option(None, "--chat", help="Chat message"),
+    embed: Optional[str] = typer.Option(None, "--embed", help="Text to embed"),
+    generate_image: Optional[str] = typer.Option(None, "--generate-image", help="Image generation prompt"),
+    transcribe: Optional[str] = typer.Option(None, "--transcribe", help="Audio file to transcribe"),
+    text_to_speech: Optional[str] = typer.Option(None, "--tts", help="Text to convert to speech"),
+    moderate: Optional[str] = typer.Option(None, "--moderate", help="Text to moderate"),
+    model: str = typer.Option("gpt-4o", "--model", help="Model to use"),
+    temperature: float = typer.Option(0.7, "--temperature", help="Temperature for generation"),
+    max_tokens: Optional[int] = typer.Option(None, "--max-tokens", help="Maximum tokens"),
+    system_prompt: Optional[str] = typer.Option(None, "--system", help="System prompt"),
+    size: str = typer.Option("1024x1024", "--size", help="Image size"),
+    quality: str = typer.Option("standard", "--quality", help="Image quality"),
+    style: str = typer.Option("vivid", "--style", help="Image style"),
+    voice: str = typer.Option("alloy", "--voice", help="TTS voice"),
+    language: Optional[str] = typer.Option(None, "--language", help="Audio language"),
+    list_models: bool = typer.Option(False, "--list-models", help="List available models"),
+    history: Optional[str] = typer.Option(None, "--history", help="Show operation history"),
+    operation_type: Optional[str] = typer.Option(None, "--operation-type", help="Filter history by operation"),
+    limit: int = typer.Option(20, "--limit", help="Limit results"),
+    format: str = typer.Option("table", "--format", "-f", help="Output format (table, json)")
+):
+    """OpenAI API integration operations"""
+    initialize_system()
+    
+    try:
+        if chat:
+            openai_tools.chat(
+                message=chat,
+                model=model,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                system_prompt=system_prompt,
+                format=format
+            )
+        
+        elif embed:
+            openai_tools.embed(
+                text=embed,
+                model=model,
+                format=format
+            )
+        
+        elif generate_image:
+            openai_tools.generate_image(
+                prompt=generate_image,
+                model=model,
+                size=size,
+                quality=quality,
+                style=style,
+                format=format
+            )
+        
+        elif transcribe:
+            openai_tools.transcribe(
+                file_path=transcribe,
+                model=model,
+                language=language,
+                format=format
+            )
+        
+        elif text_to_speech:
+            openai_tools.text_to_speech(
+                text=text_to_speech,
+                model=model,
+                voice=voice,
+                format=format
+            )
+        
+        elif moderate:
+            openai_tools.moderate(
+                text=moderate,
+                format=format
+            )
+        
+        elif list_models:
+            openai_tools.list_models(format)
+        
+        elif history:
+            openai_tools.get_history(operation_type, limit, format)
+        
+        else:
+            console.print("[yellow]No operation specified. Use --help for available options.[/yellow]")
+            console.print("[blue]Try: agno openai --chat 'Hello, how are you?'[/blue]")
+    
+    except Exception as e:
+        console.print(f"[red]OpenAI operation error: {e}[/red]")
 
 
 # Version Command
