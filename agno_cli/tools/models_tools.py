@@ -270,6 +270,23 @@ class ModelsTools:
                 updated_at=datetime.now().isoformat()
             ),
             ModelConfig(
+                name="claude-sonnet-4-20250514",
+                provider="anthropic",
+                model_type="text_generation",
+                version="latest",
+                description="Anthropic's latest Claude Sonnet 4 model",
+                max_tokens=4096,
+                temperature=0.7,
+                cost_per_1k_input=0.003,
+                cost_per_1k_output=0.015,
+                context_length=200000,
+                parameters=200000000000,
+                capabilities=["text_generation", "code_generation", "analysis"],
+                tags=["latest", "advanced", "analysis", "reasoning"],
+                created_at=datetime.now().isoformat(),
+                updated_at=datetime.now().isoformat()
+            ),
+            ModelConfig(
                 name="claude-3-5-sonnet",
                 provider="anthropic",
                 model_type="text_generation",
