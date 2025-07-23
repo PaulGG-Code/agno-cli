@@ -474,8 +474,8 @@ class MathToolsManager:
     def solve_equation(self, equation: str, variable: str = 'x') -> Optional[List[float]]:
         """Solve algebraic equation (simplified implementation)"""
         try:
-            # This is a very basic equation solver
-            # For a full implementation, you'd use sympy or similar
+            # Clean the equation
+            equation = equation.lower().replace('solve:', '').replace('solve', '').strip()
             
             # Handle simple linear equations like "2x + 3 = 7"
             if '=' in equation:
@@ -484,26 +484,57 @@ class MathToolsManager:
                 right = right.strip()
                 
                 # Try to solve simple linear equation
-                # This is a placeholder - real implementation would be more robust
                 if variable in left and variable not in right:
-                    # Very basic parsing for ax + b = c format
                     import re
                     
-                    # Extract coefficient and constant
-                    pattern = rf'([+-]?\d*\.?\d*){variable}\s*([+-]\s*\d+\.?\d*)?'
+                    # Handle various formats: 2x + 5, x + 3, -3x - 2, etc.
+                    # Pattern to match: coefficient*variable + constant
+                    pattern = rf'([+-]?\s*\d*\.?\d*)\s*{variable}\s*([+-]\s*\d+\.?\d*)?'
                     match = re.search(pattern, left)
                     
                     if match:
-                        coeff_str = match.group(1)
-                        const_str = match.group(2) or '0'
+                        coeff_str = match.group(1).replace(' ', '')
+                        const_str = (match.group(2) or '0').replace(' ', '')
                         
-                        coeff = float(coeff_str) if coeff_str and coeff_str not in ['+', '-'] else (1 if coeff_str != '-' else -1)
-                        const = float(const_str.replace(' ', ''))
+                        # Parse coefficient
+                        if not coeff_str or coeff_str in ['+', '-']:
+                            coeff = 1 if coeff_str != '-' else -1
+                        else:
+                            coeff = float(coeff_str)
+                        
+                        # Parse constant
+                        const = float(const_str)
+                        
+                        # Parse right side
                         right_val = float(right)
                         
                         # Solve ax + b = c -> x = (c - b) / a
                         if coeff != 0:
                             solution = (right_val - const) / coeff
+                            return [solution]
+                        else:
+                            # Division by zero
+                            return None
+                    
+                    # Try simpler pattern for just "x + number" or "number + x"
+                    simple_pattern = rf'({variable}\s*[+-]\s*\d+\.?\d*|\d+\.?\d*\s*[+-]\s*{variable})'
+                    match = re.search(simple_pattern, left)
+                    
+                    if match:
+                        term = match.group(1)
+                        if term.startswith(variable):
+                            # Format: x + number
+                            const_str = term[len(variable):].replace(' ', '')
+                            const = float(const_str)
+                            right_val = float(right)
+                            solution = right_val - const
+                            return [solution]
+                        else:
+                            # Format: number + x
+                            const_str = term[:term.find(variable)].replace(' ', '')
+                            const = float(const_str)
+                            right_val = float(right)
+                            solution = right_val - const
                             return [solution]
             
             return None

@@ -541,12 +541,13 @@ def finance(
 
 @app.command()
 def calc(
-    expression: str = typer.Argument(..., help="Mathematical expression to evaluate"),
+    expression: str = typer.Argument(..., help="Mathematical expression to evaluate or equation to solve"),
     steps: bool = typer.Option(False, "--steps", help="Show calculation steps"),
     variable: Optional[str] = typer.Option(None, "--var", help="Set variable (format: name=value)"),
-    list_vars: bool = typer.Option(False, "--list-vars", help="List all variables")
+    list_vars: bool = typer.Option(False, "--list-vars", help="List all variables"),
+    solve: bool = typer.Option(False, "--solve", help="Treat input as equation to solve")
 ):
-    """Mathematical calculator with advanced functions"""
+    """Mathematical calculator with advanced functions and equation solving"""
     initialize_system()
     
     try:
@@ -573,6 +574,68 @@ def calc(
                 return
             except ValueError:
                 console.print("[red]Invalid variable format. Use: name=value[/red]")
+                return
+        
+        # Check if this looks like an equation to solve
+        has_variables = any(var in expression.lower() for var in ['x', 'y', 'z', 'a', 'b', 'c'])
+        is_equation = solve or ('=' in expression and has_variables)
+        
+        if is_equation:
+            # Try to solve the equation
+            solutions = math_tools.solve_equation(expression)
+            
+            if solutions:
+                result_text = f"**Equation:** {expression}\n**Solution(s):** {', '.join(map(str, solutions))}"
+                
+                if steps:
+                    # Add step-by-step solution
+                    result_text += "\n\n**Steps:**\n"
+                    result_text += "1. Identify the equation format\n"
+                    result_text += "2. Isolate the variable\n"
+                    result_text += "3. Solve for the variable\n"
+                    result_text += f"4. x = {solutions[0]}"
+                
+                panel = Panel(
+                    Markdown(result_text),
+                    title="Equation Solution",
+                    border_style="blue"
+                )
+                console.print(panel)
+            else:
+                console.print(f"[red]Unable to solve equation: {expression}[/red]")
+                console.print("[yellow]Try using a simpler format like '2x + 5 = 13'[/yellow]")
+            return
+        
+        # Regular calculation
+        # Handle expressions with equals sign that are not equations
+        if '=' in expression and not has_variables:
+            try:
+                left, right = expression.split('=')
+                left_result = math_tools.calculate(left.strip(), steps)
+                right_result = math_tools.calculate(right.strip(), steps)
+                
+                if left_result.error or right_result.error:
+                    console.print(f"[red]Error: {left_result.error or right_result.error}[/red]")
+                    return
+                
+                is_equal = abs(left_result.result - right_result.result) < 1e-10
+                result_text = f"**Expression:** {expression}\n**Left side:** {left_result.result}\n**Right side:** {right_result.result}\n**Result:** {is_equal}"
+                
+                if steps:
+                    result_text += "\n\n**Steps:**\n"
+                    result_text += f"1. Evaluate left side: {left.strip()} = {left_result.result}\n"
+                    result_text += f"2. Evaluate right side: {right.strip()} = {right_result.result}\n"
+                    result_text += f"3. Compare: {left_result.result} {'=' if is_equal else '≠'} {right_result.result}"
+                
+                panel = Panel(
+                    Markdown(result_text),
+                    title="Equality Check",
+                    border_style="yellow"
+                )
+                console.print(panel)
+                return
+            except Exception as e:
+                console.print(f"[red]Error evaluating equality: {e}[/red]")
                 return
         
         result = math_tools.calculate(expression, steps)
