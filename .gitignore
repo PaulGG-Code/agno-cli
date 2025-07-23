@@ -12,3 +12,4 @@ build/
 *.egg-info/
 __pycache__/
 *.pyc
+models_database.db
