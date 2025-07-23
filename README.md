@@ -3,6 +3,8 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/PaulGG-Code/agno-cli)
+[![PyPI](https://img.shields.io/badge/PyPI-agno--cli-blue.svg)](https://pypi.org/project/agno-cli/)
 
 A powerful, terminal-native multi-agent assistant built on the Agno AI framework. Features advanced reasoning, team collaboration, comprehensive tool integration, and performance analytics.
 
