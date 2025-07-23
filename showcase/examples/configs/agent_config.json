@@ -1,0 +1,39 @@
+{
+  "agents": {
+    "DataAnalyst": {
+      "role": "specialist",
+      "description": "Data analysis and visualization expert",
+      "capabilities": [
+        "pandas_tools",
+        "visualization_tools",
+        "csv_tools"
+      ],
+      "model": "claude-3-5-sonnet"
+    },
+    "Researcher": {
+      "role": "contributor",
+      "description": "Research and information gathering specialist",
+      "capabilities": [
+        "wikipedia_tools",
+        "arxiv_tools",
+        "search_tools"
+      ],
+      "model": "gpt-4o"
+    },
+    "Developer": {
+      "role": "worker",
+      "description": "Software development and automation expert",
+      "capabilities": [
+        "shell_tools",
+        "docker_tools",
+        "function_tools"
+      ],
+      "model": "claude-3-5-sonnet"
+    }
+  },
+  "team": {
+    "max_agents": 10,
+    "default_priority": "normal",
+    "communication_enabled": true
+  }
+}

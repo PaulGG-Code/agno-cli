@@ -1,0 +1,14 @@
+{
+  "database": {
+    "type": "sqlite",
+    "path": "examples/users.db",
+    "timeout": 30
+  },
+  "postgresql": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "agno_demo",
+    "username": "demo_user",
+    "password": "demo_password"
+  }
+}

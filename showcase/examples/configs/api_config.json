@@ -1,0 +1,17 @@
+{
+  "openai": {
+    "api_key": "your-openai-api-key",
+    "model": "gpt-4o",
+    "temperature": 0.7,
+    "max_tokens": 1000
+  },
+  "anthropic": {
+    "api_key": "your-anthropic-api-key",
+    "model": "claude-3-5-sonnet",
+    "temperature": 0.7
+  },
+  "yfinance": {
+    "timeout": 30,
+    "retries": 3
+  }
+}
