@@ -65,15 +65,24 @@ A powerful, terminal-native multi-agent assistant built on the Agno AI framework
 - **Modular Commands**: Organized command structure for different functionalities
 - **Export Capabilities**: JSON, CSV, Markdown output formats
 
+> Welcome agno-cli
 [![Demo 1](https://asciinema.org/a/BCraWRW2fpb6smmRKzp7ZU59E.svg)](https://asciinema.org/a/BCraWRW2fpb6smmRKzp7ZU59E3)
 
+
+> Using Panda and csv with agno-cli
 [![Demo 2](https://asciinema.org/a/uRajitiULt8FSGE2bdkJpimpJ.svg)](https://asciinema.org/a/uRajitiULt8FSGE2bdkJpimpJ)
 
+> Using Duckdb, Panda and csv
 [![Demo 3](https://asciinema.org/a/TVLiViDxhYo3foXViYM0R0BCS.svg)](https://asciinema.org/a/TVLiViDxhYo3foXViYM0R0BCS)
 
+> Using Shell, Docker, Wikipedia, Arxiv, Screenshot
 [![Demo 4](https://asciinema.org/a/h4sV8yv57zM7XKM6H5RMrrOp3.svg)](https://asciinema.org/a/h4sV8yv57zM7XKM6H5RMrrOp3)
 
+> Using Finance with agno-cli
 [![Demo 5](https://asciinema.org/a/XWeLQWHNYeFFvCXXiHwKDPYJp.svg)](https://asciinema.org/a/XWeLQWHNYeFFvCXXiHwKDPYJp)
+
+> Automating Functions usign agno-cli
+[![Demo 6](https://asciinema.org/a/PdSNs6QUUwRf0iWg3OYfv9Eru.svg)](https://asciinema.org/a/PdSNs6QUUwRf0iWg3OYfv9Eru)
 
 ## 🚀 Quick Start
 
@@ -753,8 +762,22 @@ agno thinking --framework design_thinking --start "Title:Problem"
 
 ### Function Calling Operations
 ```bash
+
+# Show function details
+agno function --show "function_id"
+
+# Delete a function
+agno function --delete "function_id"
+
+# Create from template
+agno function --create-from-template "template_id:name:description"
+
 # Create and manage functions
 agno function --create "Function Name:Description:code_file.py"
+agno function --create "fibonacci_sequence:Calculate Fibonacci sequence up to n:fibonacci.py"
+agno function --execute "864546e:data=10"
+
+agno function --execute "864546e:data=10"
 agno function --list
 agno function --show function_id
 agno function --delete function_id
