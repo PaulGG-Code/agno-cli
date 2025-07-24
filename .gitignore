@@ -14,3 +14,9 @@ __pycache__/
 *.pyc
 models_database.db
 .DS_Store
+agents_state_agents_agents.json
+agents_state_agents_orchestrator.json
+agents_state_agents_system.json
+agents_state_agents_team.json
+agents_state_agents_team_system.json
+agents_state_agents_team_team.json

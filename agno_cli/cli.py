@@ -23,6 +23,7 @@ from agents.agent_state import AgentRole, AgentStatus
 from reasoning.tracer import ReasoningTracer
 from reasoning.metrics import MetricsCollector
 from commands.chat_commands import ChatCommands
+from commands.team_commands import TeamCommands
 from tools.search_tools import SearchToolsManager
 from tools.financial_tools import FinancialToolsManager
 from tools.math_tools import MathToolsManager
@@ -62,6 +63,7 @@ session_manager = None
 multi_agent_system = None
 tracer = None
 metrics = None
+team_commands = None
 chat_commands = None
 search_tools = None
 financial_tools = None
@@ -78,7 +80,7 @@ screenshot_tools = None
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
-    global multi_agent_system, tracer, metrics, chat_commands
+    global multi_agent_system, tracer, metrics, chat_commands, team_commands
     global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, crawl4ai_tools, screenshot_tools, config, session_manager
     
     if config is None:
@@ -86,10 +88,22 @@ def initialize_system():
         session_manager = SessionManager()
     
     if multi_agent_system is None:
-        multi_agent_system = MultiAgentSystem(config)
+        # Check if system state exists and load it
+        system_state_file = Path.home() / '.agno_cli' / 'system_state.json'
+        if system_state_file.exists():
+            try:
+                multi_agent_system = MultiAgentSystem.load_system_state(system_state_file, config)
+                console.print("[blue]System state loaded successfully[/blue]")
+            except Exception as e:
+                console.print(f"[yellow]Could not load system state: {e}[/yellow]")
+                multi_agent_system = MultiAgentSystem(config)
+        else:
+            multi_agent_system = MultiAgentSystem(config)
+        
         tracer = ReasoningTracer()
         metrics = MetricsCollector()
         chat_commands = ChatCommands(config, multi_agent_system, tracer, metrics)
+        team_commands = TeamCommands(multi_agent_system)
         
         # Initialize tool managers
         search_tools = SearchToolsManager({})
@@ -326,51 +340,25 @@ def team(
     message: Optional[str] = typer.Option(None, "--message", help="Send message to team"),
     task: Optional[str] = typer.Option(None, "--task", help="Assign task to team"),
     priority: Optional[str] = typer.Option("normal", "--priority", help="Task priority (low, normal, high, urgent, critical)"),
-    requirements: Optional[str] = typer.Option(None, "--requirements", help="JSON task requirements")
+    requirements: Optional[str] = typer.Option(None, "--requirements", help="JSON task requirements"),
+    activate: bool = typer.Option(False, "--activate", help="Activate team for task execution"),
+    deactivate: bool = typer.Option(False, "--deactivate", help="Deactivate team and stop task execution")
 ):
     """Manage team operations and coordination"""
     initialize_system()
     
-    if status:
-        team_status = multi_agent_system.get_system_status()
-        
-        status_text = f"""
-**System ID:** {team_status['system_id']}
-**Total Agents:** {team_status['team_status']['total_agents']}
-**Active Agents:** {team_status['team_status']['active_agents']}
-**Idle Agents:** {team_status['team_status']['idle_agents']}
-
-**Tasks:**
-- Pending: {team_status['team_status']['pending_tasks']}
-- Active: {team_status['team_status']['active_tasks']}
-- Completed: {team_status['team_status']['completed_tasks']}
-
-**Communication:**
-- Total Messages: {team_status['team_status']['total_messages']}
-- Uptime: {team_status['team_status']['uptime']:.1f}s
-
-**Configuration:**
-- Model Provider: {team_status['configuration']['model_provider']}
-- Model ID: {team_status['configuration']['model_id']}
-"""
-        
-        panel = Panel(
-            Markdown(status_text),
-            title="Team Status",
-            border_style="green"
-        )
-        console.print(panel)
+    if activate:
+        team_commands.activate_team()
+    
+    elif deactivate:
+        team_commands.deactivate_team()
+    
+    elif status:
+        team_commands.display_team_status()
     
     elif message:
-        # Broadcast message to all agents
-        leader_agents = [a for a in multi_agent_system.list_agents() if a['role'] == 'leader']
-        if leader_agents:
-            from_agent = leader_agents[0]['agent_id']
-        else:
-            from_agent = "system"
-        
-        message_ids = multi_agent_system.broadcast_message(from_agent, message)
-        console.print(f"[green]Broadcast message sent to {len(message_ids)} agents[/green]")
+        message_ids = team_commands.send_message(message)
+        console.print(f"[green]Message sent to team. Message IDs: {message_ids}[/green]")
     
     elif task:
         # Parse priority
@@ -395,16 +383,17 @@ def team(
                 return
         
         # Assign task
-        task_id = multi_agent_system.assign_task(
+        task_id = team_commands.assign_task(
             description=task,
             requirements=task_requirements,
             priority=task_priority
         )
         
-        console.print(f"[green]Task assigned with ID: {task_id}[/green]")
+        if task_id:
+            console.print(f"[green]Task assigned with ID: {task_id}[/green]")
     
     else:
-        console.print("[yellow]Use --status, --message, or --task[/yellow]")
+        console.print("[yellow]Use --status, --message, --task, --activate, or --deactivate[/yellow]")
 
 
 # Tool Commands

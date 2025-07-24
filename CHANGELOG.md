@@ -5,6 +5,261 @@ All notable changes to the Agno CLI Enhanced project will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2025-07-24
+
+### 🚀 Major Features Added
+
+#### ✅ Enhanced Team Management System
+- **Complete team management functionality** with persistent state and task execution
+- **Team activation/deactivation**: Start and stop team task processing with `--activate` and `--deactivate`
+- **Task persistence**: Tasks are automatically saved and persist across CLI sessions
+- **Background task execution**: Automatic task processing when team is active
+- **Comprehensive state management**: Team status, agent states, and task history are all persisted
+- **Rich status display**: Beautiful tables showing task details, agent status, and execution progress
+- **Task assignment with requirements**: Specify skills, tools, and capabilities needed for tasks
+- **Priority-based task management**: Support for low, normal, high, urgent, and critical priorities
+- **Agent capability matching**: Intelligent task assignment based on agent skills and tools
+- **Inter-agent communication**: Message broadcasting and coordination between agents
+- **Task execution monitoring**: Real-time tracking of task progress and completion
+
+#### ✅ Persistent State Management
+- **System state persistence**: Complete system state saved to `~/.agno_cli/system_state.json`
+- **Team state persistence**: Team activation status saved to `~/.agno_cli/team_state.json`
+- **Orchestrator state persistence**: Task queue and agent assignments persist across sessions
+- **Automatic state loading**: System state automatically loaded on CLI initialization
+- **Cross-session persistence**: Tasks and team status survive CLI restarts and system reboots
+- **State file management**: Automatic creation and management of state files
+- **Error recovery**: Graceful handling of state file corruption or missing files
+
+#### ✅ Enhanced Agent Orchestration
+- **Improved task assignment**: Better agent selection based on capabilities and workload
+- **Task execution pipeline**: Complete task lifecycle from assignment to completion
+- **Agent scoring system**: Intelligent agent selection based on success rate, skills, and tools
+- **Task status tracking**: Pending, active, completed, and failed task states
+- **Execution history**: Complete record of task execution and results
+- **Agent workload management**: Balanced task distribution across available agents
+- **Task failure handling**: Proper error handling and task status updates
+
+### 🔧 CLI Commands
+
+#### Enhanced Team Commands
+- **`agno team --activate`**: Activate team for task execution
+- **`agno team --deactivate`**: Deactivate team and stop task processing
+- **`agno team --status`**: Display comprehensive team status with task details
+- **`agno team --task "description" --priority level --requirements json`**: Assign task with requirements
+- **`agno team --message "message"`**: Broadcast message to team
+- **Task priorities**: `low`, `normal`, `high`, `urgent`, `critical`
+- **Task requirements**: JSON specification of required skills, tools, and capabilities
+
+#### Agent Management Commands
+- **`agno agents --create "name" --role role --description "desc" --capabilities json`**: Create specialized agent
+- **`agno agents --list`**: List all agents with status and capabilities
+- **Agent roles**: `leader`, `worker`, `contributor`, `specialist`, `coordinator`, `observer`
+- **Capability specification**: JSON format for tools, skills, languages, and modalities
+
+### 🎨 User Experience Improvements
+
+#### Rich Team Status Display
+- **Comprehensive status panels**: Beautiful formatted display of team information
+- **Task details table**: Detailed view of all tasks with status, priority, and assignment
+- **Agent status overview**: Summary of agent counts and workload distribution
+- **Communication metrics**: Message counts and system uptime tracking
+- **Configuration display**: Current model provider and configuration information
+
+#### Task Management Interface
+- **Priority-based task assignment**: Clear priority levels with visual indicators
+- **Requirement specification**: JSON-based task requirements for precise agent matching
+- **Task execution feedback**: Real-time updates on task processing and completion
+- **Error reporting**: Clear error messages for task failures and agent issues
+- **Progress tracking**: Visual indicators for task progress and completion status
+
+### 🔧 Technical Improvements
+
+#### State Persistence Architecture
+- **File-based persistence**: JSON-based state storage in user home directory
+- **Automatic state loading**: Seamless state restoration on CLI startup
+- **State validation**: Robust error handling for corrupted or missing state files
+- **Backward compatibility**: Graceful handling of state file format changes
+- **State file organization**: Separate files for system state, team state, and orchestrator state
+
+#### Task Execution System
+- **Background processing**: Threading-based task execution for non-blocking operation
+- **Agent capability matching**: Intelligent algorithm for matching tasks to agents
+- **Task lifecycle management**: Complete task state management from creation to completion
+- **Error recovery**: Robust error handling and task status updates
+- **Performance optimization**: Efficient task processing and state updates
+
+#### Orchestrator Enhancements
+- **Improved task assignment**: Better agent selection based on capabilities and availability
+- **Task queue management**: Persistent task queue with proper state management
+- **Agent registration**: Enhanced agent registration and capability tracking
+- **Message handling**: Improved inter-agent communication and message routing
+- **Status reporting**: Comprehensive system status and metrics collection
+
+### 🐛 Bug Fixes
+
+#### Task Persistence Fixes
+- **Fixed task loss**: Tasks now persist across CLI sessions and system restarts
+- **Fixed state loading**: Proper system state loading on CLI initialization
+- **Fixed orchestrator state**: Complete orchestrator state persistence and restoration
+- **Fixed agent state**: Agent states and capabilities persist correctly
+
+#### Team Management Fixes
+- **Fixed team activation**: Team activation status now persists across sessions
+- **Fixed task assignment**: Improved task assignment with proper agent capability matching
+- **Fixed background execution**: Background task execution now works reliably
+- **Fixed status display**: Team status now shows accurate task and agent information
+
+#### CLI Integration Fixes
+- **Fixed command integration**: Team commands now integrate properly with CLI framework
+- **Fixed state initialization**: Proper state initialization and loading in CLI startup
+- **Fixed error handling**: Improved error handling and user feedback
+- **Fixed help documentation**: Updated help text and command documentation
+
+### 📚 Documentation
+
+#### New Documentation
+- **Team management guide**: Comprehensive guide for team setup and task management
+- **Agent creation examples**: Detailed examples for creating specialized agents
+- **Task assignment guide**: Guide for assigning tasks with proper requirements
+- **State management documentation**: Explanation of persistence and state management
+
+#### Updated Documentation
+- **README updates**: Added comprehensive team management examples and use cases
+- **Command help**: Enhanced help text for all team and agent commands
+- **Examples**: Real working examples for team activation, task assignment, and monitoring
+- **Troubleshooting**: Added troubleshooting section for common team management issues
+
+### 🏗️ Architecture Improvements
+
+#### Team Management System
+- **Modular design**: Clean separation of team commands, orchestrator, and state management
+- **Extensible architecture**: Easy to add new team features and capabilities
+- **State management**: Robust state persistence and restoration system
+- **Error handling**: Comprehensive error handling and recovery mechanisms
+
+#### CLI Integration
+- **Command organization**: Well-organized command structure for team operations
+- **State integration**: Seamless integration of state management with CLI framework
+- **User experience**: Intuitive command interface with clear feedback
+- **Documentation**: Comprehensive help and documentation for all features
+
+### 🔄 Development Process
+
+#### Quality Assurance
+- **Comprehensive testing**: Manual testing of all team management features
+- **State persistence testing**: Testing of state saving and loading across sessions
+- **Task execution testing**: End-to-end testing of task assignment and execution
+- **Error condition testing**: Testing of error handling and recovery mechanisms
+
+#### Code Management
+- **Clean architecture**: Well-structured code with proper separation of concerns
+- **Documentation**: Comprehensive inline and external documentation
+- **Error handling**: Robust error handling throughout the system
+- **Testing**: Manual testing of all features and edge cases
+
+### 📦 Dependencies
+
+#### Updated Dependencies
+- **agno**: Core AI framework integration with enhanced team capabilities
+- **typer**: CLI framework with improved command organization
+- **rich**: Enhanced terminal formatting for team status displays
+- **pathlib**: Improved path handling for state file management
+
+### 🎯 Future Roadmap
+
+#### Immediate Next Steps
+- [✅] Team management system completed
+- [✅] Task persistence implemented
+- [✅] State management system completed
+- [🔄] Enhanced agent capabilities
+- [🔄] Advanced task coordination
+
+#### Phase 1: Core Infrastructure (Completed)
+- [✅] File system operations completed
+- [✅] CSV toolkit completed
+- [✅] Pandas integration completed
+- [✅] Database operations completed
+- [✅] System operations completed
+- [✅] Research tools completed
+- [✅] AI & ML tools completed
+- [✅] Advanced tools completed
+- [✅] Team management completed
+
+#### Phase 2: Production Readiness (In Progress)
+- [✅] Team management system
+- [✅] State persistence
+- [✅] Task execution
+- [🔄] Enhanced agent capabilities
+- [🔄] Advanced coordination features
+
+### 🔧 Configuration
+
+#### New Configuration Options
+- **Team settings**: Team activation preferences and task execution settings
+- **State management**: State file locations and persistence preferences
+- **Task settings**: Default task priorities and execution preferences
+
+### 🧪 Testing
+
+#### Test Coverage
+- **Team management testing**: Comprehensive testing of team activation and task management
+- **State persistence testing**: Testing of state saving and loading across sessions
+- **Task execution testing**: End-to-end testing of task assignment and execution
+- **Error handling testing**: Testing of error conditions and recovery mechanisms
+
+#### Test Commands
+```bash
+# Team management testing
+agno team --activate
+agno team --task "Test task" --priority high --requirements '{"skills": ["test"]}'
+agno team --status
+agno team --deactivate
+
+# Agent creation testing
+agno agents --create "TestAgent" --role specialist --description "Test agent"
+agno agents --list
+
+# State persistence testing
+agno team --activate
+agno team --task "Persistent task" --priority normal
+# Exit CLI and restart
+agno team --status  # Should show persistent task
+```
+
+### 📈 Performance
+
+#### Improvements
+- **Task execution performance**: Efficient background task processing
+- **State persistence performance**: Fast state saving and loading
+- **Memory efficiency**: Optimized memory usage for team management
+- **Response times**: Fast command execution and status updates
+
+### 🔒 Security
+
+#### Security Features
+- **State file security**: Secure storage of team and system state
+- **Task validation**: Validation of task requirements and agent capabilities
+- **Error handling**: Secure error messages without information leakage
+- **Path validation**: Safe handling of file paths and state file locations
+
+### 🌟 Highlights
+
+#### Key Achievements
+- **Complete team management**: Full-featured team coordination and task management
+- **Persistent state management**: Robust state persistence across sessions
+- **Background task execution**: Automatic task processing and execution
+- **Rich user interface**: Beautiful status displays and progress tracking
+- **Production ready**: Stable and reliable team management system
+
+#### Developer Experience
+- **Easy to use**: Intuitive team management interface
+- **Well documented**: Comprehensive examples and guides
+- **Extensible**: Easy to add new team features and capabilities
+- **Maintainable**: Clean, well-structured code with proper state management
+
+---
+
 ## [2.3.0] - 2025-07-23
 
 ### 🚀 Major Features Added
@@ -689,7 +944,7 @@ git check-ignore __pycache__
 - [📋] Model management
 - [📋] Image generation (DALL-E)
 - [📋] Audio processing
-- [📋] Computer vision
+- [📋] Computer vision (OpenCV)
 
 #### Phase 3-7: Additional Tools (Planned)
 - [📋] Business tools (Jira, Trello, Linear)

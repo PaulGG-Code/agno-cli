@@ -178,7 +178,7 @@ class AgentOrchestrator:
     
     def create_task(self, description: str, requirements: Dict[str, Any] = None, 
                    priority: TaskPriority = TaskPriority.NORMAL,
-                   deadline: Optional[datetime] = None) -> str:
+                   deadline: Optional[datetime] = None, auto_assign: bool = False) -> str:
         """Create a new task"""
         task_id = str(uuid.uuid4())
         task = Task(
@@ -191,8 +191,9 @@ class AgentOrchestrator:
         
         self.tasks[task_id] = task
         
-        # Try to assign the task immediately
-        self.assign_task(task_id)
+        # Only try to assign the task immediately if auto_assign is True
+        if auto_assign:
+            self.assign_task(task_id)
         
         return task_id
     

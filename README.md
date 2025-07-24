@@ -233,12 +233,164 @@ agno agents --remove agent-id
 # View team status
 agno team --status
 
+# Activate team for task execution
+agno team --activate
+
 # Assign task to team
 agno team --task "Analyze Q3 financial performance" --priority high \
   --requirements '{"skills": ["finance", "analysis"], "tools": ["yfinance_tools"]}'
 
+# Assign task with specific requirements
+agno team --task "Research latest AI developments" --priority normal \
+  --requirements '{"skills": ["research", "analysis"], "tools": ["search_tools"]}'
+
 # Broadcast message to team
 agno team --message "New market data available for analysis"
+
+# Deactivate team
+agno team --deactivate
+```
+
+### Team Management Examples
+
+#### Creating and Managing Agents
+```bash
+# List all agents
+agno agents --list
+
+# Create a financial analyst agent
+agno agents --create "FinancialAnalyst" --role specialist \
+  --description "Expert in financial analysis and market research" \
+  --capabilities '{"tools": ["financial_tools", "math_tools"], "skills": ["finance", "statistics", "analysis"]}'
+
+# Create a research specialist agent
+agno agents --create "ResearchSpecialist" --role specialist \
+  --description "Expert in research and data analysis" \
+  --capabilities '{"tools": ["search_tools", "wikipedia_tools", "arxiv_tools"], "skills": ["research", "analysis", "synthesis"]}'
+
+# Create a data scientist agent
+agno agents --create "DataScientist" --role specialist \
+  --description "Expert in data science and machine learning" \
+  --capabilities '{"tools": ["pandas_tools", "visualization_tools", "math_tools"], "skills": ["data_science", "ml", "statistics"]}'
+
+# Check agent status and capabilities
+agno agents --list
+```
+
+#### Team Activation and Task Management
+```bash
+# Activate the team for task execution
+agno team --activate
+
+# Assign a financial analysis task
+agno team --task "Analyze stock performance for AAPL, MSFT, and GOOGL" \
+  --priority high \
+  --requirements '{"skills": ["finance", "analysis"], "tools": ["financial_tools"]}'
+
+# Assign a research task
+agno team --task "Research latest developments in quantum computing" \
+  --priority normal \
+  --requirements '{"skills": ["research", "analysis"], "tools": ["search_tools", "arxiv_tools"]}'
+
+# Assign a data analysis task
+agno team --task "Analyze customer satisfaction data and create visualizations" \
+  --priority normal \
+  --requirements '{"skills": ["data_science", "statistics"], "tools": ["pandas_tools", "visualization_tools"]}'
+
+# Check team status and pending tasks
+agno team --status
+
+# Send a message to coordinate the team
+agno team --message "Please prioritize the financial analysis task - deadline is approaching"
+
+# Deactivate team when work is complete
+agno team --deactivate
+```
+
+#### Task Execution and Monitoring
+```bash
+# Activate team to start processing tasks
+agno team --activate
+
+# Assign multiple tasks with different priorities
+agno team --task "Urgent: Analyze Q4 earnings reports" --priority critical \
+  --requirements '{"skills": ["finance", "analysis"], "tools": ["financial_tools"]}'
+
+agno team --task "Research competitor analysis" --priority high \
+  --requirements '{"skills": ["research", "analysis"], "tools": ["search_tools"]}'
+
+agno team --task "Create quarterly performance dashboard" --priority normal \
+  --requirements '{"skills": ["data_science", "visualization"], "tools": ["pandas_tools", "visualization_tools"]}'
+
+# Monitor team progress
+agno team --status
+
+# Send coordination messages
+agno team --message "Focus on completing the urgent earnings analysis first"
+
+# Check task details and progress
+agno team --status
+
+# Deactivate when tasks are complete
+agno team --deactivate
+```
+
+#### Advanced Team Coordination
+```bash
+# Create a comprehensive team setup
+agno agents --create "TeamLeader" --role leader \
+  --description "Team coordinator and decision maker" \
+  --capabilities '{"tools": ["search_tools", "communication_tools"], "skills": ["coordination", "decision_making"]}'
+
+agno agents --create "MarketAnalyst" --role specialist \
+  --description "Market and financial analysis expert" \
+  --capabilities '{"tools": ["financial_tools", "math_tools"], "skills": ["finance", "market_analysis"]}'
+
+agno agents --create "DataEngineer" --role specialist \
+  --description "Data processing and engineering expert" \
+  --capabilities '{"tools": ["pandas_tools", "sql_tools"], "skills": ["data_engineering", "sql"]}'
+
+# Activate the team
+agno team --activate
+
+# Assign complex multi-step project
+agno team --task "Complete market analysis project: 1) Gather market data, 2) Analyze trends, 3) Create report" \
+  --priority high \
+  --requirements '{"skills": ["finance", "data_analysis", "reporting"], "tools": ["financial_tools", "pandas_tools", "visualization_tools"]}'
+
+# Monitor progress and coordinate
+agno team --status
+agno team --message "Phase 1 complete - moving to trend analysis phase"
+
+# Continue monitoring
+agno team --status
+
+# Deactivate when project is complete
+agno team --deactivate
+```
+
+#### Task Persistence and State Management
+```bash
+# The team system automatically persists:
+# - Team activation status
+# - Assigned tasks and their status
+# - Agent states and capabilities
+# - Task execution history
+
+# Tasks persist across CLI sessions
+agno team --activate
+agno team --task "Long-running analysis task" --priority normal
+agno team --status
+
+# Exit CLI and return later
+# Tasks will still be there when you return
+agno team --status  # Shows the same pending task
+
+# Team activation status also persists
+agno team --status  # Shows team is still active
+
+# Deactivate when done
+agno team --deactivate
 ```
 
 ### Search Operations
