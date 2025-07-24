@@ -65,6 +65,16 @@ A powerful, terminal-native multi-agent assistant built on the Agno AI framework
 - **Modular Commands**: Organized command structure for different functionalities
 - **Export Capabilities**: JSON, CSV, Markdown output formats
 
+[![Demo 1](https://asciinema.org/a/BCraWRW2fpb6smmRKzp7ZU59E.svg)](https://asciinema.org/a/BCraWRW2fpb6smmRKzp7ZU59E3)
+
+[![Demo 2](https://asciinema.org/a/uRajitiULt8FSGE2bdkJpimpJ.svg)](https://asciinema.org/a/uRajitiULt8FSGE2bdkJpimpJ)
+
+[![Demo 3](https://asciinema.org/a/TVLiViDxhYo3foXViYM0R0BCS.svg)](https://asciinema.org/a/TVLiViDxhYo3foXViYM0R0BCS)
+
+[![Demo 4](https://asciinema.org/a/h4sV8yv57zM7XKM6H5RMrrOp3.svg)](https://asciinema.org/a/h4sV8yv57zM7XKM6H5RMrrOp3)
+
+[![Demo 5](https://asciinema.org/a/XWeLQWHNYeFFvCXXiHwKDPYJp.svg)](https://asciinema.org/a/XWeLQWHNYeFFvCXXiHwKDPYJp)
+
 ## 🚀 Quick Start
 
 ```bash
