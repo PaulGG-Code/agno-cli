@@ -189,13 +189,11 @@ def agents(
     initialize_system()
     # --- AGENT STATE PERSISTENCE PATCH START ---
     from pathlib import Path
-    AGENT_STATE_PATH = Path(__file__).parent.parent / 'agents_state_agents.json'
+    AGENT_STATE_PATH = Path.home() / '.agno_cli' / 'system_state.json'
     if AGENT_STATE_PATH.exists():
         try:
             # Load the saved state and replace the current system
-            # Use the agents file as the base path for loading
-            base_path = AGENT_STATE_PATH.parent / 'agents_state.json'
-            loaded_system = MultiAgentSystem.load_system_state(base_path, config)
+            loaded_system = MultiAgentSystem.load_system_state(AGENT_STATE_PATH, config)
             multi_agent_system = loaded_system
         except Exception as e:
             console.print(f"[red]Failed to load agent state: {e}[/red]")
@@ -277,8 +275,18 @@ def agents(
     
     elif remove:
         try:
-            if multi_agent_system.remove_agent(remove):
-                console.print(f"[green]Removed agent {remove}[/green]")
+            # Try to find agent by full ID or truncated ID
+            agent_found = multi_agent_system.remove_agent(remove)
+            if not agent_found:
+                # Try to find by truncated ID
+                for agent_id in list(multi_agent_system.agent_states.keys()):
+                    if agent_id.startswith(remove):
+                        agent_found = multi_agent_system.remove_agent(agent_id)
+                        if agent_found:
+                            console.print(f"[green]Removed agent {agent_id[:8]}... (full: {agent_id})[/green]")
+                            break
+            
+            if agent_found:
                 # --- AGENT STATE PERSISTENCE PATCH: Save after remove ---
                 try:
                     multi_agent_system.save_system_state(AGENT_STATE_PATH)
@@ -287,13 +295,27 @@ def agents(
                 # --- END PATCH ---
             else:
                 console.print(f"[red]Agent {remove} not found[/red]")
+                console.print("[yellow]Available agents:[/yellow]")
+                for agent_id in multi_agent_system.agent_states.keys():
+                    console.print(f"  {agent_id[:8]}... (full: {agent_id})")
         except ValueError as e:
             console.print(f"[red]Error: {e}[/red]")
     
     elif status:
+        # Try to find agent by full ID or truncated ID
         agent_state = multi_agent_system.get_agent_state(status)
         if not agent_state:
+            # Try to find by truncated ID
+            for agent_id in multi_agent_system.agent_states.keys():
+                if agent_id.startswith(status):
+                    agent_state = multi_agent_system.get_agent_state(agent_id)
+                    break
+        
+        if not agent_state:
             console.print(f"[red]Agent {status} not found[/red]")
+            console.print("[yellow]Available agents:[/yellow]")
+            for agent_id in multi_agent_system.agent_states.keys():
+                console.print(f"  {agent_id[:8]}... (full: {agent_id})")
             return
         
         status_text = f"""
