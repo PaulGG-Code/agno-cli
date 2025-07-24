@@ -230,13 +230,14 @@ class AgentState:
     
     def add_capability(self, capability_type: str, capability: str) -> None:
         """Add a capability to the agent"""
-        if capability_type == "tool":
+        # Handle both singular and plural forms
+        if capability_type in ["tool", "tools"]:
             self.capabilities.tools.add(capability)
-        elif capability_type == "skill":
+        elif capability_type in ["skill", "skills"]:
             self.capabilities.skills.add(capability)
-        elif capability_type == "language":
+        elif capability_type in ["language", "languages"]:
             self.capabilities.languages.add(capability)
-        elif capability_type == "modality":
+        elif capability_type in ["modality", "modalities"]:
             self.capabilities.modalities.add(capability)
         
         self.updated_at = datetime.now()

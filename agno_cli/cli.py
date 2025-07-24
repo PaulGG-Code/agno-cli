@@ -216,7 +216,16 @@ def agents(
         table.add_column("Capabilities", style="white")
         
         for agent in agents:
-            capabilities_str = ", ".join(agent['capabilities']['modalities'])
+            # Combine tools and skills for display
+            tools = agent['capabilities']['tools']
+            skills = agent['capabilities']['skills']
+            capabilities_parts = []
+            if tools:
+                capabilities_parts.append(f"Tools: {', '.join(tools)}")
+            if skills:
+                capabilities_parts.append(f"Skills: {', '.join(skills)}")
+            capabilities_str = "; ".join(capabilities_parts) if capabilities_parts else "None"
+            
             table.add_row(
                 agent['agent_id'][:8],
                 agent['name'],
@@ -360,6 +369,7 @@ def agents(
 def team(
     status: bool = typer.Option(False, "--status", help="Show team status"),
     message: Optional[str] = typer.Option(None, "--message", help="Send message to team"),
+    messages: bool = typer.Option(False, "--messages", help="Show team communication history"),
     task: Optional[str] = typer.Option(None, "--task", help="Assign task to team"),
     priority: Optional[str] = typer.Option("normal", "--priority", help="Task priority (low, normal, high, urgent, critical)"),
     requirements: Optional[str] = typer.Option(None, "--requirements", help="JSON task requirements"),
@@ -381,6 +391,9 @@ def team(
     elif message:
         message_ids = team_commands.send_message(message)
         console.print(f"[green]Message sent to team. Message IDs: {message_ids}[/green]")
+    
+    elif messages:
+        team_commands.display_communication_history()
     
     elif task:
         # Parse priority

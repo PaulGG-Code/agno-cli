@@ -416,4 +416,55 @@ class TeamCommands:
                 )
         
         self.console.print(table)
+    
+    def display_communication_history(self):
+        """Display team communication history"""
+        # Get communication log from orchestrator
+        communication_log = self.multi_agent_system.orchestrator.communication_log
+        
+        if not communication_log:
+            self.console.print("[yellow]No communication history found[/yellow]")
+            return
+        
+        # Create table for communication history
+        table = Table(title="Team Communication History")
+        table.add_column("Time", style="cyan", width=20)
+        table.add_column("From", style="green", width=12)
+        table.add_column("To", style="blue", width=12)
+        table.add_column("Type", style="yellow", width=15)
+        table.add_column("Content", style="white", width=50)
+        
+        # Display last 20 messages
+        for message in communication_log[-20:]:
+            # Get agent names
+            from_name = self._get_agent_name(message.from_agent)
+            to_name = self._get_agent_name(message.to_agent) if message.to_agent else "ALL"
+            
+            # Truncate content for display
+            content = message.content[:47] + "..." if len(message.content) > 50 else message.content
+            
+            table.add_row(
+                message.timestamp.strftime("%H:%M:%S"),
+                from_name,
+                to_name,
+                message.message_type.value,
+                content
+            )
+        
+        self.console.print(table)
+        
+        # Show message count
+        self.console.print(f"\n[blue]Total messages: {len(communication_log)}[/blue]")
+    
+    def _get_agent_name(self, agent_id: str) -> str:
+        """Get agent name from ID"""
+        if agent_id == "system" or agent_id == "orchestrator":
+            return agent_id
+        
+        agents = self.multi_agent_system.list_agents()
+        for agent in agents:
+            if agent['agent_id'] == agent_id:
+                return agent['name']
+        
+        return agent_id[:8]
 
