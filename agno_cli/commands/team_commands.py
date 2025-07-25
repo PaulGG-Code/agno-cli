@@ -90,9 +90,10 @@ class TeamCommands:
         self._save_state()
         
         self.console.print("[green]Team activated! Agents are now ready to work on tasks.[/green]")
+        self.console.print("[blue]Note: Background task execution is temporarily disabled. Use --execute-pending to run tasks manually.[/blue]")
         
-        # Start task execution thread
-        self._start_task_execution_thread()
+        # Temporarily disable background thread to avoid recursion issues
+        # self._start_task_execution_thread()
         return True
     
     def deactivate_team(self) -> bool:
@@ -115,21 +116,26 @@ class TeamCommands:
     def _start_task_execution_thread(self):
         """Start the background task execution thread"""
         def task_loop():
+            self.console.print("[blue]Task execution thread started[/blue]")
             while self.team_active and not self.stop_execution:
                 try:
                     # Check for pending tasks
                     pending_tasks = self._get_pending_tasks()
                     
-                    for task in pending_tasks:
-                        if self.team_active and not self.stop_execution:
-                            self._execute_task(task)
+                    if pending_tasks:
+                        self.console.print(f"[blue]Found {len(pending_tasks)} pending tasks[/blue]")
+                        
+                        for task in pending_tasks:
+                            if self.team_active and not self.stop_execution:
+                                self.console.print(f"[blue]Processing task: {task['description'][:50]}...[/blue]")
+                                self._execute_task(task)
                     
                     # Save system state periodically
                     if pending_tasks:
                         self._save_system_state()
                     
                     # Wait before next check
-                    time.sleep(2)
+                    time.sleep(5)  # Increased from 2 to 5 seconds
                     
                 except Exception as e:
                     self.console.print(f"[red]Task execution error: {e}[/red]")
@@ -138,6 +144,7 @@ class TeamCommands:
         # Start the thread
         self.task_execution_thread = threading.Thread(target=task_loop, daemon=True)
         self.task_execution_thread.start()
+        self.console.print("[green]Task execution thread started successfully[/green]")
     
     def _get_pending_tasks(self) -> List[Dict[str, Any]]:
         """Get list of pending tasks from orchestrator"""
@@ -167,30 +174,45 @@ class TeamCommands:
         best_agent = self._find_best_agent_for_task(task_info)
         if not best_agent:
             self.console.print(f"[yellow]No suitable agent found for task: {task_info['description']}[/yellow]")
-            return
+            # Try to assign to any available agent as fallback
+            available_agents = [a for a in self.multi_agent_system.list_agents() if a['status'] == 'idle']
+            if available_agents:
+                best_agent = available_agents[0]
+                self.console.print(f"[blue]Falling back to agent: {best_agent['name']}[/blue]")
+            else:
+                self.console.print(f"[red]No available agents to execute task: {task_info['description']}[/red]")
+                return
         
-        # Assign task to agent
-        success = self.multi_agent_system.orchestrator.assign_task(task_id, best_agent['agent_id'])
-        if not success:
-            self.console.print(f"[red]Failed to assign task {task_id} to agent {best_agent['name']}[/red]")
-            return
-        
-        # Execute task
+        # Execute task directly without using orchestrator message system
         try:
             self.console.print(f"[blue]Agent {best_agent['name']} starting task: {task_info['description']}[/blue]")
             
+            # Update agent status to working
+            agent_state = self.multi_agent_system.get_agent_state(best_agent['agent_id'])
+            if agent_state:
+                agent_state.update_status(AgentStatus.WORKING)
+            
+            # Execute task directly
             result = self.multi_agent_system.execute_task(
                 agent_id=best_agent['agent_id'],
                 task_description=task_info['description'],
                 context=task_info.get('requirements', {})
             )
             
-            # Mark task as completed
-            self.multi_agent_system.orchestrator.complete_task(
-                task_id=task_id,
-                result=result,
-                agent_id=best_agent['agent_id']
-            )
+            # Update task status directly in orchestrator
+            if task_id in self.multi_agent_system.orchestrator.tasks:
+                task = self.multi_agent_system.orchestrator.tasks[task_id]
+                task.assigned_agent = best_agent['agent_id']
+                task.status = "completed"
+                # Convert RunResponse to string to avoid JSON serialization issues
+                task.result = str(result) if result else "Task completed successfully"
+            
+            # Update agent status back to idle
+            if agent_state:
+                agent_state.update_status(AgentStatus.IDLE)
+                # Convert RunResponse to string to avoid JSON serialization issues
+                result_str = str(result) if result else "Task completed successfully"
+                agent_state.complete_task(task_id, result_str)
             
             # Save system state after task completion
             self._save_system_state()
@@ -200,7 +222,12 @@ class TeamCommands:
         except Exception as e:
             self.console.print(f"[red]Error executing task {task_id}: {e}[/red]")
             # Mark task as failed
-            self.multi_agent_system.orchestrator.tasks[task_id].status = "failed"
+            if task_id in self.multi_agent_system.orchestrator.tasks:
+                self.multi_agent_system.orchestrator.tasks[task_id].status = "failed"
+            # Update agent status back to idle
+            if agent_state:
+                agent_state.update_status(AgentStatus.IDLE)
+                agent_state.complete_task(task_id, error=str(e))
             # Save system state after task failure
             self._save_system_state()
     
@@ -222,7 +249,9 @@ class TeamCommands:
                 scored_agents.append((agent, score))
         
         if not scored_agents:
-            return None
+            # If no agents match requirements, use any available agent
+            self.console.print(f"[yellow]No agents match requirements: {requirements}[/yellow]")
+            return available_agents[0]
         
         # Return agent with highest score
         scored_agents.sort(key=lambda x: x[1], reverse=True)
@@ -233,7 +262,7 @@ class TeamCommands:
         score = 0.0
         
         # Base score from success rate
-        success_rate = agent.get('success_rate', 0.0)
+        success_rate = agent.get('metrics', {}).get('success_rate', 0.0)
         score += success_rate * 50
         
         # Check role match
@@ -246,15 +275,21 @@ class TeamCommands:
         if 'skills' in requirements:
             required_skills = set(requirements['skills'])
             agent_skills = set(agent.get('capabilities', {}).get('skills', []))
-            if required_skills.issubset(agent_skills):
-                score += 20
+            skill_matches = required_skills.intersection(agent_skills)
+            if skill_matches:
+                score += len(skill_matches) * 10
         
         # Check tools match
         if 'tools' in requirements:
             required_tools = set(requirements['tools'])
             agent_tools = set(agent.get('capabilities', {}).get('tools', []))
-            if required_tools.issubset(agent_tools):
-                score += 20
+            tool_matches = required_tools.intersection(agent_tools)
+            if tool_matches:
+                score += len(tool_matches) * 10
+        
+        # If no specific requirements, give base score
+        if not requirements:
+            score += 10
         
         return score
     
@@ -269,13 +304,18 @@ class TeamCommands:
         system_status = self.multi_agent_system.get_system_status()
         team_status = system_status['team_status']
         
-        # Get detailed task information
-        orchestrator = self.multi_agent_system.orchestrator
-        tasks_by_status = {'pending': [], 'active': [], 'completed': [], 'failed': []}
+        # Group tasks by status
+        tasks_by_status = {
+            'pending': [],
+            'assigned': [],
+            'active': [],
+            'completed': [],
+            'failed': []
+        }
         
-        for task_id, task in orchestrator.tasks.items():
+        for task in self.multi_agent_system.orchestrator.tasks.values():
             task_info = {
-                'id': task_id,
+                'id': task.task_id,
                 'description': task.description,
                 'priority': task.priority.value,
                 'assigned_agent': task.assigned_agent,
@@ -286,17 +326,8 @@ class TeamCommands:
         return {
             'status': 'active',
             'system_id': system_status['system_id'],
-            'agents': {
-                'total': team_status['total_agents'],
-                'active': team_status['active_agents'],
-                'idle': team_status['idle_agents']
-            },
-            'tasks': tasks_by_status,
-            'communication': {
-                'total_messages': team_status['total_messages'],
-                'uptime': team_status['uptime']
-            },
-            'configuration': system_status['configuration']
+            'team_status': team_status,
+            'tasks_by_status': tasks_by_status
         }
     
     def assign_task(self, description: str, requirements: Dict[str, Any] = None,
@@ -318,7 +349,63 @@ class TeamCommands:
         self.console.print(f"[green]Task assigned with ID: {task_id}[/green]")
         self.console.print(f"[blue]Task will be executed by the next available agent[/blue]")
         
+        # Try to execute the task immediately if possible
+        self._try_execute_pending_tasks()
+        
         return task_id
+    
+    def _try_execute_pending_tasks(self):
+        """Try to execute any pending tasks"""
+        pending_tasks = self._get_pending_tasks()
+        if pending_tasks:
+            self.console.print(f"[blue]Found {len(pending_tasks)} pending tasks[/blue]")
+            for task in pending_tasks:
+                self._execute_task(task)
+
+    def _assign_pending_tasks(self):
+        """Manually assign all pending tasks to available agents"""
+        pending_tasks = self._get_pending_tasks()
+        if not pending_tasks:
+            self.console.print("[blue]No pending tasks to assign[/blue]")
+            return
+        
+        self.console.print(f"[blue]Attempting to assign {len(pending_tasks)} pending tasks...[/blue]")
+        
+        for task in pending_tasks:
+            task_id = task['task_id']
+            description = task['description']
+            
+            # Try to assign the task
+            success = self.multi_agent_system.orchestrator.assign_task(task_id)
+            
+            if success:
+                self.console.print(f"[green]✓ Task '{description[:50]}...' assigned successfully[/green]")
+            else:
+                self.console.print(f"[red]✗ Failed to assign task '{description[:50]}...'[/red]")
+        
+        # Save state after assignment
+        self._save_system_state()
+
+    def _execute_assigned_tasks(self):
+        """Execute all assigned tasks"""
+        assigned_tasks = []
+        for task in self.multi_agent_system.orchestrator.tasks.values():
+            if task.status == "assigned":
+                assigned_tasks.append({
+                    'task_id': task.task_id,
+                    'description': task.description,
+                    'assigned_agent': task.assigned_agent
+                })
+        
+        if not assigned_tasks:
+            self.console.print("[blue]No assigned tasks to execute[/blue]")
+            return
+        
+        self.console.print(f"[blue]Executing {len(assigned_tasks)} assigned tasks...[/blue]")
+        
+        for task_info in assigned_tasks:
+            self.console.print(f"[blue]Executing task: {task_info['description'][:50]}...[/blue]")
+            self._execute_task(task_info)
     
     def send_message(self, message: str, message_type: MessageType = MessageType.BROADCAST) -> List[str]:
         """Send a message to the team"""
@@ -352,47 +439,51 @@ class TeamCommands:
         
         if status['status'] == 'inactive':
             self.console.print(Panel(
-                Markdown(f"**Team Status:** {status['status']}\n\n{status['message']}"),
+                status['message'],
                 title="Team Status",
-                border_style="red"
+                border_style="yellow"
             ))
             return
         
-        # Create status display
+        # Get configuration from system status
+        system_status = self.multi_agent_system.get_system_status()
+        configuration = system_status['configuration']
+        
         status_text = f"""
 **System ID:** {status['system_id']}
-**Team Status:** {status['status']}
+
+**Team Status:** {status['team_status']['orchestrator_id']}
 
 **Agents:**
-- Total: {status['agents']['total']}
-- Active: {status['agents']['active']}
-- Idle: {status['agents']['idle']}
+- Total: {status['team_status']['total_agents']}
+- Active: {status['team_status']['active_agents']}
+- Idle: {status['team_status']['idle_agents']}
 
 **Tasks:**
-- Pending: {len(status['tasks']['pending'])}
-- Active: {len(status['tasks']['active'])}
-- Completed: {len(status['tasks']['completed'])}
-- Failed: {len(status['tasks']['failed'])}
+- Pending: {len(status['tasks_by_status']['pending'])}
+- Assigned: {len(status['tasks_by_status']['assigned'])}
+- Active: {len(status['tasks_by_status']['active'])}
+- Completed: {len(status['tasks_by_status']['completed'])}
+- Failed: {len(status['tasks_by_status']['failed'])}
 
 **Communication:**
-- Total Messages: {status['communication']['total_messages']}
-- Uptime: {status['communication']['uptime']:.1f}s
+- Total Messages: {status['team_status']['total_messages']}
+- Uptime: {status['team_status']['uptime']:.1f}s
 
 **Configuration:**
-- Model Provider: {status['configuration']['model_provider']}
-- Model ID: {status['configuration']['model_id']}
+- Model Provider: {configuration['model_provider']}
+- Model ID: {configuration['model_id']}
 """
         
-        panel = Panel(
-            Markdown(status_text),
+        self.console.print(Panel(
+            status_text,
             title="Team Status",
             border_style="green"
-        )
-        self.console.print(panel)
+        ))
         
         # Show detailed task information if any
-        if any(status['tasks'].values()):
-            self._display_task_details(status['tasks'])
+        if any(status['tasks_by_status'].values()):
+            self._display_task_details(status['tasks_by_status'])
     
     def _display_task_details(self, tasks_by_status: Dict[str, List]):
         """Display detailed task information"""

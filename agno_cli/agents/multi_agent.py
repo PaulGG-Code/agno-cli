@@ -411,7 +411,8 @@ class MultiAgentSystem:
         task_id = self.orchestrator.create_task(
             description=description,
             requirements=requirements,
-            priority=priority
+            priority=priority,
+            auto_assign=True  # Enable automatic assignment
         )
         
         if preferred_agent:

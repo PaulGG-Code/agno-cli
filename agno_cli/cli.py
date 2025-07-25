@@ -374,8 +374,10 @@ def team(
     task: Optional[str] = typer.Option(None, "--task", help="Assign task to team"),
     priority: Optional[str] = typer.Option("normal", "--priority", help="Task priority (low, normal, high, urgent, critical)"),
     requirements: Optional[str] = typer.Option(None, "--requirements", help="JSON task requirements"),
-    activate: bool = typer.Option(False, "--activate", help="Activate team for task execution"),
-    deactivate: bool = typer.Option(False, "--deactivate", help="Deactivate team and stop task execution")
+    activate: bool = typer.Option(False, "--activate", help="Activate the team"),
+    deactivate: bool = typer.Option(False, "--deactivate", help="Deactivate the team"),
+    execute_pending: bool = typer.Option(False, "--execute-pending", help="Assign pending tasks to agents"),
+    execute_assigned: bool = typer.Option(False, "--execute-assigned", help="Execute assigned tasks")
 ):
     """Manage team operations and coordination"""
     initialize_system()
@@ -401,6 +403,14 @@ def team(
             team_commands.display_task_results()
         else:
             team_commands.display_task_results(results)
+    
+    elif execute_pending:
+        team_commands._assign_pending_tasks()
+        return
+    
+    elif execute_assigned:
+        team_commands._execute_assigned_tasks()
+        return
     
     elif task:
         # Parse priority
@@ -435,7 +445,7 @@ def team(
             console.print(f"[green]Task assigned with ID: {task_id}[/green]")
     
     else:
-        console.print("[yellow]Use --status, --message, --task, --activate, or --deactivate[/yellow]")
+        console.print("[yellow]Use --status, --message, --task, --activate, --deactivate, or --execute-pending[/yellow]")
 
 
 # Tool Commands

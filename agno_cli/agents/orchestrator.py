@@ -242,6 +242,10 @@ class AgentOrchestrator:
         """Check if an agent can handle a specific task"""
         requirements = task.requirements
         
+        # If no specific requirements, any available agent can handle the task
+        if not requirements:
+            return True
+        
         # Check required tools
         if 'tools' in requirements:
             required_tools = set(requirements['tools'])
