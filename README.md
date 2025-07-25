@@ -84,6 +84,9 @@ A powerful, terminal-native multi-agent assistant built on the Agno AI framework
 > Automating Functions usign agno-cli
 [![Demo 6](https://asciinema.org/a/PdSNs6QUUwRf0iWg3OYfv9Eru.svg)](https://asciinema.org/a/PdSNs6QUUwRf0iWg3OYfv9Eru)
 
+> Agents creation, task assignemnt, and execution
+[![Demo 7](https://asciinema.org/a/xVvOqO6r5il2fuATf6bmbfG3k.svg)](https://asciinema.org/a/xVvOqO6r5il2fuATf6bmbfG3k)
+
 ## 🚀 Quick Start
 
 ```bash
@@ -221,6 +224,11 @@ agno agents --create "DataAnalyst" --role specialist \
   --description "Expert in data analysis and visualization" \
   --capabilities '{"tools": ["math_tools", "csv_tools"], "skills": ["statistics", "visualization"]}'
 
+agno agents --create "FinancialAnalyst" --role specialist --description "Expert in financial analysis and market research" --capabilities '{"tools": ["financial_tools", "math_tools"], "skills": ["statistics", "finance", "analysis"]}'
+
+agno agents --create "DataScientist" --role specialist --description "Expert in data science and machine learning" --capabilities '{"tools": ["pandas_tools", "math_tools"], "skills": ["statistics", "python", "ml"]}'
+
+
 # Check agent status
 agno agents --status agent-id
 
@@ -237,15 +245,29 @@ agno team --status
 agno team --activate
 
 # Assign task to team
-agno team --task "Analyze Q3 financial performance" --priority high \
-  --requirements '{"skills": ["finance", "analysis"], "tools": ["yfinance_tools"]}'
+agno team --task "Analyze Q3 financial performance" --priority high 
 
 # Assign task with specific requirements
-agno team --task "Research latest AI developments" --priority normal \
-  --requirements '{"skills": ["research", "analysis"], "tools": ["search_tools"]}'
+agno team --task "Research latest AI developments" --priority normal
 
 # Broadcast message to team
 agno team --message "New market data available for analysis"
+
+agno team --status
+
+agno team --execute-assigned
+
+agno team --status
+
+agno team --results <taskID>
+agno team --results <taskID> --format summary
+agno team --results <taskID> --format json
+agno team --results <taskID> --save financial_analysis.md
+
+# examples
+agno team --results bba7dcb0 --format summary
+agno team --results bba7dcb0 --format json
+agno team --results bba7dcb0 --save financial_analysis.md
 
 # Deactivate team
 agno team --deactivate
@@ -284,8 +306,7 @@ agno team --activate
 
 # Assign a financial analysis task
 agno team --task "Analyze stock performance for AAPL, MSFT, and GOOGL" \
-  --priority high \
-  --requirements '{"skills": ["finance", "analysis"], "tools": ["financial_tools"]}'
+  --priority high
 
 # Assign a research task
 agno team --task "Research latest developments in quantum computing" \
@@ -845,16 +866,18 @@ agno opencv --format json --image image.jpg --info
 ```
 
 #### Screenshot Commands
-- **`agno screenshot --full-screen`**: Capture full screen screenshot
-- **`agno screenshot --region x,y,width,height`**: Capture region screenshot
-- **`agno screenshot --window "Window Title"`**: Capture specific window
-- **`agno screenshot --webpage https://example.com`**: Capture webpage screenshot
-- **`agno screenshot --element "url:selector"`**: Capture webpage element
-- **`agno screenshot --scrolling https://example.com`**: Capture scrolling webpage
-- **`agno screenshot --list`**: List all screenshots
-- **`agno screenshot --show-info filename`**: Show screenshot information
-- **`agno screenshot --screen-info`**: Show screen information
-- **`agno screenshot --clear`**: Clear all screenshots
+```bash
+agno screenshot --full-screen #Capture full screen screenshot
+agno screenshot --region x,y,width,height #Capture region screenshot
+agno screenshot --window "Window Title" #Capture specific window
+agno screenshot --webpage https://example.com #Capture webpage screenshot
+agno screenshot --element "url:selector" #Capture webpage element
+agno screenshot --scrolling https://example.com #Capture scrolling webpage
+agno screenshot --list #List all screenshots
+agno screenshot --show-info filename #Show screenshot information
+agno screenshot --screen-info #Show screen information
+agno screenshot --clear #Clear all screenshots
+```
 
 ### Model Management Operations
 ```bash
