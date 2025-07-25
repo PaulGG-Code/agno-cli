@@ -516,7 +516,7 @@ class TeamCommands:
         
         self.console.print(table)
     
-    def display_task_results(self, task_id: str = None):
+    def display_task_results(self, task_id: str = None, format: str = "full", save_to_file: str = None):
         """Display detailed task results"""
         # Get all tasks from orchestrator
         tasks = self.multi_agent_system.orchestrator.tasks
@@ -529,7 +529,7 @@ class TeamCommands:
             # Show specific task result
             if task_id in tasks:
                 task = tasks[task_id]
-                self._display_single_task_result(task)
+                self._display_single_task_result(task, format, save_to_file)
             else:
                 # Try to find by partial ID
                 found_task = None
@@ -539,7 +539,7 @@ class TeamCommands:
                         break
                 
                 if found_task:
-                    self._display_single_task_result(found_task)
+                    self._display_single_task_result(found_task, format, save_to_file)
                 else:
                     self.console.print(f"[red]Task {task_id} not found[/red]")
                     self.console.print("Available tasks:")
@@ -554,10 +554,10 @@ class TeamCommands:
                 return
             
             for task in completed_tasks:
-                self._display_single_task_result(task)
+                self._display_single_task_result(task, format, save_to_file)
                 self.console.print("")  # Add spacing between tasks
     
-    def _display_single_task_result(self, task):
+    def _display_single_task_result(self, task, format: str = "full", save_to_file: str = None):
         """Display a single task result"""
         # Create result panel
         result_panel = Panel(
@@ -574,14 +574,7 @@ class TeamCommands:
         
         # Show result if available
         if task.result:
-            result_text = str(task.result)
-            # Remove truncation: always show full result
-            result_panel = Panel(
-                result_text,
-                title="Task Result",
-                border_style="green"
-            )
-            self.console.print(result_panel)
+            self._display_formatted_result(task.result, format, save_to_file)
         else:
             self.console.print("[yellow]No result available for this task[/yellow]")
         
@@ -593,6 +586,280 @@ class TeamCommands:
                 border_style="yellow"
             )
             self.console.print(req_panel)
+    
+    def _display_formatted_result(self, result, format: str = "full", save_to_file: str = None):
+        """Display formatted task result"""
+        try:
+            # Try to parse as RunResponse object
+            if hasattr(result, 'content') and hasattr(result, 'content_type'):
+                # This is a RunResponse object
+                self._display_run_response(result, format, save_to_file)
+            elif isinstance(result, str) and 'RunResponse(' in result:
+                # This is a string representation of RunResponse, try to extract content
+                self._display_string_result(result, format, save_to_file)
+            else:
+                # Regular string result
+                self._display_simple_result(result, format, save_to_file)
+        except Exception as e:
+            # Fallback to simple display
+            self._display_simple_result(result, format, save_to_file)
+    
+    def _display_run_response(self, run_response, format: str = "full", save_to_file: str = None):
+        """Display RunResponse object in a formatted way"""
+        # Extract content
+        content = getattr(run_response, 'content', '')
+        content_type = getattr(run_response, 'content_type', 'str')
+        reasoning_content = getattr(run_response, 'reasoning_content', None)
+        
+        # Handle save to file
+        if save_to_file:
+            self._save_result_to_file(content, reasoning_content, save_to_file)
+        
+        # Handle different formats
+        if format == "json":
+            self._display_json_result(run_response)
+            return
+        elif format == "summary":
+            self._display_summary_result(content, reasoning_content)
+            return
+        
+        # Display main content
+        if content:
+            if content_type == 'str' and content.strip():
+                # Format markdown content nicely
+                if content.startswith('#') or '##' in content or '**' in content:
+                    # This looks like markdown, render it
+                    from rich.markdown import Markdown
+                    md = Markdown(content)
+                    content_panel = Panel(
+                        md,
+                        title="Task Result",
+                        border_style="green",
+                        padding=(1, 2)
+                    )
+                    self.console.print(content_panel)
+                else:
+                    # Regular text content
+                    content_panel = Panel(
+                        content,
+                        title="Task Result",
+                        border_style="green",
+                        padding=(1, 2)
+                    )
+                    self.console.print(content_panel)
+            else:
+                # Other content types
+                content_panel = Panel(
+                    str(content),
+                    title=f"Task Result ({content_type})",
+                    border_style="green"
+                )
+                self.console.print(content_panel)
+        
+        # Display reasoning content if available
+        if reasoning_content:
+            reasoning_panel = Panel(
+                reasoning_content,
+                title="Reasoning Process",
+                border_style="cyan",
+                padding=(1, 2)
+            )
+            self.console.print(reasoning_panel)
+        
+        # Display other RunResponse attributes if they exist
+        other_attrs = {}
+        for attr in ['thinking', 'redacted_thinking', 'tool_name', 'tool_args']:
+            value = getattr(run_response, attr, None)
+            if value:
+                other_attrs[attr] = value
+        
+        if other_attrs:
+            other_panel = Panel(
+                "\n".join([f"[bold]{k}:[/bold] {v}" for k, v in other_attrs.items()]),
+                title="Additional Information",
+                border_style="yellow"
+            )
+            self.console.print(other_panel)
+    
+    def _display_json_result(self, run_response):
+        """Display result in JSON format"""
+        import json
+        from dataclasses import asdict
+        
+        # Convert RunResponse to dict
+        result_dict = {}
+        for attr in ['content', 'content_type', 'reasoning_content', 'thinking', 'tool_name', 'tool_args']:
+            value = getattr(run_response, attr, None)
+            if value is not None:
+                result_dict[attr] = value
+        
+        self.console.print(json.dumps(result_dict, indent=2, default=str))
+    
+    def _display_summary_result(self, content, reasoning_content):
+        """Display a summary of the result"""
+        # Extract key information from content
+        if content:
+            # Try to extract main points
+            lines = content.split('\n')
+            summary_lines = []
+            
+            for line in lines:
+                line = line.strip()
+                if line.startswith('#') or line.startswith('##') or line.startswith('**'):
+                    summary_lines.append(line)
+                elif line.startswith('•') or line.startswith('-') or line.startswith('✅') or line.startswith('⚠️'):
+                    summary_lines.append(line)
+                elif ':' in line and len(line) < 100:  # Key-value pairs
+                    summary_lines.append(line)
+            
+            if summary_lines:
+                summary_text = '\n'.join(summary_lines[:20])  # Limit to first 20 lines
+                summary_panel = Panel(
+                    summary_text,
+                    title="Result Summary",
+                    border_style="blue",
+                    padding=(1, 2)
+                )
+                self.console.print(summary_panel)
+            else:
+                # Fallback: show first 500 characters
+                summary_text = content[:500] + "..." if len(content) > 500 else content
+                summary_panel = Panel(
+                    summary_text,
+                    title="Result Summary",
+                    border_style="blue",
+                    padding=(1, 2)
+                )
+                self.console.print(summary_panel)
+    
+    def _save_result_to_file(self, content, reasoning_content, file_path):
+        """Save result to file"""
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write("# Task Result\n\n")
+                f.write(content)
+                
+                if reasoning_content:
+                    f.write("\n\n# Reasoning Process\n\n")
+                    f.write(reasoning_content)
+            
+            self.console.print(f"[green]Result saved to: {file_path}[/green]")
+        except Exception as e:
+            self.console.print(f"[red]Error saving to file: {e}[/red]")
+    
+    def _display_string_result(self, result_str, format: str = "full", save_to_file: str = None):
+        """Display string result that might contain RunResponse data"""
+        # Try to extract content from string representation
+        if 'content=' in result_str:
+            # Extract content between content=' and the next quote
+            import re
+            
+            # Try different patterns to extract content
+            content_match = re.search(r"content='([^']*)'", result_str)
+            if not content_match:
+                content_match = re.search(r'content="([^"]*)"', result_str)
+            
+            if content_match:
+                content = content_match.group(1)
+                # Unescape common escape sequences
+                content = content.replace('\\n', '\n').replace('\\t', '\t')
+                
+                # Handle save to file
+                if save_to_file:
+                    self._save_result_to_file(content, None, save_to_file)
+                
+                # Handle different formats
+                if format == "json":
+                    # Create a simple JSON structure
+                    import json
+                    result_dict = {
+                        "content": content,
+                        "content_type": "str",
+                        "source": "string_parsed"
+                    }
+                    self.console.print(json.dumps(result_dict, indent=2))
+                    return
+                elif format == "summary":
+                    self._display_summary_result(content, None)
+                    return
+                
+                # Check if it looks like markdown
+                if content.startswith('#') or '##' in content or '**' in content:
+                    from rich.markdown import Markdown
+                    md = Markdown(content)
+                    content_panel = Panel(
+                        md,
+                        title="Task Result",
+                        border_style="green",
+                        padding=(1, 2)
+                    )
+                    self.console.print(content_panel)
+                else:
+                    content_panel = Panel(
+                        content,
+                        title="Task Result",
+                        border_style="green",
+                        padding=(1, 2)
+                    )
+                    self.console.print(content_panel)
+            else:
+                self._display_simple_result(result_str, format, save_to_file)
+        else:
+            self._display_simple_result(result_str, format, save_to_file)
+    
+    def _display_simple_result(self, result, format: str = "full", save_to_file: str = None):
+        """Display simple string result"""
+        result_text = str(result)
+        
+        # If it's very long, try to format it nicely
+        if len(result_text) > 1000:
+            # Try to detect if it's JSON-like
+            if result_text.startswith('{') or result_text.startswith('['):
+                try:
+                    import json
+                    parsed = json.loads(result_text)
+                    formatted_json = json.dumps(parsed, indent=2)
+                    from rich.syntax import Syntax
+                    syntax = Syntax(formatted_json, "json", theme="monokai")
+                    result_panel = Panel(
+                        syntax,
+                        title="Task Result (JSON)",
+                        border_style="green"
+                    )
+                    self.console.print(result_panel)
+                    return
+                except:
+                    pass
+            
+            # Check if it looks like markdown
+            if '#' in result_text or '**' in result_text or '##' in result_text:
+                from rich.markdown import Markdown
+                md = Markdown(result_text)
+                result_panel = Panel(
+                    md,
+                    title="Task Result",
+                    border_style="green",
+                    padding=(1, 2)
+                )
+                self.console.print(result_panel)
+            else:
+                # Long text, show with syntax highlighting
+                from rich.syntax import Syntax
+                syntax = Syntax(result_text, "text", theme="monokai")
+                result_panel = Panel(
+                    syntax,
+                    title="Task Result",
+                    border_style="green"
+                )
+                self.console.print(result_panel)
+        else:
+            # Short text, show normally
+            result_panel = Panel(
+                result_text,
+                title="Task Result",
+                border_style="green"
+            )
+            self.console.print(result_panel)
     
     def display_communication_history(self):
         """Display team communication history"""

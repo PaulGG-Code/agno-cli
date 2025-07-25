@@ -371,6 +371,8 @@ def team(
     message: Optional[str] = typer.Option(None, "--message", help="Send message to team"),
     messages: bool = typer.Option(False, "--messages", help="Show team communication history"),
     results: Optional[str] = typer.Option(None, "--results", help="Show task results (task ID or 'all' for all completed tasks)"),
+    format: str = typer.Option("full", "--format", help="Result format (full, summary, json)"),
+    save_to_file: Optional[str] = typer.Option(None, "--save", help="Save result to file"),
     task: Optional[str] = typer.Option(None, "--task", help="Assign task to team"),
     priority: Optional[str] = typer.Option("normal", "--priority", help="Task priority (low, normal, high, urgent, critical)"),
     requirements: Optional[str] = typer.Option(None, "--requirements", help="JSON task requirements"),
@@ -400,9 +402,9 @@ def team(
     
     elif results:
         if results.lower() == 'all':
-            team_commands.display_task_results()
+            team_commands.display_task_results(format=format, save_to_file=save_to_file)
         else:
-            team_commands.display_task_results(results)
+            team_commands.display_task_results(results, format=format, save_to_file=save_to_file)
     
     elif execute_pending:
         team_commands._assign_pending_tasks()
