@@ -66,6 +66,8 @@ A powerful, terminal-native multi-agent assistant built on the Agno AI framework
 - **Export Capabilities**: JSON, CSV, Markdown output formats
 
 > Welcome agno-cli
+[![Demo 1](https://asciinema.org/a/BCraWRW2fpb6smmRKzp7ZU59E.svg)](https://asciinema.org/a/BCraWRW2fpb6smmRKzp7ZU59E3)
+
 [![Demo 1](https://raw.githubusercontent.com/PaulGG-Code/agno-cli/refs/heads/main/showcase/examples/agno-cli-welcome.gif)](https://asciinema.org/a/BCraWRW2fpb6smmRKzp7ZU59E3)
 
 > Using Panda and csv with agno-cli
