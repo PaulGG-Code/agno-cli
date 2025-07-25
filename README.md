@@ -1138,4 +1138,4 @@ Explore the capabilities of Agno CLI Enhanced through these interactive demonstr
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/licenses/MIT) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/PaulGG-Code/agno-cli/blob/main/LICENSE) file for details.
