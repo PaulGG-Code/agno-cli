@@ -5,6 +5,10 @@ opencv_output/
 thinking_sessions/
 crawls/
 
+*.cast
+*.cast.gz
+
+
 # PyPI upload artifacts
 .pypirc
 dist/
