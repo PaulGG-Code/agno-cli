@@ -575,9 +575,7 @@ class TeamCommands:
         # Show result if available
         if task.result:
             result_text = str(task.result)
-            if len(result_text) > 1000:
-                result_text = result_text[:1000] + "\n\n... (truncated)"
-            
+            # Remove truncation: always show full result
             result_panel = Panel(
                 result_text,
                 title="Task Result",
