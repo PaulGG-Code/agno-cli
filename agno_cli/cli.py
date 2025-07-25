@@ -370,6 +370,7 @@ def team(
     status: bool = typer.Option(False, "--status", help="Show team status"),
     message: Optional[str] = typer.Option(None, "--message", help="Send message to team"),
     messages: bool = typer.Option(False, "--messages", help="Show team communication history"),
+    results: Optional[str] = typer.Option(None, "--results", help="Show task results (task ID or 'all' for all completed tasks)"),
     task: Optional[str] = typer.Option(None, "--task", help="Assign task to team"),
     priority: Optional[str] = typer.Option("normal", "--priority", help="Task priority (low, normal, high, urgent, critical)"),
     requirements: Optional[str] = typer.Option(None, "--requirements", help="JSON task requirements"),
@@ -394,6 +395,12 @@ def team(
     
     elif messages:
         team_commands.display_communication_history()
+    
+    elif results:
+        if results.lower() == 'all':
+            team_commands.display_task_results()
+        else:
+            team_commands.display_task_results(results)
     
     elif task:
         # Parse priority

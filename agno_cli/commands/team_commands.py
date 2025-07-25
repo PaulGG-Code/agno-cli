@@ -403,19 +403,107 @@ class TeamCommands:
         table.add_column("Priority", style="yellow")
         table.add_column("Agent", style="green")
         table.add_column("Created", style="blue")
+        table.add_column("Result", style="red")
         
         for status, tasks in tasks_by_status.items():
             for task in tasks:
+                # Show result preview for completed tasks
+                result_preview = "N/A"
+                if status == "completed" and task.get('result'):
+                    result_text = str(task['result'])
+                    result_preview = result_text[:30] + "..." if len(result_text) > 30 else result_text
+                
                 table.add_row(
                     status.upper(),
                     task['id'][:8],
                     task['description'][:50] + "..." if len(task['description']) > 50 else task['description'],
                     str(task['priority']),
                     task['assigned_agent'][:8] if task['assigned_agent'] else "None",
-                    task['created_at'][:19]
+                    task['created_at'][:19],
+                    result_preview
                 )
         
         self.console.print(table)
+    
+    def display_task_results(self, task_id: str = None):
+        """Display detailed task results"""
+        # Get all tasks from orchestrator
+        tasks = self.multi_agent_system.orchestrator.tasks
+        
+        if not tasks:
+            self.console.print("[yellow]No tasks found[/yellow]")
+            return
+        
+        if task_id:
+            # Show specific task result
+            if task_id in tasks:
+                task = tasks[task_id]
+                self._display_single_task_result(task)
+            else:
+                # Try to find by partial ID
+                found_task = None
+                for t_id, task in tasks.items():
+                    if t_id.startswith(task_id):
+                        found_task = task
+                        break
+                
+                if found_task:
+                    self._display_single_task_result(found_task)
+                else:
+                    self.console.print(f"[red]Task {task_id} not found[/red]")
+                    self.console.print("Available tasks:")
+                    for t_id in tasks.keys():
+                        self.console.print(f"  - {t_id[:8]}: {tasks[t_id].description[:50]}...")
+        else:
+            # Show all completed tasks with results
+            completed_tasks = [task for task in tasks.values() if task.status == "completed"]
+            
+            if not completed_tasks:
+                self.console.print("[yellow]No completed tasks found[/yellow]")
+                return
+            
+            for task in completed_tasks:
+                self._display_single_task_result(task)
+                self.console.print("")  # Add spacing between tasks
+    
+    def _display_single_task_result(self, task):
+        """Display a single task result"""
+        # Create result panel
+        result_panel = Panel(
+            f"[bold blue]Task ID:[/bold blue] {task.task_id}\n"
+            f"[bold green]Description:[/bold green] {task.description}\n"
+            f"[bold yellow]Status:[/bold yellow] {task.status}\n"
+            f"[bold magenta]Priority:[/bold magenta] {task.priority.value}\n"
+            f"[bold cyan]Assigned Agent:[/bold cyan] {task.assigned_agent[:8] if task.assigned_agent else 'None'}\n"
+            f"[bold white]Created:[/bold white] {task.created_at.strftime('%Y-%m-%d %H:%M:%S')}",
+            title="Task Information",
+            border_style="blue"
+        )
+        self.console.print(result_panel)
+        
+        # Show result if available
+        if task.result:
+            result_text = str(task.result)
+            if len(result_text) > 1000:
+                result_text = result_text[:1000] + "\n\n... (truncated)"
+            
+            result_panel = Panel(
+                result_text,
+                title="Task Result",
+                border_style="green"
+            )
+            self.console.print(result_panel)
+        else:
+            self.console.print("[yellow]No result available for this task[/yellow]")
+        
+        # Show requirements if any
+        if task.requirements:
+            req_panel = Panel(
+                str(task.requirements),
+                title="Task Requirements",
+                border_style="yellow"
+            )
+            self.console.print(req_panel)
     
     def display_communication_history(self):
         """Display team communication history"""
