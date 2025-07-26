@@ -1103,10 +1103,164 @@ agno models --model-type text_generation --list
 ```bash
 # Start thinking sessions
 agno thinking --start "Problem Title:Problem description"
+agno thinking --start "Website Optimization:Improve loading speed" --framework systems_thinking
+
+# Manage thinking sessions
+agno thinking --list
+agno thinking --show session_id
+agno thinking --add-node "session_id:Node Title:Content:node_type"
+
+# Problem analysis and decision making
+agno thinking --analyze "How to optimize database performance"
+agno thinking --decision-tree "Title:Criteria1,Criteria2:Option1,Option2,Option3"
+agno thinking --experiment "Title:Scenario:Assumption1,Assumption2"
+
+# Cognitive bias detection
+agno thinking --detect-biases session_id
+
+# Explore frameworks and biases
+agno thinking --list-frameworks
+agno thinking --list-biases
+
+# Options
+agno thinking --format json --list-frameworks
+agno thinking --framework design_thinking --start "Title:Problem"
 ```
 
+### Function Calling Operations
 
+```bash
+# Show function details
+agno function --show "function_id"
 
+# Delete a function
+agno function --delete "function_id"
+
+# Create from template
+agno function --create-from-template "template_id:name:description"
+
+# Create and manage functions
+agno function --create "Function Name:Description:code_file.py"
+agno function --create "fibonacci_sequence:Calculate Fibonacci sequence up to n:fibonacci.py"
+agno function --execute "864546e:data=10"
+
+agno function --execute "864546e:data=10"
+agno function --list
+agno function --show function_id
+agno function --delete function_id
+
+# Execute functions
+agno function --execute "function_id:param1=value1,param2=value2"
+agno function --execute "function_id:data=10" --timeout 60
+
+# Templates and code generation
+agno function --list-builtin
+agno function --list-templates
+agno function --create-from-template "template_id:name:description"
+
+# Execution history and monitoring
+agno function --history function_id
+agno function --history function_id --limit 10
+
+# Filtering and options
+agno function --type python --list
+agno function --tag math --list
+agno function --format json --list
+```
+
+### OpenAI Integration Operations
+
+```bash
+# Chat completions
+agno openai --chat "Hello, how are you?"
+agno openai --chat "Explain quantum computing" --model gpt-4o --temperature 0.3
+agno openai --chat "Write a Python function" --system "You are a helpful coding assistant"
+
+# Text embeddings
+agno openai --embed "This is some text to embed"
+agno openai --embed "Another text for embedding" --model text-embedding-3-small
+
+# Image generation
+agno openai --generate-image "A beautiful sunset over mountains"
+agno openai --generate-image "A futuristic cityscape" --size 1792x1024 --quality hd
+
+# Audio processing
+agno openai --transcribe audio_file.mp3
+agno openai --transcribe audio_file.mp3 --language en
+agno openai --tts "Hello, this is a test" --voice alloy
+
+# Content moderation
+agno openai --moderate "This is a test message"
+
+# Model and history management
+agno openai --list-models
+agno openai --history
+agno openai --history --operation-type chat_completion --limit 10
+
+# Options
+agno openai --format json --chat "Test message"
+agno openai --model gpt-4o-mini --chat "Efficient response"
+```
+
+### Web Crawling Operations
+
+```bash
+# Crawl a single web page
+agno crawl4ai --crawl https://example.com
+agno crawl4ai --crawl https://example.com --user-agent "Custom Bot/1.0" --timeout 60
+
+# Create and manage crawl jobs
+agno crawl4ai --create-job "My Crawl:Test crawl job:https://example.com"
+agno crawl4ai --create-job "Deep Crawl:Comprehensive site crawl:https://example.com" --strategy depth_first --max-depth 5 --max-pages 500
+
+# Execute crawl jobs
+agno crawl4ai --execute-job job-id-123
+
+# List and manage jobs
+agno crawl4ai --list-jobs
+agno crawl4ai --show-job job-id-123
+agno crawl4ai --delete-job job-id-123
+
+# Content search and analysis
+agno crawl4ai --search "Some text content" --pattern "\\b\\w+\\b" --case-sensitive
+agno crawl4ai --search "HTML content" --pattern "<[^>]+>" --format json
+
+# Options
+agno crawl4ai --format json --crawl https://example.com
+agno crawl4ai --strategy breadth_first --max-depth 3 --delay 2.0
+```
+
+### Reasoning Traces
+
+```bash
+# List recent traces
+agno trace --list
+
+# Show detailed trace
+agno trace --show trace-id
+
+# Export trace
+agno trace --export trace-id --format markdown
+
+# View tracer statistics
+agno trace --stats
+```
+
+### Performance Metrics
+
+```bash
+# System metrics summary
+agno metrics --summary
+
+# Agent-specific metrics
+agno metrics --agent agent-id
+
+# Performance leaderboard
+agno metrics --leaderboard success_rate
+
+# Export metrics
+agno metrics --export --format csv
+```
 
 ## 🎥 Demos and Showcase
 
@@ -1133,9 +1287,333 @@ Explore the capabilities of Agno CLI Enhanced through these interactive demonstr
 * **Agent Creation, Task Assignment, and Execution**: A deep dive into the multi-agent system in action.
   [![Demo 7](https://asciinema.org/a/xVvOqO6r5il2fuATf6bmbfG3k.svg)](https://asciema.org/a/xVvOqO6r5il2fuATf6bmbfG3k)
 
+## 🏗️ Architecture
+### Core Components
+
+```bash
+agno_cli/
+├── agents/           # Multi-agent system
+│   ├── agent_state.py      # Agent state tracking
+│   ├── orchestrator.py     # Agent coordination
+│   └── multi_agent.py      # Multi-agent system
+├── reasoning/        # Reasoning and tracing
+│   ├── tracer.py          # Step-by-step reasoning
+│   └── metrics.py         # Performance metrics
+├── tools/           # Tool integrations
+│   ├── search_tools.py    # Search engines
+│   ├── financial_tools.py # Financial data
+│   ├── math_tools.py      # Math and data
+│   ├── file_system_tools.py # File system operations
+│   ├── csv_tools.py         # CSV data operations
+│   ├── pandas_tools.py      # Pandas data analysis
+│   ├── duckdb_tools.py      # DuckDB database operations
+│   ├── sql_tools.py         # SQL query execution
+│   ├── postgres_tools.py    # PostgreSQL database integration
+│   ├── shell_tools.py       # System command execution
+│   ├── docker_tools.py      # Docker container management
+│   ├── wikipedia_tools.py   # Wikipedia research and content retrieval
+│   ├── arxiv_tools.py       # arXiv academic paper search
+│   ├── pubmed_tools.py      # PubMed medical research papers
+│   ├── sleep_tools.py       # Sleep and timing operations
+│   ├── hackernews_tools.py  # Hacker News integration
+│   ├── visualization_tools.py # Data visualization and charting
+│   ├── opencv_tools.py # Computer vision operations
+│   ├── models_tools.py # Model management and selection
+│   ├── thinking_tools.py # Advanced thinking and reasoning
+│   ├── function_tools.py # Dynamic function calling and code generation
+│   ├── openai_tools.py # OpenAI API integration
+│   ├── communication_tools.py # Communication
+│   ├── knowledge_tools.py # Knowledge APIs
+│   └── media_tools.py     # Media processing
+├── commands/        # CLI command modules
+│   ├── chat_commands.py   # Chat interface
+│   ├── agent_commands.py  # Agent management
+│   ├── team_commands.py   # Team operations
+│   ├── tool_commands.py   # Tool operations
+│   ├── trace_commands.py  # Trace management
+│   └── metrics_commands.py # Metrics analysis
+├── core/            # Core functionality
+│   ├── config.py          # Configuration
+│   ├── session.py         # Session management
+│   └── agent.py           # Agent wrapper
+└── cli.py           # Main CLI entry point
+```
+
+###  Agent Roles
+- Leader: Coordinates team activities, makes strategic decisions
+- Worker: Executes assigned tasks efficiently
+- Contributor: Provides specialized knowledge and skills
+- Specialist: Expert in specific domains
+- Coordinator: Facilitates communication and workflow
+- Observer: Monitors performance and provides feedback
+
+### Tool Categories
+- Search: Web search across multiple engines
+- Financial: Stock analysis, market data, portfolio management
+- Math: Calculations, statistics, data analysis
+- File System: Local file operations, directory management, file search
+- CSV Data: CSV reading, writing, analysis, filtering, sorting, conversion
+- Pandas Data: Advanced data manipulation, analysis, cleaning, transformation, visualization
+- DuckDB Database: Lightweight database operations, SQL queries, data import/export
+- SQL Database: General SQL query execution, multi-database support
+- PostgreSQL Database: Specialized PostgreSQL integration, advanced features
+- Shell Operations: Safe system command execution, process management
+- Docker Management: Container lifecycle, image management, system monitoring
+- Wikipedia Research: Search, content retrieval, language support, text analysis
+- arXiv Papers: Academic paper search, author analysis, category filtering
+- PubMed Research: Medical paper search, author analysis, journal filtering
+- Sleep & Timing: Delay operations, performance monitoring, scheduling
+- Hacker News: Story retrieval, comments, user profiles, trending
+- Data Visualization: Chart generation, interactive plots, dashboards
+- Computer Vision: Image processing, object detection, feature extraction
+- Model Management: Model selection, comparison, performance tracking
+- Advanced Thinking: Reasoning frameworks, problem analysis, decision trees
+- Function Calling: Dynamic function execution, code generation, automation
+- OpenAI Integration: Direct API access for chat, embeddings, images, audio
+- Communication: Slack, Discord, email, GitHub integration
+- Knowledge: Wikipedia, arXiv, news APIs
+Media: Image/video processing, visualization
+
+## 🔧 Advanced Configuration
+### Custom Agent Templates
+
+```yaml
+# ~/.agno_cli/templates/researcher.yaml
+name: "Research Specialist"
+role: "specialist"
+description: "Expert researcher with access to knowledge APIs"
+capabilities:
+  tools: ["search_tools", "knowledge_tools", "reasoning_tools"]
+  skills: ["research", "analysis", "synthesis"]
+  modalities: ["text", "image"]
+  languages: ["english", "spanish"]
+instructions:
+  - "Conduct thorough research using multiple sources"
+  - "Provide citations and references"
+  - "Synthesize information from diverse perspectives"
+```
+
+### Tool Configuration
+
+```yaml
+# ~/.agno_cli/config.yaml
+tools:
+  search:
+    default_engine: "duckduckgo"
+    engines:
+      google:
+        api_key: "your-google-api-key"
+        search_engine_id: "your-cse-id"
+      serpapi:
+        api_key: "your-serpapi-key"
+  financial:
+    default_period: "1y"
+    cache_duration: 300
+  math:
+    precision: 10
+    show_steps_default: false
+```
+
+### Team Definitions
+
+```json
+{
+  "team_id": "research_team",
+  "name": "Research Team",
+  "description": "Collaborative research and analysis team",
+  "agents": [
+    {
+      "name": "Lead Researcher",
+      "role": "leader",
+      "capabilities": ["search", "knowledge", "coordination"]
+    },
+    {
+      "name": "Data Analyst", 
+      "role": "specialist",
+      "capabilities": ["math", "financial", "visualization"]
+    },
+    {
+      "name": "Content Writer",
+      "role": "contributor", 
+      "capabilities": ["writing", "synthesis", "communication"]
+    }
+  ],
+  "shared_context": {
+    "project": "Market Analysis Q4 2024",
+    "deadline": "2024-12-31",
+    "requirements": ["comprehensive", "data-driven", "actionable"]
+  }
+}
+```
+
+## 🧪 Testing & Development
+### Automated Testing
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=agno_cli
+
+# Run specific test categories
+pytest -m unit
+pytest -m integration
+pytest -m "not slow"
+```
 
 
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+### File System Operations
+
+```bash
+# Issue: Read command not showing output
+# Solution: Use --format text or --format json explicitly
+agno files --read file.txt --format text
+
+# Issue: DateTime serialization errors
+# Solution: Fixed in latest version - datetime objects are properly handled
+
+# Issue: Permission denied errors
+# Solution: Check file permissions and ensure safe path operations
+agno files --info file.txt  # Check file permissions first
+```
+
+### Agent Operations
+
+```bash
+# Issue: UnboundLocalError with multi_agent_system
+# Solution: Fixed in latest version - proper initialization handling
+
+# Issue: Agent state not loading correctly
+# Solution: Check agents_state_agents.json and agents_state_orchestrator.json files
+ls -la agents_state*.json  # Verify state files exist
+```
+
+### Chat Operations
+
+```bash
+# Issue: TypeError with RunResponse objects
+# Solution: Fixed in latest version - proper content extraction from RunResponse
+
+# Issue: Markdown rendering errors
+# Solution: Ensure content is string type before passing to Markdown()
+```
+
+### Debug Commands
+
+```bash
+# Check CLI installation
+which agno
+agno --version
+
+# Check Python environment
+python --version
+pip list | grep agno
+
+# Test file system tools directly
+python -c "
+from agno_cli.tools.file_system_tools import FileSystemToolsManager
+fs = FileSystemToolsManager()
+fs.list_directory()
+"
+
+# Check configuration
+agno configure --show
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](https://pypi.org/project/agno-cli/CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+git clone https://github.com/paulgg-code/agno-cli.git
+cd agno-cli
+pip install -e .[dev]
+pre-commit install
+```
+
+### Development Workflow Example
+
+### File System Tool Development Commands Used
+
+```bash
+# Initial testing and debugging
+agno files --list                                    # Test basic listing
+agno files --read README.md                          # Test file reading (initially failed)
+agno files --read README.md --format text            # Test with explicit format
+agno files --read README.md --format json            # Test JSON output
+
+# Debug commands used during development
+python -c "from agno_cli.tools.file_system_tools import FileSystemToolsManager; fs = FileSystemToolsManager(); fs.list_directory()"
+python -c "from agno_cli.tools.file_system_tools import FileSystemTools; fs = FileSystemTools(); result = fs.read_file('README.md'); print(result.success)"
+
+# Testing all file operations
+agno files --write test.txt --content "Hello World"  # Test file writing
+agno files --read test.txt                           # Test reading written file
+agno files --info test.txt                           # Test file info
+agno files --search "*.txt"                          # Test file search
+agno files --mkdir test_dir                          # Test directory creation
+agno files --copy test.txt:test_dir/copy.txt         # Test file copying
+agno files --move test.txt:renamed.txt               # Test file moving
+agno files --delete renamed.txt --no-confirm         # Test file deletion
+agno files --delete test_dir --recursive --no-confirm # Test directory deletion
+agno files --tree                                    # Test tree view
+agno files --tree --hidden                           # Test tree with hidden files
+
+# Help and documentation testing
+agno --help                                          # Test main help
+agno files --help                                    # Test file system help
+```
+
+```bash
+# 1. Set up development environment
+pyenv activate agnocli2@virtuelenv
+pip install -e .
+
+# 2. Test current functionality
+agno --help
+agno files --help
+
+# 3. Implement new feature (example: file system tools)
+# Edit agno_cli/tools/file_system_tools.py
+# Edit agno_cli/cli.py to add new commands
+
+# 4. Test the implementation
+agno files --list
+agno files --read README.md
+agno files --write test.txt --content "test"
+
+# 5. Debug issues (if any)
+# Add debug output, test, remove debug output
+python -c "from agno_cli.tools.file_system_tools import FileSystemToolsManager; fs = FileSystemToolsManager(); fs.list_directory()"
+
+# 6. Update documentation
+# Edit README.md with new commands and examples
+
+# 7. Test all functionality
+agno files --list --hidden --recursive
+agno files --read README.md --format json
+agno files --tree
+```
+
+### 🙏 Acknowledgments
+
+- Built on the [Agno AI framework](https://github.com/agno-agi/agno)
+- Inspired by multi-agent research and collaborative AI systems
+- Thanks to all contributors and the open-source community
+
+### 📞 Support
+- Issues: [GitHub Issues](https://github.com/paulgg-code/agno-cli/issues)
+- Discussions: [GitHub Discussions](https://github.com/paulgg-code/agno-cli/discussions)
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/PaulGG-Code/agno-cli/blob/main/LICENSE) file for details.
+
+Agno CLI - Bringing the power of multi-agent AI to your terminal! 🚀
