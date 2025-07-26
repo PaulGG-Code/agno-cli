@@ -5,6 +5,179 @@ All notable changes to the Agno CLI Enhanced project will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.8] - 2025-07-25
+
+### 🚀 Major Features Added
+
+#### ✅ Enhanced Team Result Visualization
+- **Improved result display**: Enhanced visualization of team task results with proper RunResponse parsing
+- **Multiple output formats**: Added support for full, summary, and JSON output formats
+- **File export capability**: Added ability to save results to markdown files with `--save` option
+- **Rich formatting**: Proper markdown rendering with syntax highlighting and structured panels
+- **Smart content parsing**: Intelligent parsing of RunResponse objects and string representations
+
+#### ✅ Enhanced Agent State Management
+- **Improved agent capabilities display**: Combined tools and skills for clearer output
+- **Team communication history**: Added `--messages` option to display team communication logs
+- **Enhanced agent removal**: Support for both full and truncated agent IDs with better feedback
+- **Improved agent status retrieval**: Allow searching by truncated IDs for better UX
+- **User-specific state directories**: Better organization of agent state files
+
+#### ✅ Documentation and Demo Enhancements
+- **Comprehensive README updates**: Revamped introduction, features, and installation sections
+- **Enhanced demo links**: Added multiple Asciinema recordings showcasing project capabilities
+- **Improved documentation**: Better examples and clearer command descriptions
+- **Visual improvements**: Added logo and improved layout for better engagement
+
+### 🔧 CLI Commands
+
+#### Enhanced Team Result Commands
+- **`agno team --results <id> --format full`**: Display complete formatted results (default)
+- **`agno team --results <id> --format summary`**: Show condensed result summary
+- **`agno team --results <id> --format json`**: Output results in JSON format
+- **`agno team --results <id> --save <filename>`**: Save results to markdown file
+- **`agno team --messages`**: Display team communication history
+
+#### Agent Management Improvements
+- **Enhanced agent removal**: `agno agents --remove <id>` now supports truncated IDs
+- **Improved agent status**: `agno agents --status <id>` with better ID matching
+- **Better capabilities display**: Combined tools and skills in agent listings
+
+### 🎨 User Experience Improvements
+
+#### Rich Result Visualization
+- **Markdown rendering**: Proper rendering of markdown content with headers and tables
+- **Syntax highlighting**: Beautiful syntax highlighting for code and JSON content
+- **Structured panels**: Organized information in clear, bordered panels
+- **Color coding**: Different sections use different colors for better readability
+- **Content parsing**: Smart parsing of complex RunResponse objects
+
+#### Enhanced Documentation
+- **Comprehensive README**: Complete overhaul with better structure and examples
+- **Visual demos**: Multiple demo recordings showing real usage scenarios
+- **Clearer examples**: Better command examples with context and explanations
+- **Improved navigation**: Enhanced table of contents and section organization
+
+### 🔧 Technical Improvements
+
+#### Result Processing System
+- **RunResponse parsing**: Intelligent parsing of complex response objects
+- **Content extraction**: Proper extraction of content, reasoning, and metadata
+- **Format handling**: Support for multiple output formats (full, summary, JSON)
+- **File export**: Structured file export with proper markdown formatting
+- **Error handling**: Robust error handling for malformed or missing data
+
+#### State Management Enhancements
+- **User-specific directories**: Better organization of state files
+- **Improved ID matching**: Support for truncated IDs in agent operations
+- **Enhanced feedback**: Better error messages and user feedback
+- **State validation**: Improved validation of state files and data
+
+### 🧹 Repository Cleanup
+- **Removed media files**: Cleaned up all .gif and .cast files from showcase/examples
+- **Updated .gitignore**: Added exclusions for cast files and media assets
+- **Repository optimization**: Reduced repository size by removing large media files
+
+### 🔧 Version Harmonization
+- **Consistent version numbering**: Updated all version references to 2.4.8 across the codebase
+- **Documentation updates**: Synchronized version numbers in all documentation files
+- **CLI version command**: Updated version display to show 2.4.8
+- **Implementation plan**: Updated current version reference
+
+## [2.4.7] - 2025-07-25
+
+### 🚀 Major Features Added
+
+#### ✅ Enhanced Agent Capabilities Display
+- **Improved agent capabilities display**: Combined tools and skills for clearer output
+- **Team communication history**: Added `--messages` option to display team communication logs
+- **Enhanced agent removal**: Support for both full and truncated agent IDs with better feedback
+- **Improved agent status retrieval**: Allow searching by truncated IDs for better UX
+
+### 🔧 CLI Commands
+
+#### Agent Management Improvements
+- **Enhanced agent removal**: `agno agents --remove <id>` now supports truncated IDs
+- **Improved agent status**: `agno agents --status <id>` with better ID matching
+- **Better capabilities display**: Combined tools and skills in agent listings
+- **Team communication**: `agno team --messages` to display team communication history
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.7 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
+## [2.4.6] - 2025-07-25
+
+### 🔧 Agent State Management Refactor
+- **Updated agent state file path**: Use user-specific directory for better organization
+- **Enhanced agent removal functionality**: Support for both full and truncated IDs with clearer feedback
+- **Improved agent status retrieval**: Allow searching by truncated IDs for enhanced user experience
+- **Better state organization**: Improved file structure for agent state management
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.6 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
+## [2.4.5] - 2025-07-25
+
+### 🚀 Major Features Added
+
+#### ✅ Comprehensive Team Management System
+- **Complete team management functionality** with persistent state and task execution
+- **Team activation/deactivation**: Start and stop team task processing with `--activate` and `--deactivate`
+- **Task persistence**: Tasks are automatically saved and persist across CLI sessions
+- **Background task execution**: Automatic task processing when team is active
+- **Comprehensive state management**: Team status, agent states, and task history are all persisted
+- **Rich status display**: Beautiful tables showing task details, agent status, and execution progress
+- **Task assignment with requirements**: Specify skills, tools, and capabilities needed for tasks
+- **Priority-based task management**: Support for low, normal, high, urgent, and critical priorities
+- **Agent capability matching**: Intelligent task assignment based on agent skills and tools
+
+#### ✅ Enhanced CLI Commands
+- **Team management commands**: Activate, deactivate, and assign tasks to teams
+- **Persistent state management**: Team activation and task execution across sessions
+- **Enhanced README**: Comprehensive examples for team activation, task management, and agent creation
+- **Improved system initialization**: Load existing state files for seamless user experience
+
+### 🔧 Technical Improvements
+- **Updated .gitignore**: Added exclusions for additional agent state files
+- **Enhanced orchestrator**: Improved team task processing and state management
+- **Better error handling**: Improved feedback and error messages for team operations
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.5 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
+## [2.4.4] - 2025-07-25
+
+### 📚 Documentation Enhancements
+- **Enhanced demo links**: Added multiple Asciinema recordings showcasing project capabilities
+- **Improved documentation**: Better examples and clearer command descriptions
+- **Visual improvements**: Added logo and improved layout for better engagement
+- **Enhanced README**: Revamped introduction, features, and installation sections
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.4 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
+## [2.4.3] - 2025-07-25
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.3 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
+## [2.4.2] - 2025-07-25
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.2 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
+## [2.4.1] - 2025-07-25
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.1 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
 ## [2.4.0] - 2025-07-24
 
 ### 🚀 Major Features Added
