@@ -86,8 +86,33 @@ Whether you're managing files, conducting in-depth research, performing financia
    - [Screenshot Commands](#screenshot-commands)
    - [Model Management Operations](#model-management-operations)
    - [Advanced Thinking Operations](#advanced-thinking-operations)
+   - [Function Calling Operations](#function-calling-operations)
+   - [OpenAI Integration Operations](#openai-integration-operations)
+   - [Web Crawling Operations](#web-crawling-operations)
+   - [Reasoning Traces](#reasoning-traces)
+   - [Performance Metrics](#performance-metrics)
 6. [🎥 Demos and Showcase](#-demos-and-showcase)
-7. [📄 License](#-license)
+7. [🏗️ Architecture](#️-architecture)
+   - [Core Components](#core-components)
+   - [Agent Roles](#agent-roles)
+   - [Tool Categories](#tool-categories)
+8. [🔧 Advanced Configuration](#-advanced-configuration)
+   - [Custom Agent Templates](#custom-agent-templates)
+   - [Tool Configuration](#tool-configuration)
+   - [Team Definitions](#team-definitions)
+9. [🧪 Testing & Development](#-testing--development)
+   - [Automated Testing](#automated-testing)
+10. [🔧 Troubleshooting](#-troubleshooting)
+    - [Common Issues and Solutions](#common-issues-and-solutions)
+    - [File System Operations](#file-system-operations)
+    - [Agent Operations](#agent-operations)
+    - [Chat Operations](#chat-operations)
+    - [Debug Commands](#debug-commands)
+11. [🤝 Contributing](#-contributing)
+    - [Development Setup](#development-setup)
+    - [Development Workflow Example](#development-workflow-example)
+    - [File System Tool Development Commands Used](#file-system-tool-development-commands-used)
+12. [📄 License](#-license)
 
 
 
@@ -119,6 +144,43 @@ agno chat --quick "Hello!"
 ## 📦 Installation
 
 Agno CLI Enhanced offers flexible installation options to suit your needs, from a basic setup to a full-featured environment with all available tools.
+
+### Requirements
+
+Agno CLI use the following dependencies in order to work properly.
+
+```
+agno>=1.7.0
+typer>=0.9.0
+rich>=13.0.0
+pyyaml>=6.0
+anthropic>=0.25.0
+openai>=1.0.0
+yfinance>=0.2.65
+pandas>=2.0.0
+numpy>=2.2.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+openpyxl>=3.1.0
+pyarrow>=12.0.0
+duckdb>=0.9.0
+mysql-connector-python>=8.0.0
+psycopg2-binary>=2.9.0
+psutil>=7.0.0
+docker>=7.0.0
+wikipedia>=1.4.0
+arxiv>=2.2.0
+biopython>=1.85
+opencv-python>=4.8.0
+pillow>=10.0.0
+plotly>=5.15.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+aiohttp>=3.8.0
+pyautogui>=0.9.54
+selenium>=4.15.0
+```
 
 ### Basic Installation
 
