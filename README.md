@@ -15,6 +15,12 @@
   <a href="https://pepy.tech/projects/agno-cli">
     <img src="https://static.pepy.tech/badge/agno-cli" alt="PyPI Downloads">
   </a>
+  <a href = "https://piptrends.com/package/agno-cli" alt = "agno-cli Downloads Last Week">
+    <img alt="agno-cli Downloads Last Week by pip Trends" src="https://assets.piptrends.com/get-last-week-downloads-badge/agno-cli.svg">
+  </a>
+    <a href = "https://piptrends.com/package/agno-cli" alt = "agno-cli Average Daily Downloads">
+    <img alt="agno-cli Average Daily Downloads by pip Trends" src="https://assets.piptrends.com/get-average-downloads-badge/agno-cli.svg">
+  </a>
 </p>
 
 
