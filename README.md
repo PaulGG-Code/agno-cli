@@ -1,6 +1,8 @@
 <h1 align="center">
-  <img src="images/agno-cli_logo.png" alt="Agno CLI Logo" style="vertical-align:middle" width="60"> Agno CLI:
-  <small>A Multi-Agent Terminal Assistant</small>
+  <img src="images/agno-cli_logo.png" alt="Agno CLI Logo" 
+  width="200"> 
+  
+  <small>Agno CLI: A Multi-Agent Terminal Assistant</small>
 </h1>
 
   [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)&nbsp;

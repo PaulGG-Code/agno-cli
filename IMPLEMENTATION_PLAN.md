@@ -338,4 +338,4 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 *Last Updated: December 2024*
 *Total Tools Remaining: 56/73*
 *Estimated Completion: Q2 2025*
-*Current Version: 2.4.8* 
+*Current Version: 2.4.9* 

@@ -3011,7 +3011,7 @@ def version():
     """Show version information"""
     version_text = """
 **Agno CLI Enhanced Multi-Agent System**
-Version: 2.4.8
+Version: 2.4.10
 Build: Enhanced with multi-agent capabilities
 
 **Features:**

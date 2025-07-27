@@ -238,6 +238,7 @@ pip install pytest-security
 ## Security History
 
 ### Recent Security Updates
+- **v2.4.9**: Version update and consistency improvements
 - **v2.4.8**: Enhanced input validation for file operations
 - **v2.4.7**: Improved API key handling and logging
 - **v2.4.6**: Fixed potential path traversal vulnerability

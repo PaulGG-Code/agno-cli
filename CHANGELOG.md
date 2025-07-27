@@ -5,6 +5,12 @@ All notable changes to the Agno CLI Enhanced project will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.9] - 2025-07-27
+
+### 🔧 Version Update
+- **Version bump**: Updated version to 2.4.9 across all project files
+- **Consistent versioning**: Synchronized version numbers in pyproject.toml, setup.py, and __init__.py
+
 ## [2.4.8] - 2025-07-25
 
 ### 🚀 Major Features Added
