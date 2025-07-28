@@ -54,6 +54,7 @@ Whether you're managing files, conducting in-depth research, performing financia
      - [Search Tools (In Development)](#search-tools-in-development)
      - [Financial Tools (In Development)](#financial-tools-in-development)
      - [Math & Data Tools (In Development)](#math--data-tools-in-development)
+     - [Streamlit Web Application Tools (Implemented)](#streamlit-web-application-tools-implemented)
    - [Team Management](#team-management)
    - [Enhanced CLI Experience](#enhanced-cli-experience)
 5. [🎮 Usage Examples](#-usage-examples)
@@ -85,12 +86,13 @@ Whether you're managing files, conducting in-depth research, performing financia
    - [Hacker News Integration](#hacker-news-integration)
    - [Data Visualization](#data-visualization)
    - [Computer Vision Operations](#computer-vision-operations)
-   - [Screenshot Commands](#screenshot-commands)
-   - [Model Management Operations](#model-management-operations)
-   - [Advanced Thinking Operations](#advanced-thinking-operations)
-   - [Function Calling Operations](#function-calling-operations)
-   - [OpenAI Integration Operations](#openai-integration-operations)
-   - [Web Crawling Operations](#web-crawling-operations)
+        - [Screenshot Commands](#screenshot-commands)
+     - [Streamlit Web Application Operations](#streamlit-web-application-operations)
+     - [Model Management Operations](#model-management-operations)
+     - [Advanced Thinking Operations](#advanced-thinking-operations)
+     - [Function Calling Operations](#function-calling-operations)
+     - [OpenAI Integration Operations](#openai-integration-operations)
+     - [Web Crawling Operations](#web-crawling-operations)
    - [Reasoning Traces](#reasoning-traces)
    - [Performance Metrics](#performance-metrics)
 6. [🎥 Demos and Showcase](#-demos-and-showcase)
@@ -182,6 +184,9 @@ lxml>=4.9.0
 aiohttp>=3.8.0
 pyautogui>=0.9.54
 selenium>=4.15.0
+streamlit>=1.28.0
+plotly>=5.15.0
+psutil>=5.9.0
 ```
 
 ### Basic Installation
@@ -222,6 +227,9 @@ pip install agno-cli[media]
 
 # Install knowledge APIs for accessing specialized knowledge bases
 pip install agno-cli[knowledge]
+
+# Install Streamlit web application tools for agent-driven app creation
+pip install agno-cli[streamlit]
 ```
 
 ### Development Installation
@@ -337,6 +345,16 @@ These tools will enhance agents' analytical and computational prowess:
 * **Statistical Analysis**: Functions for descriptive statistics, correlation, and regression analysis to derive meaningful insights from data.
 * **CSV Analysis**: Tools for loading, querying, and group analysis of CSV data, facilitating structured data manipulation.
 * **SQL Integration**: In-memory database querying and data manipulation capabilities for advanced data processing.
+
+#### Streamlit Web Application Tools (Implemented)
+
+Agent-driven web application creation and management system:
+
+* **Multi-Agent Orchestration**: Coordinated project creation, deployment, and monitoring by specialized agents
+* **Template System**: Pre-built application templates for dashboards, chat interfaces, data analysis, and more
+* **Automated Deployment**: Local and cloud deployment with process management and health monitoring
+* **Project Lifecycle Management**: Complete project creation, deployment, monitoring, and cleanup workflows
+* **Rich CLI Interface**: Beautiful tables, panels, and comprehensive status reporting
 
 ### Team Management
 
@@ -1138,6 +1156,139 @@ agno screenshot --show-info filename #Show screenshot information
 agno screenshot --screen-info #Show screen information
 agno screenshot --clear #Clear all screenshots
 ```
+
+### Streamlit Web Application Operations
+
+Create, deploy, and manage Streamlit web applications with agent-driven automation:
+
+```bash
+# Project Creation and Management
+
+agno streamlit --create --name "Simple Tic Tac Toe" --type game --description "a simple tic tac toe game"
+
+agno streamlit --create --name "Test App " --type dashboard --description "Another simple test app"
+
+agno streamlit --create "my-app" --name "My Dashboard" --type "dashboard" --auto
+
+agno streamlit --create "ai-chat" --name "AI Chat Interface" --type "chat" --template "chat"
+
+agno streamlit --create "data-explorer" --name "Data Analysis Tool" --type "data_analysis" --description "A data analysis application"
+
+# Project Deployment and Control
+agno streamlit --deploy project-id                    # Deploy a project locally
+agno streamlit --deploy project-id --target local     # Deploy locally (default)
+agno streamlit --stop project-id                      # Stop a running project
+agno streamlit --delete project-id --confirm          # Delete a project completely
+
+# Project Monitoring and Information
+agno streamlit --list                                 # List all projects
+agno streamlit --list --status running               # List only running projects
+agno streamlit --project-status project-id           # Show detailed project status
+agno streamlit --logs project-id                     # Show project logs
+agno streamlit --logs project-id --lines 100         # Show last 100 log lines
+
+# Templates and Configuration
+agno streamlit --templates                           # List available templates
+agno streamlit --cleanup                             # Clean up orphaned processes
+
+# Output Formats
+agno streamlit --list --format-output json          # JSON output format
+agno streamlit --project-status project-id --format-output json
+```
+
+#### Application Types and Templates
+
+**Available Application Types:**
+- `dashboard` - Data visualization dashboards with charts, tables, and filters
+- `chat` - AI chat interfaces with model selection and conversation history
+- `data_analysis` - Data analysis tools with file upload and visualization
+- `ai_generation` - AI content generation applications
+- `project_management` - Project tracking and management tools
+- `crm` - Customer relationship management applications
+- `inventory` - Inventory management systems
+- `research` - Research and knowledge base applications
+- `knowledge_base` - Knowledge management systems
+- `document_analysis` - Document processing and analysis tools
+- `creative_writing` - Creative writing and content creation tools
+- `music` - Music generation and analysis applications
+- `design` - Design and creative tools
+- `education` - Educational applications and tutorials
+- `language_learning` - Language learning and practice tools
+- `programming_tutorial` - Programming education applications
+- `file_utility` - File management and utility applications
+- `api_testing` - API testing and documentation tools
+- `system_monitoring` - System monitoring and analytics dashboards
+- `custom` - Custom application templates
+
+#### Project Structure
+
+Each Streamlit project is created with a complete structure:
+
+```
+streamlit_projects/
+├── My App/
+│   ├── app.py              # Main Streamlit application
+│   ├── requirements.txt    # Python dependencies
+│   ├── config.yaml         # Application configuration
+│   ├── README.md           # Project documentation
+│   ├── static/             # Static assets (CSS, JS, images)
+│   ├── data/               # Data files and datasets
+│   ├── components/         # Custom Streamlit components
+│   └── logs/               # Application logs
+```
+
+#### Agent-Driven Features
+
+**Multi-Agent Orchestration:**
+- **Orchestrator Agent**: Coordinates entire project lifecycle
+- **Planning Agent**: Designs application architecture and requirements
+- **Builder Agent**: Generates code and components
+- **Deployment Agent**: Manages local/remote deployment
+- **Monitoring Agent**: Tracks performance and health
+- **Filesystem Agent**: Manages project structure and files
+
+**Automated Workflows:**
+```bash
+# One-command creation and deployment
+agno streamlit --create "sales-dashboard" --type "dashboard" --auto
+
+# Agents automatically:
+# 1. Plan the application architecture
+# 2. Generate the Streamlit code
+# 3. Create project structure
+# 4. Install dependencies
+# 5. Deploy the application
+# 6. Monitor the deployment
+```
+
+#### Deployment Options
+
+**Local Deployment:**
+- Automatic port allocation (8501, 8502, etc.)
+- Process management and monitoring
+- Health checks and status reporting
+- Complete cleanup on stop/delete
+
+**Future Cloud Deployment:**
+- Streamlit Cloud integration
+- Heroku deployment
+- Docker containerization
+- Custom cloud providers
+
+#### Process Management
+
+**Complete Lifecycle Control:**
+- **Start**: Deploy and run applications
+- **Stop**: Completely terminate processes and free ports
+- **Monitor**: Real-time status and health monitoring
+- **Cleanup**: Remove orphaned processes and resources
+- **Delete**: Complete project removal and cleanup
+
+**Port Management:**
+- Automatic port allocation
+- Port conflict resolution
+- Process-to-port mapping
+- Clean port release on stop/delete
 
 ### Model Management Operations
 

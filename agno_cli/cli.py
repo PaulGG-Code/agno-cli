@@ -48,6 +48,7 @@ from tools.function_tools import FunctionToolsManager
 from tools.openai_tools import OpenAIToolsManager
 from tools.crawl4ai_tools import Crawl4AIToolsManager
 from tools.screenshot_tools import ScreenshotToolsManager
+from tools.streamlit_tools import StreamlitToolsManager
 
 # Create the main CLI app
 app = typer.Typer(
@@ -76,12 +77,13 @@ sql_tools = None
 postgres_tools = None
 crawl4ai_tools = None
 screenshot_tools = None
+streamlit_tools = None
 
 
 def initialize_system():
     """Initialize the multi-agent system and tools"""
     global multi_agent_system, tracer, metrics, chat_commands, team_commands
-    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, crawl4ai_tools, screenshot_tools, config, session_manager
+    global search_tools, financial_tools, math_tools, file_system_tools, csv_tools, pandas_tools, duckdb_tools, sql_tools, postgres_tools, shell_tools, docker_tools, wikipedia_tools, arxiv_tools, pubmed_tools, sleep_tools, hackernews_tools, visualization_tools, opencv_tools, models_tools, thinking_tools, function_tools, openai_tools, crawl4ai_tools, screenshot_tools, streamlit_tools, config, session_manager
     
     if config is None:
         config = Config()
@@ -131,6 +133,7 @@ def initialize_system():
         openai_tools = OpenAIToolsManager()
         crawl4ai_tools = Crawl4AIToolsManager()
         screenshot_tools = ScreenshotToolsManager()
+        streamlit_tools = StreamlitToolsManager()
 
 
 # Chat Commands
@@ -3003,6 +3006,86 @@ def screenshot(
     
     except Exception as e:
         console.print(f"[red]Screenshot operation error: {e}[/red]")
+
+
+# Streamlit commands
+@app.command()
+def streamlit(
+    create: bool = typer.Option(False, "--create", "-c", help="Create new Streamlit project"),
+    name: Optional[str] = typer.Option(None, "--name", "-n", help="Project name"),
+    type: Optional[str] = typer.Option(None, "--type", "-t", help="Application type"),
+    description: Optional[str] = typer.Option("", "--description", "-d", help="Project description"),
+    template: Optional[str] = typer.Option(None, "--template", help="Template to use"),
+    auto: bool = typer.Option(False, "--auto", help="Auto-deploy after creation"),
+    deploy: Optional[str] = typer.Option(None, "--deploy", help="Deploy project by ID"),
+    target: str = typer.Option("local", "--target", help="Deployment target (local, streamlit-cloud)"),
+    list_projects: bool = typer.Option(False, "--list", "-l", help="List all projects"),
+    status: Optional[str] = typer.Option(None, "--status", help="Filter by status"),
+    project_status: Optional[str] = typer.Option(None, "--project-status", help="Show project status"),
+    stop: Optional[str] = typer.Option(None, "--stop", help="Stop running project"),
+    stop_all: bool = typer.Option(False, "--stop-all", help="Stop all running projects"),
+    delete: Optional[str] = typer.Option(None, "--delete", help="Delete project"),
+    confirm: bool = typer.Option(False, "--confirm", help="Confirm deletion"),
+    logs: Optional[str] = typer.Option(None, "--logs", help="Show project logs"),
+    lines: int = typer.Option(50, "--lines", help="Number of log lines to show"),
+    follow: bool = typer.Option(False, "--follow", help="Follow log output"),
+    templates: bool = typer.Option(False, "--templates", help="List available templates"),
+    cleanup: bool = typer.Option(False, "--cleanup", help="Clean up orphaned processes"),
+    format_output: str = typer.Option("table", "--format-output", help="Output format (table, json)")
+):
+    """Streamlit application creation and management"""
+    initialize_system()
+    if streamlit_tools is None:
+        console.print("[red]Streamlit tools not available[/red]")
+        return
+    
+    if create:
+        if not name:
+            console.print("[red]Project name is required for creation[/red]")
+            return
+        if not type:
+            console.print("[red]Application type is required for creation[/red]")
+            return
+        
+        streamlit_tools.create_project(name, type, description, auto, format_output, multi_agent_system)
+        
+        if auto:
+            # Auto-deploy the created project
+            projects = streamlit_tools.streamlit_tools.list_projects()
+            if projects:
+                latest_project = projects[0]
+                console.print(f"[blue]Auto-deploying project {latest_project.id}...[/blue]")
+                streamlit_tools.deploy_project(latest_project.id, target, format_output)
+    
+    elif deploy:
+        streamlit_tools.deploy_project(deploy, target, format_output)
+    
+    elif list_projects:
+        streamlit_tools.list_projects(status, format_output)
+    
+    elif project_status:
+        streamlit_tools.project_status(project_status, format_output)
+    
+    elif stop_all:
+        streamlit_tools.stop_all_projects()
+    
+    elif stop:
+        streamlit_tools.stop_project(stop)
+    
+    elif delete:
+        streamlit_tools.delete_project(delete, confirm)
+    
+    elif logs:
+        streamlit_tools.project_logs(logs, lines, follow)
+    
+    elif templates:
+        streamlit_tools.list_templates(format_output)
+    
+    elif cleanup:
+        streamlit_tools.cleanup_orphaned_processes()
+    
+    else:
+        console.print("[yellow]Please specify an action. Use --help for options.[/yellow]")
 
 
 # Version Command

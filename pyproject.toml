@@ -82,6 +82,13 @@ media = [
     "plotly>=5.15.0"
 ]
 
+# Streamlit tools
+streamlit = [
+    "streamlit>=1.28.0",
+    "plotly>=5.15.0",
+    "psutil>=5.9.0"
+]
+
 # Knowledge APIs
 knowledge = [
     "wikipedia>=1.4.0",
@@ -101,7 +108,7 @@ dev = [
 
 # All extras
 all = [
-    "agno-cli[search,fintech,math,comm,media,knowledge,dev]"
+    "agno-cli[search,fintech,math,comm,media,streamlit,knowledge,dev]"
 ]
 
 [project.urls]

@@ -17,7 +17,7 @@ class ModelConfig:
     model_id: str = "claude-sonnet-4-20250514"
     api_key: Optional[str] = None
     temperature: float = 0.7
-    max_tokens: int = 4096
+    max_tokens: int = 32000
 
 
 @dataclass

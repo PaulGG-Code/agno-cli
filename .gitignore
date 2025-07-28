@@ -4,6 +4,9 @@ function_executions/
 opencv_output/
 thinking_sessions/
 crawls/
+streamlit_projects/*
+STREAMLIT_TOOLS_README.md
+showcase/streamlit_demo.py
 
 *.cast
 *.cast.gz

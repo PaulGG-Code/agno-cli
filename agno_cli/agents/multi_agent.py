@@ -310,6 +310,14 @@ class MultiAgentSystem:
                     tools.append(ScreenshotTools())
                 except ImportError:
                     pass
+            
+            # Add Streamlit tools if available
+            if agent_state.has_tool("streamlit_tools"):
+                try:
+                    from agno.tools.streamlit_tools import StreamlitTools
+                    tools.append(StreamlitTools())
+                except ImportError:
+                    pass
         
         return tools
     
@@ -440,7 +448,13 @@ class MultiAgentSystem:
         
         try:
             # Execute with the Agno agent
-            response = agent.run(message=full_description)
+            run_response = agent.run(message=full_description)
+            
+            # Extract content from RunResponse object
+            if hasattr(run_response, 'content'):
+                response = run_response.content
+            else:
+                response = str(run_response)
             
             # Update agent state
             agent_state.update_status(AgentStatus.IDLE)
