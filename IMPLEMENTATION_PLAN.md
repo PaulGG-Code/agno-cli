@@ -111,7 +111,7 @@ This document tracks the implementation of all remaining Agno AI tools into our 
 ### API & Integration
 - [ ] `api` - Generic API operations
 - [ ] `e2b` - E2B cloud development
-- [ ] `streamlit` - Streamlit web app creation
+- [✅⚠️] `streamlit` - Streamlit web app creation (simple creation  yes, complex beta)
 
 ### Development Tools
 - [ ] `decorator` - Function decorators
