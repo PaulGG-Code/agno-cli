@@ -10,6 +10,7 @@
   [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)&nbsp;
   [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/PaulGG-Code/agno-cli)&nbsp;
   [![PyPI](https://img.shields.io/badge/PyPI-agno--cli-blue.svg)](https://pypi.org/project/agno-cli/)
+  [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/PaulGG-Code/agno-cli)
 
 
 <p align="center">
