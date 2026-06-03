@@ -1824,6 +1824,10 @@ agno files --read README.md --format json
 agno files --tree
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=paulgg-code/agno-cli&type=date&legend=top-left)](https://www.star-history.com/#paulgg-code/agno-cli&type=date&legend=top-left)
+
 ### 🙏 Acknowledgments
 
 - Built on the [Agno AI framework](https://github.com/agno-agi/agno)
